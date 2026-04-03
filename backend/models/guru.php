@@ -1,0 +1,95 @@
+<?php
+require_once 'config/db.php';
+
+class GuruModel
+{
+    private $db;
+
+    public function __construct()
+    {
+        $this->db = getDBConnection();
+    }
+
+    public function getAllGuru()
+    {
+        $stmt = $this->db->prepare("SELECT * FROM guru ORDER BY kode_guru ASC");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function checkDuplicateKode($kodeGuru, $excludeId = null)
+    {
+        $sql = "SELECT id FROM guru WHERE kode_guru = :kode_guru AND deleted_at IS NULL";
+        if ($excludeId !== null) {
+            $sql .= " AND id != :id";
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':kode_guru', $kodeGuru);
+        if ($excludeId !== null) {
+            $stmt->bindParam(':id', $excludeId);
+        }
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function checkKepalaSekolahExists($excludeId = null)
+    {
+        $sql = "SELECT id FROM guru WHERE role = 'kepala sekolah' AND deleted_at IS NULL";
+        if ($excludeId !== null) {
+            $sql .= " AND id != :id";
+        }
+        $stmt = $this->db->prepare($sql);
+        if ($excludeId !== null) {
+            $stmt->bindParam(':id', $excludeId);
+        }
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getGuruById($id)
+    {
+        $stmt = $this->db->prepare("SELECT id, username, password, nama, kode_guru, email, jenis_kelamin, role, created_at, updated_at, deleted_at FROM guru WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function addGuru($username, $password, $nama, $kodeGuru, $email, $jenisKelamin, $role)
+    {
+        $stmt = $this->db->prepare("INSERT INTO guru (username, password, nama, kode_guru, email, jenis_kelamin, role) VALUES (:username, :password, :nama, :kode_guru, :email, :jenis_kelamin, :role)");
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':password', $password);
+        $stmt->bindParam(':nama', $nama);
+        $stmt->bindParam(':kode_guru', $kodeGuru);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':jenis_kelamin', $jenisKelamin);
+        $stmt->bindParam(':role', $role);
+        return $stmt->execute();
+    }
+
+    public function updateGuru($id, $username, $password, $nama, $kodeGuru, $email, $jenisKelamin, $role)
+    {
+        if (!empty($password)) {
+            $stmt = $this->db->prepare("UPDATE guru SET username = :username, password = :password, nama = :nama, kode_guru = :kode_guru, email = :email, jenis_kelamin = :jenis_kelamin, role = :role WHERE id = :id");
+            $stmt->bindParam(':password', $password);
+        }
+        else {
+            $stmt = $this->db->prepare("UPDATE guru SET username = :username, nama = :nama, kode_guru = :kode_guru, email = :email, jenis_kelamin = :jenis_kelamin, role = :role WHERE id = :id");
+        }
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':username', $username);
+        $stmt->bindParam(':nama', $nama);
+        $stmt->bindParam(':kode_guru', $kodeGuru);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':jenis_kelamin', $jenisKelamin);
+        $stmt->bindParam(':role', $role);
+        return $stmt->execute();
+    }
+
+    public function deleteGuru($id)
+    {
+        $stmt = $this->db->prepare("UPDATE guru SET deleted_at = NOW() WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+}

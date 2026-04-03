@@ -1,0 +1,70 @@
+<aside id="sidebar"
+    class="w-[280px] bg-[#054030] text-white flex flex-col transition-all duration-300 z-20 flex-shrink-0 shadow-xl overflow-x-hidden h-full">
+    <!-- Sidebar Header -->
+    <div class="h-20 flex items-center px-6 border-b border-white/10">
+        <div class="flex items-center gap-3 w-full">
+            <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center shrink-0">
+                <img src="../../assets/img/viopoints.png" alt="Logo" class="w-6 h-6 object-contain">
+            </div>
+            <div class="sidebar-text whitespace-nowrap transition-all duration-300">
+                <h1 class="font-bold text-lg tracking-wide leading-tight">VioPoints</h1>
+                <p class="text-[10px] text-emerald-300 uppercase tracking-widest font-semibold mt-0.5">Admin Panel</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="flex-1 overflow-y-auto sidebar-scroll py-6 px-4">
+        <p class="sidebar-text whitespace-nowrap px-4 text-[11px] font-bold text-white/40 uppercase tracking-widest mb-3 transition-opacity duration-300">
+            Menu Utama</p>
+        <nav class="space-y-1.5 mb-8" id="sidebarNavMain">
+            <a href="dashboard.html" data-page="dashboard.html"
+                class="nav-link flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all group overflow-hidden">
+                <i class="fas fa-home w-5 text-center shrink-0 transition-colors"></i>
+                <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Dashboard</span>
+            </a>
+
+            <a href="siswa.html" data-page="siswa.html"
+                class="nav-link flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all group overflow-hidden">
+                <i class="fas fa-users w-5 text-center shrink-0 transition-colors"></i>
+                <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Data Siswa</span>
+            </a>
+
+            <a href="guru.html" data-page="guru.html"
+                class="nav-link flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all group overflow-hidden">
+                <i class="fas fa-chalkboard-teacher w-5 text-center shrink-0 transition-colors"></i>
+                <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Data Guru</span>
+            </a>
+
+            <a href="kelas.html" data-page="kelas.html"
+                class="nav-link flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all group overflow-hidden">
+                <i class="fas fa-school w-5 text-center shrink-0 transition-colors"></i>
+                <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Data Kelas & Jurusan</span>
+            </a>
+        </nav>
+
+        <p class="sidebar-text whitespace-nowrap px-4 text-[11px] font-bold text-white/40 uppercase tracking-widest mb-3 transition-opacity duration-300">
+            Manajemen Pelanggaran</p>
+        <nav class="space-y-1.5" id="sidebarNavPelanggaran">
+            <a href="jenis-pelanggaran.html" data-page="jenis-pelanggaran.html"
+                class="nav-link flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all group overflow-hidden">
+                <i class="fas fa-list-ul w-5 text-center shrink-0 transition-colors"></i>
+                <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Jenis Pelanggaran</span>
+            </a>
+            <a href="pelanggaran.html" data-page="pelanggaran.html"
+                class="nav-link flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all group overflow-hidden">
+                <i class="fas fa-exclamation-circle w-5 text-center shrink-0 transition-colors"></i>
+                <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Input Pelanggaran</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Sidebar Footer / Logout -->
+    <div class="p-4 border-t border-white/10 mt-auto">
+        <button id="logoutBtn"
+            class="flex items-center gap-3 px-4 py-3 w-full text-white/70 hover:text-white hover:bg-red-500/20 rounded-xl font-medium transition-all group overflow-hidden cursor-pointer">
+            <i class="fas fa-sign-out-alt w-5 text-center text-red-400 shrink-0 group-hover:text-red-300"></i>
+            <span class="sidebar-text whitespace-nowrap text-red-400 group-hover:text-red-300 transition-opacity duration-300">Logout</span>
+        </button>
+    </div>
+</aside>
