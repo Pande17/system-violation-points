@@ -39,46 +39,147 @@
                 </div>
 
                 <!-- Filters & Search -->
-                <div
-                    class="bg-white p-4 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div class="relative w-full md:w-96">
-                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="searchInput" autocomplete="off" placeholder="Cari siswa..."
-                            class="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#054030] focus:border-transparent outline-none transition-all text-sm font-medium">
-                    </div>
-                </div>
+                <div class="relative z-[60] mb-4">
+                    <h3 class="text-[13px] font-bold text-gray-500 mb-3 ml-1">Filter Data Siswa</h3>
+                    <div class="flex flex-col xl:flex-row justify-between items-center gap-4">
 
-                <!-- Table Container -->
-                <div
-                    class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
-                            <thead>
-                                <tr
-                                    class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-100">
-                                    <th class="py-5 px-6 font-bold text-center w-16">No</th>
-                                    <th class="py-5 px-6 font-bold min-w-[250px]">Nama / NIS</th>
-                                    <th class="py-5 px-6 font-bold">Kelas</th>
-                                    <th class="py-5 px-6 font-bold">Jenis Kelamin</th>
-                                    <th class="py-5 px-6 font-bold text-center">Poin</th>
-                                    <th class="py-5 px-6 font-bold text-center">Status</th>
-                                    <th class="py-5 px-6 font-bold text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="siswaTableBody" class="divide-y divide-gray-50">
-                                <tr>
-                                    <td colspan="7" class="py-12 text-center text-gray-400">
-                                        <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
-                                        <p class="text-sm font-medium">Memuat data siswa...</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="flex flex-wrap gap-3 w-full xl:w-auto">
+                            <!-- Sort Dropdown -->
+                            <div class="relative filter-dropdown group" data-type="single">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-4 justify-between items-center text-[13px] font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all dropdown-toggle shadow-sm w-[170px]">
+                                    <span id="text-sort">Poin Tertinggi</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div class="px-4 py-2 hover:bg-blue-50 hover:text-blue-700 cursor-pointer sort-option text-[13px] text-blue-600 font-bold flex items-center gap-2"
+                                        data-sort="poin_desc" onclick="setSort('poin_desc', 'Poin Tertinggi')">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-600"></div> Poin Tertinggi
+                                    </div>
+                                    <div class="px-4 py-2 hover:bg-blue-50 hover:text-blue-700 cursor-pointer sort-option text-[13px] text-gray-600 font-bold flex items-center gap-2"
+                                        data-sort="poin_asc" onclick="setSort('poin_asc', 'Poin Terendah')">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-600 hidden"></div> Poin Terendah
+                                    </div>
+                                    <div class="px-4 py-2 hover:bg-blue-50 hover:text-blue-700 cursor-pointer sort-option text-[13px] text-gray-600 font-bold flex items-center gap-2"
+                                        data-sort="nis_desc" onclick="setSort('nis_desc', 'NIS Tertinggi')">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-600 hidden"></div> NIS Tertinggi
+                                    </div>
+                                    <div class="px-4 py-2 hover:bg-blue-50 hover:text-blue-700 cursor-pointer sort-option text-[13px] text-gray-600 font-bold flex items-center gap-2"
+                                        data-sort="nis_asc" onclick="setSort('nis_asc', 'NIS Terendah')">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-blue-600 hidden"></div> NIS Terendah
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kelas Dropdown -->
+                            <div class="relative filter-dropdown group" data-type="multi">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-4 justify-between items-center text-[13px] font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all dropdown-toggle shadow-sm w-[170px]">
+                                    <span>Angkatan Kelas</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        FILTER ANGKATAN KELAS</div>
+                                    <label
+                                        class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer select-none">
+                                        <input type="checkbox" value="X"
+                                            class="filter-kelas-cb w-4 h-4 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            onchange="applyFilters()">
+                                        <span class="text-[13px] text-gray-700 font-bold">Kelas X</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer select-none">
+                                        <input type="checkbox" value="XI"
+                                            class="filter-kelas-cb w-4 h-4 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            onchange="applyFilters()">
+                                        <span class="text-[13px] text-gray-700 font-bold">Kelas XI</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer select-none">
+                                        <input type="checkbox" value="XII"
+                                            class="filter-kelas-cb w-4 h-4 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            onchange="applyFilters()">
+                                        <span class="text-[13px] text-gray-700 font-bold">Kelas XII</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- JK Dropdown -->
+                            <div class="relative filter-dropdown group" data-type="multi">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-4 justify-between items-center text-[13px] font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all dropdown-toggle shadow-sm w-[160px]">
+                                    <span>Jenis Kelamin</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-48 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        FILTER JENIS KELAMIN</div>
+                                    <label
+                                        class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer select-none">
+                                        <input type="checkbox" value="L"
+                                            class="filter-jk-cb w-4 h-4 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            onchange="applyFilters()">
+                                        <span class="text-[13px] text-gray-700 font-bold">Laki-Laki</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer select-none">
+                                        <input type="checkbox" value="P"
+                                            class="filter-jk-cb w-4 h-4 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            onchange="applyFilters()">
+                                        <span class="text-[13px] text-gray-700 font-bold">Perempuan</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative w-full xl:w-80">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="searchInput" autocomplete="off" placeholder="Cari Siswa..."
+                                class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-[13px] font-bold shadow-sm">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="footer-container"></div>
+            <!-- Table Container -->
+            <div
+                class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
+                        <thead>
+                            <tr
+                                class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-100">
+                                <th class="py-5 px-6 font-bold text-center w-16">No</th>
+                                <th class="py-5 px-6 font-bold min-w-[250px]">Nama / NIS</th>
+                                <th class="py-5 px-6 font-bold">Kelas</th>
+                                <th class="py-5 px-6 font-bold">Jenis Kelamin</th>
+                                <th class="py-5 px-6 font-bold text-center">Poin</th>
+                                <th class="py-5 px-6 font-bold text-center">Status</th>
+                                <th class="py-5 px-6 font-bold text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="siswaTableBody" class="divide-y divide-gray-50">
+                            <tr>
+                                <td colspan="7" class="py-12 text-center text-gray-400">
+                                    <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
+                                    <p class="text-sm font-medium">Memuat data siswa...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer-container"></div>
         </div>
     </main>
 
@@ -174,14 +275,8 @@
                                     <i
                                         class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
                                 </div>
-                                <div
-                                    class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200">
-                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
-                                        data-value="RPL">Rekayasa Perangkat Lunak</div>
-                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
-                                        data-value="TKJ">Teknik Komputer Jaringan</div>
-                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
-                                        data-value="DKV">Desain Komunikasi Visual</div>
+                                <div class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200"
+                                    id="jurusan_options_container">
                                 </div>
                                 <input type="hidden" id="form_jurusan" required value="">
                             </div>
@@ -268,11 +363,11 @@
                                     </div>
                                     <div
                                         class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200">
-                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700  hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
                                             data-value="Ayah">Ayah</div>
-                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700  hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
                                             data-value="Ibu">Ibu</div>
-                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700  hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
                                             data-value="Wali">Wali</div>
                                     </div>
                                     <input type="hidden" id="form_ortu_hubungan" value="">
@@ -414,32 +509,167 @@
         import { getAPI, postAPI, putAPI, deleteAPI } from '../../utils/fetchData.js';
 
         let dataSiswa = [];
+        let dataJurusan = [];
+        let dataKelas = [];
         let modalMode = 'add';
         let currentSiswaId = null;
         let actionType = '';
         let pendingActionPayload = null;
         let pendingActionId = null;
         let toastTimeout = null;
+        let currentSort = 'poin_desc';
+
+        window.setSort = function (sortValue, sortText) {
+            currentSort = sortValue;
+            document.getElementById('text-sort').textContent = sortText;
+
+            document.querySelectorAll('.sort-option').forEach(el => {
+                if (el.dataset.sort === sortValue) {
+                    el.classList.add('text-blue-600');
+                    el.classList.remove('text-gray-600');
+                    el.querySelector('div').classList.remove('hidden');
+                } else {
+                    el.classList.remove('text-blue-600');
+                    el.classList.add('text-gray-600');
+                    el.querySelector('div').classList.add('hidden');
+                }
+            });
+
+            window.applyFilters();
+        }
+
+        window.applyFilters = function () {
+            const kCb = document.querySelectorAll('.filter-kelas-cb:checked');
+            const jCb = document.querySelectorAll('.filter-jk-cb:checked');
+            let selK = Array.from(kCb).map(c => c.value);
+            let selJ = Array.from(jCb).map(c => c.value);
+
+            const numKelasChecked = selK.length;
+            const kelasToggle = document.querySelector('.filter-kelas-cb').closest('.filter-dropdown').querySelector('.dropdown-toggle');
+            if (numKelasChecked > 0) kelasToggle.classList.add('border-blue-500', 'text-blue-600');
+            else kelasToggle.classList.remove('border-blue-500', 'text-blue-600');
+
+            const numJKChecked = selJ.length;
+            const jkToggle = document.querySelector('.filter-jk-cb').closest('.filter-dropdown').querySelector('.dropdown-toggle');
+            if (numJKChecked > 0) jkToggle.classList.add('border-blue-500', 'text-blue-600');
+            else jkToggle.classList.remove('border-blue-500', 'text-blue-600');
+
+            let filtered = [...dataSiswa];
+
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                const keyword = searchInput.value.toLowerCase();
+                if (keyword) {
+                    filtered = filtered.filter(s =>
+                        (s.nama && s.nama.toLowerCase().includes(keyword)) ||
+                        (s.nis && s.nis.toString().toLowerCase().includes(keyword)) ||
+                        (s.kelas && s.kelas.toLowerCase().includes(keyword)) ||
+                        (s.jenis_kelamin && s.jenis_kelamin.toLowerCase().includes(keyword)) ||
+                        (s.status && s.status.toLowerCase().includes(keyword))
+                    );
+                }
+            }
+
+            if (selK.length > 0) {
+                filtered = filtered.filter(s => {
+                    if (!s.kelas) return false;
+                    return selK.some(k => s.kelas.startsWith(k + ' ') || s.kelas === k);
+                });
+            }
+
+            if (selJ.length > 0) {
+                filtered = filtered.filter(s => {
+                    if (!s.jenis_kelamin) return false;
+                    const jk = (s.jenis_kelamin === 'Laki-Laki' || s.jenis_kelamin === 'Laki-laki' || s.jenis_kelamin === 'L') ? 'L' : 'P';
+                    return selJ.includes(jk);
+                });
+            }
+
+            filtered.sort((a, b) => {
+                if (currentSort === 'poin_desc') {
+                    return (b.poin || 0) - (a.poin || 0);
+                } else if (currentSort === 'poin_asc') {
+                    return (a.poin || 0) - (b.poin || 0);
+                } else if (currentSort === 'nis_desc') {
+                    return (parseInt(b.nis) || 0) - (parseInt(a.nis) || 0);
+                } else if (currentSort === 'nis_asc') {
+                    return (parseInt(a.nis) || 0) - (parseInt(b.nis) || 0);
+                }
+                return 0;
+            });
+
+            renderTable(filtered);
+        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadComponents();
+            await loadJurusan();
+            await loadKelas();
             await loadSiswa();
             initializeCustomDropdowns();
 
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                const keyword = e.target.value.toLowerCase();
-                if (!keyword) {
-                    renderTable(dataSiswa);
-                    return;
+            document.getElementById('searchInput').addEventListener('input', () => {
+                applyFilters();
+            });
+
+            // Filter Dropdowns UI Logic
+            document.querySelectorAll('.filter-dropdown .dropdown-toggle').forEach(toggle => {
+                toggle.addEventListener('click', (e) => {
+                    const parent = toggle.closest('.filter-dropdown');
+                    const menu = parent.querySelector('.dropdown-menu');
+                    const icon = toggle.querySelector('.dropdown-icon');
+
+                    // close others
+                    document.querySelectorAll('.filter-dropdown').forEach(el => {
+                        if (el !== parent) {
+                            const otherMenu = el.querySelector('.dropdown-menu');
+                            const otherToggle = el.querySelector('.dropdown-toggle');
+                            otherMenu.classList.add('opacity-0', '-translate-y-2');
+                            setTimeout(() => otherMenu.classList.add('hidden'), 200);
+                            el.querySelector('.dropdown-icon').classList.remove('rotate-180');
+                        }
+                    });
+
+                    if (menu.classList.contains('hidden')) {
+                        menu.classList.remove('hidden');
+                        setTimeout(() => menu.classList.remove('opacity-0', '-translate-y-2'), 10);
+                        icon.classList.add('rotate-180');
+                        toggle.classList.add('border-blue-500', 'text-blue-600');
+                    } else {
+                        menu.classList.add('opacity-0', '-translate-y-2');
+                        setTimeout(() => menu.classList.add('hidden'), 200);
+                        icon.classList.remove('rotate-180');
+                        if (parent.dataset.type === 'multi') {
+                            const checked = parent.querySelectorAll('input:checked').length > 0;
+                            if (!checked) toggle.classList.remove('border-blue-500', 'text-blue-600');
+                        } else {
+                            // single type keeps hover style internally, but resets border
+                            toggle.classList.remove('border-blue-500', 'text-blue-600');
+                        }
+                    }
+                });
+            });
+
+            // Close filters when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.filter-dropdown')) {
+                    document.querySelectorAll('.filter-dropdown').forEach(el => {
+                        const menu = el.querySelector('.dropdown-menu');
+                        const toggle = el.querySelector('.dropdown-toggle');
+                        if (!menu.classList.contains('hidden')) {
+                            menu.classList.add('opacity-0', '-translate-y-2');
+                            setTimeout(() => menu.classList.add('hidden'), 200);
+                            el.querySelector('.dropdown-icon').classList.remove('rotate-180');
+                        }
+                        if (el.dataset.type === 'multi') {
+                            const checked = el.querySelectorAll('input:checked').length > 0;
+                            if (!checked) toggle.classList.remove('border-blue-500', 'text-blue-600');
+                            else toggle.classList.add('border-blue-500', 'text-blue-600');
+                        } else {
+                            toggle.classList.remove('border-blue-500', 'text-blue-600');
+                        }
+                    });
                 }
-                const filtered = dataSiswa.filter(s =>
-                    (s.nama && s.nama.toLowerCase().includes(keyword)) ||
-                    (s.nis && s.nis.toString().toLowerCase().includes(keyword)) ||
-                    (s.kelas && s.kelas.toLowerCase().includes(keyword)) ||
-                    (s.jenis_kelamin && s.jenis_kelamin.toLowerCase().includes(keyword)) ||
-                    (s.status && s.status.toLowerCase().includes(keyword))
-                );
-                renderTable(filtered);
             });
 
             document.getElementById('siswaForm').addEventListener('submit', (e) => {
@@ -478,13 +708,43 @@
                 const res = await getAPI('/siswa');
                 if (res && res.status === 200) {
                     dataSiswa = res.data;
-                    renderTable(dataSiswa);
+                    window.applyFilters();
                 } else {
                     renderError("Gagal mengambil data siswa.");
                 }
             } catch (e) {
                 console.error(e);
                 renderError("Terjadi kesalahan koneksi.");
+            }
+        }
+
+        async function loadJurusan() {
+            try {
+                const res = await getAPI('/jurusan');
+                if (res && res.status === 200) {
+                    dataJurusan = res.data;
+                    const container = document.getElementById('jurusan_options_container');
+                    if (container) {
+                        let html = '';
+                        dataJurusan.forEach(item => {
+                            html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="${item.kode}">${item.nama}</div>`;
+                        });
+                        container.innerHTML = html;
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function loadKelas() {
+            try {
+                const res = await getAPI('/kelas');
+                if (res && res.status === 200) {
+                    dataKelas = res.data;
+                }
+            } catch (e) {
+                console.error(e);
             }
         }
 
@@ -594,15 +854,13 @@
                 document.getElementById('form_kelas').value = "";
 
                 let html = '';
-                if (val === 'RPL') {
-                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="X RPL 1">X RPL 1</div>`;
-                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="X RPL 2">X RPL 2</div>`;
-                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="XI RPL 1">XI RPL 1</div>`;
-                } else if (val === 'TKJ') {
-                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="X TKJ 1">X TKJ 1</div>`;
-                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="XI TKJ 1">XI TKJ 1</div>`;
-                } else if (val === 'DKV') {
-                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="X DKV 1">X DKV 1</div>`;
+                const filteredKelas = dataKelas.filter(k => k.jurusan === val);
+                filteredKelas.forEach(k => {
+                    const namaKelasLengkap = `${k.tingkat} ${k.jurusan} ${k.kelas}`;
+                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="${namaKelasLengkap}">${namaKelasLengkap}</div>`;
+                });
+                if (filteredKelas.length === 0) {
+                    html = `<div class="px-4 py-2.5 text-[13px] font-bold text-gray-400">Kelas tidak tersedia</div>`;
                 }
                 kelasOptionsContainer.innerHTML = html;
             });
@@ -886,13 +1144,19 @@
             let html = '';
             data.forEach((item, index) => {
                 const isAktif = item.status === 'Aktif';
+                const isLulus = item.status === 'Lulus';
                 let displayGender = (item.jenis_kelamin === 'Laki-Laki' || item.jenis_kelamin === 'Laki-laki' || item.jenis_kelamin === 'L') ? 'Laki-Laki' : ((item.jenis_kelamin === 'Perempuan' || item.jenis_kelamin === 'P') ? 'Perempuan' : '-');
+
+                let displayName = item.nama || '-';
+                if (displayName.length > 30) {
+                    displayName = displayName.substring(0, 30) + '...';
+                }
 
                 html += `
                     <tr class="hover:bg-gray-50/80 transition-colors group">
                         <td class="py-4 px-6 text-center text-gray-500 font-semibold">${index + 1}</td>
                         <td class="py-4 px-6">
-                            <p class="font-bold text-gray-900 group-hover:text-[#054030] transition-colors">${item.nama || '-'}</p>
+                            <p class="font-bold text-gray-900 group-hover:text-[#054030] transition-colors" title="${item.nama}">${displayName}</p>
                             <p class="text-xs text-gray-500 font-medium mt-0.5"><span class="text-gray-400">NIS:</span> ${item.nis || '-'}</p>
                         </td>
                         <td class="py-4 px-6">
@@ -905,8 +1169,10 @@
                             <span class="font-bold border border-gray-200 px-3 py-1 rounded-md text-sm ${item.poin > 0 ? 'text-red-600 bg-red-50 border-red-100' : 'text-gray-600'}">${item.poin || 0}</span>
                         </td>
                         <td class="py-4 px-6 text-center">
-                            <span class="inline-flex px-3 py-1 rounded-full text-[11px] font-bold ${isAktif ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
-                                ${isAktif ? '<i class="fas fa-check-circle mr-1 mt-0.5"></i> Aktif' : '<i class="fas fa-times-circle mr-1 mt-0.5"></i> Non-Aktif'}
+                            <span class="inline-flex px-3 py-1 rounded-full text-[11px] font-bold ${isAktif ? 'bg-emerald-100 text-emerald-700' : isLulus ? 'bg-blue-200 text-blue-600' : 'bg-red-100 text-red-700'}">
+                                ${isAktif ? '<i class="fas fa-check-circle mr-1 mt-0.5"></i> Aktif'
+                        : isLulus ? '<i class="fas fa-check-circle mr-1 mt-0.5"></i> Lulus'
+                            : '<i class="fas fa-times-circle mr-1 mt-0.5"></i> Non-Aktif'}
                             </span>
                         </td>
                         <td class="py-4 px-6 text-center">
