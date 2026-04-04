@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Siswa - Sistem Poin Pelanggaran</title>
+    <title>Data Siswa - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
     <!-- Tailwind CSS Output -->
     <link href="../../src/output.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -20,45 +21,53 @@
         <div id="header-container"></div>
 
         <div class="flex-1 overflow-y-auto p-8 relative">
-            <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10"></div>
+            <div
+                class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10">
+            </div>
 
             <div class="max-w-7xl mx-auto space-y-8">
                 <!-- Header Section -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-3xl font-black text-gray-900 tracking-tight">Manajemen Data Siswa</h2>
-                        <p class="text-gray-500 mt-1">Kelola informasi siswa, kelas, dan jurusan secara mudah.</p>
+                        <!-- <p class="text-gray-500 mt-1">Kelola informasi siswa, kelas, dan jurusan secara mudah.</p> -->
                     </div>
-                    <button class="bg-[#054030] hover:bg-[#032e22] text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm">
+                    <button onclick="window.openModal('add')"
+                        class="bg-[#054030] hover:bg-[#032e22] text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm">
                         <i class="fas fa-plus"></i> Tambah Siswa Baru
                     </button>
                 </div>
 
                 <!-- Filters & Search -->
-                <div class="bg-white p-4 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div
+                    class="bg-white p-4 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div class="relative w-full md:w-96">
                         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="searchInput" placeholder="Cari nama, NIS, atau status..." class="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#054030] focus:border-transparent outline-none transition-all text-sm font-medium">
+                        <input type="text" id="searchInput" autocomplete="off" placeholder="Cari siswa..."
+                            class="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#054030] focus:border-transparent outline-none transition-all text-sm font-medium">
                     </div>
                 </div>
 
                 <!-- Table Container -->
-                <div class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+                <div
+                    class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
                             <thead>
-                                <tr class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-100">
+                                <tr
+                                    class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-100">
                                     <th class="py-5 px-6 font-bold text-center w-16">No</th>
-                                    <th class="py-5 px-6 font-bold min-w-[250px]">Siswa</th>
-                                    <th class="py-5 px-6 font-bold">Kontak</th>
-                                    <th class="py-5 px-6 font-bold">Kelas/Jurusan</th>
+                                    <th class="py-5 px-6 font-bold min-w-[250px]">Nama / NIS</th>
+                                    <th class="py-5 px-6 font-bold">Kelas</th>
+                                    <th class="py-5 px-6 font-bold">Jenis Kelamin</th>
+                                    <th class="py-5 px-6 font-bold text-center">Poin</th>
                                     <th class="py-5 px-6 font-bold text-center">Status</th>
                                     <th class="py-5 px-6 font-bold text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="siswaTableBody" class="divide-y divide-gray-50">
                                 <tr>
-                                    <td colspan="6" class="py-12 text-center text-gray-400">
+                                    <td colspan="7" class="py-12 text-center text-gray-400">
                                         <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
                                         <p class="text-sm font-medium">Memuat data siswa...</p>
                                     </td>
@@ -73,30 +82,399 @@
         </div>
     </main>
 
+    <!-- Modal Form Siswa -->
+    <div id="siswaModal" class="fixed inset-0 hidden items-center justify-center p-3 sm:p-4 transition-all duration-300"
+        style="z-index: 9991;">
+        <div class="fixed inset-0 bg-gray-900/60 transition-opacity duration-300"
+            style="backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"></div>
+        <div
+            class="bg-white rounded-[24px] shadow-2xl w-full max-w-5xl overflow-hidden transform scale-90 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh] relative z-10 border border-gray-100">
+            <!-- Modal Header -->
+            <div
+                class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                        <i class="fas fa-user-graduate text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalTitle" class="font-extrabold text-lg text-gray-900 tracking-tight leading-tight">
+                            Tambah Data Siswa</h3>
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-0.5">Manajemen Siswa
+                        </p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModal()"
+                    class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all focus:outline-none flex items-center justify-center">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 sm:p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
+                <form id="siswaForm" class="space-y-8">
+                    <!-- Siswa Information -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">NIS</label>
+                            <input type="number" id="form_nis" placeholder="Nomor Induk Siswa" required
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nama
+                                Lengkap</label>
+                            <input type="text" id="form_nama" placeholder="Masukkan nama siswa" required
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">No.
+                                Telepon Siswa</label>
+                            <input type="text" id="form_telepon" placeholder="08xxxxxxxxxxx"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Status</label>
+                            <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
+                                id="dropdown_status">
+                                <div
+                                    class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-700">
+                                    <span class="selected-text">Aktif</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div
+                                    class="dropdown-options hidden absolute z-51 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
+                                        data-value="Aktif">Aktif</div>
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
+                                        data-value="Non-Aktif">Non-Aktif</div>
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
+                                        data-value="Lulus">Lulus</div>
+                                </div>
+                                <input type="hidden" id="form_status" required value="Aktif">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Jurusan</label>
+                            <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
+                                id="dropdown_jurusan">
+                                <div
+                                    class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-400">
+                                    <span class="selected-text">Pilih Jurusan</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div
+                                    class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                        data-value="RPL">Rekayasa Perangkat Lunak</div>
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                        data-value="TKJ">Teknik Komputer Jaringan</div>
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                        data-value="DKV">Desain Komunikasi Visual</div>
+                                </div>
+                                <input type="hidden" id="form_jurusan" required value="">
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Kelas</label>
+                            <div class="relative custom-dropdown group pointer-events-none opacity-50"
+                                style="z-index: 10;" tabindex="0" id="dropdown_kelas">
+                                <div
+                                    class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-400">
+                                    <span class="selected-text">Pilih Jurusan Dulu</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200 max-h-48 overflow-y-auto custom-scrollbar"
+                                    id="kelas_options_container">
+                                </div>
+                                <input type="hidden" id="form_kelas" required value="">
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 ml-1">Jenis
+                                Kelamin</label>
+                            <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
+                                id="dropdown_jk">
+                                <div
+                                    class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-400">
+                                    <span class="selected-text">Pilih Gender</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div
+                                    class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
+                                        data-value="L">Laki-Laki</div>
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
+                                        data-value="P">Perempuan</div>
+                                </div>
+                                <input type="hidden" id="form_jk" required value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Email
+                            Utama (Opsional)</label>
+                        <input type="email" id="form_email" placeholder="email@sekolah.com"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Alamat</label>
+                        <input type="text" id="form_alamat" placeholder="Alamat lengkap tempat tinggal"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                    </div>
+
+                    <!-- Section: Data Orang Tua / Wali -->
+                    <div class="pt-6">
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 ml-1">Data Orang
+                            Tua / Wali</h4>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nama
+                                    Ortu/Wali</label>
+                                <input type="text" id="form_ortu_nama" placeholder="Nama Orang Tua atau Wali"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Hubungan</label>
+                                <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
+                                    id="dropdown_ortu_hubungan">
+                                    <div
+                                        class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-400">
+                                        <span class="selected-text">Pilih Hubungan</span>
+                                        <i
+                                            class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                                    </div>
+                                    <div
+                                        class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200">
+                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                            data-value="Ayah">Ayah</div>
+                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                            data-value="Ibu">Ibu</div>
+                                        <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors"
+                                            data-value="Wali">Wali</div>
+                                    </div>
+                                    <input type="hidden" id="form_ortu_hubungan" value="">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">No.
+                                    Telepon</label>
+                                <input type="text" id="form_ortu_telepon" placeholder="08xxxxxxxxxxx"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Pekerjaan</label>
+                                <input type="text" id="form_ortu_pekerjaan" placeholder="Pekerjaan"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Alamat
+                                Ortu/Wali</label>
+                            <input type="text" id="form_ortu_alamat"
+                                placeholder="Alamat lengkap tempat tinggal orang tua/wali"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
+                    </div>
+
+                    <!-- Section: Kredensial Login Siswa -->
+                    <div class="pt-6">
+                        <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 ml-1">Kredensial
+                            Login Siswa</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Username
+                                    Login</label>
+                                <input type="text" id="form_username" placeholder="Username"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Password</label>
+                                <input type="password" id="form_password" placeholder="Kosongkan jika tidak diubah"
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="form_poin" value="0">
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div
+                class="px-6 py-5 bg-white border-t border-gray-50 flex items-center justify-end gap-2 sticky bottom-0 z-10 w-full shrink-0">
+                <button type="button" onclick="closeModal()"
+                    class="px-6 py-2.5 font-black text-gray-400 hover:text-gray-600 rounded-xl transition-all text-xs">Batal</button>
+                <button type="submit" form="siswaForm"
+                    class="w-full sm:w-auto px-8 py-3.5 font-black text-white bg-[#054030] hover:bg-[#0a6148] rounded-2xl transition-all text-xs uppercase tracking-widest shadow-xl shadow-emerald-900/20 active:scale-95">Simpan
+                    Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 hidden items-center justify-center p-4 transition-all duration-300"
+        style="z-index: 9999;">
+        <div class="absolute inset-0 bg-gray-900/40 transition-opacity duration-300"
+            style="backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"></div>
+        <div
+            class="bg-white rounded-2xl shadow-3xl p-8 max-w-[340px] w-full text-center transform scale-90 opacity-0 transition-all duration-300 relative z-10 flex flex-col items-center">
+            <!-- Inner Bordered Icon Container -->
+            <div id="confirmIconWrapper"
+                class="w-15 h-15 rounded-3xl border-[3px] border-blue-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm">
+                <i id="confirmIcon" class="fas fa-save text-blue-500 text-[32px]"></i>
+            </div>
+
+            <h3 id="confirmTitle" class="text-[19px] font-black text-gray-900 mb-2 tracking-tight">Simpan Perubahan</h3>
+            <p id="confirmMessage" class="text-[12px] font-medium text-gray-500 leading-relaxed mb-6 px-2">Apakah Anda
+                yakin ingin menyimpan perubahan data siswa ini?</p>
+
+            <div class="w-full flex flex-col gap-0 mt-1 pb-1">
+                <button type="button" onclick="executeConfirm()" id="confirmActionPrimaryBtn"
+                    class="w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-gray-800 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3 hidden">
+                    SIMPAN
+                </button>
+                <button type="button" onclick="closeConfirm()"
+                    class="w-full py-3 font-extrabold text-gray-400 hover:text-gray-600 bg-transparent rounded-[16px] transition-all text-[11px] uppercase tracking-widest">
+                    BATAL
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification"
+        class="fixed top-6 right-6 hidden items-center gap-4 p-4 bg-white border border-gray-100 rounded-2xl shadow-xl transform transition-all duration-300 translate-x-full opacity-0"
+        style="z-index: 10000; min-w: 300px;">
+        <div id="toastIconContainer" class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+            <i id="toastIcon" class="fas fa-check text-lg"></i>
+        </div>
+        <div>
+            <h4 id="toastTitle" class="text-sm font-bold text-gray-900">Success</h4>
+            <p id="toastMessage" class="text-xs font-medium text-gray-500 mt-0.5">Berhasil</p>
+        </div>
+        <button onclick="closeToast()" class="ml-auto text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Styles for custom scrollbar inside modal -->
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #e2e8f0;
+        }
+    </style>
+
     <script type="module">
         import { loadComponents } from '../../components/layout.js';
-        import { getAPI } from '../../utils/fetchData.js';
+        import { getAPI, postAPI, putAPI, deleteAPI } from '../../utils/fetchData.js';
 
         let dataSiswa = [];
+        let modalMode = 'add';
+        let currentSiswaId = null;
+        let actionType = '';
+        let pendingActionPayload = null;
+        let pendingActionId = null;
+        let toastTimeout = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await loadComponents();
             await loadSiswa();
+            initializeCustomDropdowns();
 
             document.getElementById('searchInput').addEventListener('input', (e) => {
                 const keyword = e.target.value.toLowerCase();
-                const filtered = dataSiswa.filter(s => 
-                    s.nama.toLowerCase().includes(keyword) || 
-                    s.nis.toLowerCase().includes(keyword) ||
-                    s.status.toLowerCase().includes(keyword)
+                if (!keyword) {
+                    renderTable(dataSiswa);
+                    return;
+                }
+                const filtered = dataSiswa.filter(s =>
+                    (s.nama && s.nama.toLowerCase().includes(keyword)) ||
+                    (s.nis && s.nis.toString().toLowerCase().includes(keyword)) ||
+                    (s.kelas && s.kelas.toLowerCase().includes(keyword)) ||
+                    (s.jenis_kelamin && s.jenis_kelamin.toLowerCase().includes(keyword)) ||
+                    (s.status && s.status.toLowerCase().includes(keyword))
                 );
                 renderTable(filtered);
+            });
+
+            document.getElementById('siswaForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const payload = {
+                    nama: document.getElementById('form_nama').value,
+                    nis: document.getElementById('form_nis').value,
+                    kelas: document.getElementById('form_kelas').value,
+                    jenis_kelamin: document.getElementById('form_jk').value,
+                    poin: parseInt(document.getElementById('form_poin').value) || 0,
+                    status: document.getElementById('form_status').value,
+                    no_telp: document.getElementById('form_telepon').value,
+                    email: document.getElementById('form_email').value,
+                    alamat: document.getElementById('form_alamat').value,
+                    ortu_nama: document.getElementById('form_ortu_nama').value,
+                    ortu_hubungan: document.getElementById('form_ortu_hubungan').value,
+                    ortu_no_telp: document.getElementById('form_ortu_telepon').value,
+                    ortu_pekerjaan: document.getElementById('form_ortu_pekerjaan').value,
+                    ortu_alamat: document.getElementById('form_ortu_alamat').value,
+                    username: document.getElementById('form_username').value,
+                    password: document.getElementById('form_password').value,
+                    id_ortuWali: currentSiswaId ? dataSiswa.find(s => s.id == currentSiswaId)?.id_ortuWali : null
+                };
+                if (!payload.password) delete payload.password; // Don't send empty password
+
+                if (modalMode === 'add') {
+                    window.openConfirm('create', null, payload);
+                } else if (modalMode === 'edit') {
+                    window.openConfirm('edit', currentSiswaId, payload);
+                }
             });
         });
 
         async function loadSiswa() {
             try {
-                // Gunakan URL API yang sesuai untuk mengambil list siswa
                 const res = await getAPI('/siswa');
                 if (res && res.status === 200) {
                     dataSiswa = res.data;
@@ -104,45 +482,427 @@
                 } else {
                     renderError("Gagal mengambil data siswa.");
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 renderError("Terjadi kesalahan koneksi.");
             }
         }
 
+        function initializeCustomDropdowns() {
+            document.querySelectorAll('.custom-dropdown').forEach(wrapper => {
+                const selected = wrapper.querySelector('.dropdown-selected');
+                const items = wrapper.querySelector('.dropdown-options');
+                const text = wrapper.querySelector('.selected-text');
+                const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                const icon = wrapper.querySelector('.dropdown-icon');
+
+                selected.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (wrapper.classList.contains('pointer-events-none')) return;
+
+                    // close all others
+                    document.querySelectorAll('.dropdown-options').forEach(el => {
+                        if (el !== items) {
+                            el.classList.add('opacity-0', '-translate-y-2');
+                            setTimeout(() => {
+                                el.classList.add('hidden');
+                                if (el.parentElement) el.parentElement.style.zIndex = '10';
+                            }, 200);
+                            el.parentElement.querySelector('.dropdown-icon').classList.remove('rotate-180');
+                        }
+                    });
+
+                    const isHidden = items.classList.contains('hidden');
+                    if (isHidden) {
+                        wrapper.style.zIndex = '999';
+                        items.classList.remove('hidden');
+                        setTimeout(() => items.classList.remove('opacity-0', '-translate-y-2'), 10);
+                        icon.classList.add('rotate-180');
+                    } else {
+                        items.classList.add('opacity-0', '-translate-y-2');
+                        setTimeout(() => {
+                            items.classList.add('hidden');
+                            wrapper.style.zIndex = '10';
+                        }, 200);
+                        icon.classList.remove('rotate-180');
+                    }
+                });
+
+                items.addEventListener('click', (e) => {
+                    const option = e.target.closest('.dropdown-item');
+                    if (!option) return;
+
+                    const val = option.getAttribute('data-value');
+                    text.textContent = option.textContent;
+                    hiddenInput.value = val;
+
+                    items.querySelectorAll('.dropdown-item').forEach(el => {
+                        el.classList.remove('bg-emerald-50', 'text-emerald-600');
+                    });
+
+                    if (wrapper.id === 'dropdown_jk') {
+                        option.classList.add('bg-emerald-50', 'text-emerald-600');
+                        text.parentElement.classList.add('text-gray-900');
+                        text.parentElement.classList.remove('text-gray-400');
+                    } else {
+                        option.classList.add('bg-emerald-50', 'text-emerald-600'); // or blue
+                        text.parentElement.classList.add('text-gray-900');
+                        text.parentElement.classList.remove('text-gray-400');
+                    }
+
+                    items.classList.add('opacity-0', '-translate-y-2');
+                    setTimeout(() => items.classList.add('hidden'), 200);
+                    icon.classList.remove('rotate-180');
+
+                    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+            });
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.dropdown-options').forEach(el => {
+                    el.classList.add('opacity-0', '-translate-y-2');
+                    setTimeout(() => {
+                        el.classList.add('hidden');
+                        if (el.parentElement) el.parentElement.style.zIndex = '10';
+                    }, 200);
+                    if (el.parentElement.querySelector('.dropdown-icon')) {
+                        el.parentElement.querySelector('.dropdown-icon').classList.remove('rotate-180');
+                    }
+                });
+            });
+
+            // Jurusan dependency logic
+            const jurusanInput = document.getElementById('form_jurusan');
+            jurusanInput.addEventListener('change', () => {
+                const val = jurusanInput.value;
+                const kelasWrapper = document.getElementById('dropdown_kelas');
+                const kelasOptionsContainer = document.getElementById('kelas_options_container');
+                const kelasText = kelasWrapper.querySelector('.selected-text');
+
+                if (!val) {
+                    kelasWrapper.classList.add('pointer-events-none', 'opacity-50');
+                    kelasText.textContent = "Pilih Jurusan Dulu";
+                    document.getElementById('form_kelas').value = "";
+                    kelasOptionsContainer.innerHTML = '';
+                    return;
+                }
+
+                kelasWrapper.classList.remove('pointer-events-none', 'opacity-50');
+                kelasText.textContent = "Pilih Kelas";
+                kelasText.parentElement.classList.add('text-gray-400');
+                kelasText.parentElement.classList.remove('text-gray-900');
+                document.getElementById('form_kelas').value = "";
+
+                let html = '';
+                if (val === 'RPL') {
+                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="X RPL 1">X RPL 1</div>`;
+                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="X RPL 2">X RPL 2</div>`;
+                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="XI RPL 1">XI RPL 1</div>`;
+                } else if (val === 'TKJ') {
+                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="X TKJ 1">X TKJ 1</div>`;
+                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="XI TKJ 1">XI TKJ 1</div>`;
+                } else if (val === 'DKV') {
+                    html += `<div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors" data-value="X DKV 1">X DKV 1</div>`;
+                }
+                kelasOptionsContainer.innerHTML = html;
+            });
+        }
+
+        function updateCustomDropdown(id, value, textContent) {
+            const hidden = document.getElementById(id);
+            if (hidden) {
+                hidden.value = value;
+                const wrapper = hidden.closest('.custom-dropdown');
+                if (wrapper) {
+                    const text = wrapper.querySelector('.selected-text');
+                    if (text) text.textContent = textContent;
+                    const items = wrapper.querySelectorAll('.dropdown-item');
+                    items.forEach(el => {
+                        if (el.getAttribute('data-value') === value) {
+                            el.classList.add('bg-emerald-50', 'text-emerald-600');
+                        } else {
+                            el.classList.remove('bg-emerald-50', 'text-emerald-600');
+                        }
+                    });
+
+                    if (value) {
+                        text.parentElement.classList.remove('text-gray-400');
+                        text.parentElement.classList.add('text-gray-900');
+                    }
+                }
+            }
+        }
+
+        window.openModal = async function (mode, id = null) {
+            modalMode = mode;
+            const modal = document.getElementById('siswaModal');
+            const content = modal.children[1];
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('siswaForm');
+
+            form.reset();
+
+            // Reset custom dropdowns specifically
+            updateCustomDropdown('form_status', 'Aktif', 'Aktif');
+            updateCustomDropdown('form_jurusan', '', 'Pilih Jurusan');
+            updateCustomDropdown('form_kelas', '', 'Pilih Jurusan Dulu');
+            updateCustomDropdown('form_jk', '', 'Pilih Gender');
+            updateCustomDropdown('form_ortu_hubungan', '', 'Pilih Hubungan');
+
+            const dropdownKelas = document.getElementById('dropdown_kelas');
+            dropdownKelas.classList.add('pointer-events-none', 'opacity-50');
+
+            if (mode === 'add') {
+                title.textContent = 'Tambah Data Siswa';
+                document.getElementById('form_poin').value = 0;
+            } else if (mode === 'edit') {
+                title.textContent = 'Edit Data Siswa';
+                currentSiswaId = id;
+
+                try {
+                    const res = await getAPI('/siswa/' + id);
+                    if (res && res.status === 200 && res.data) {
+                        const siswa = res.data;
+                        document.getElementById('form_nama').value = siswa.nama || '';
+                        document.getElementById('form_nis').value = siswa.nis || '';
+
+                        document.getElementById('form_telepon').value = siswa.no_telp || '';
+                        document.getElementById('form_email').value = siswa.email || '';
+                        document.getElementById('form_alamat').value = siswa.alamat || '';
+                        document.getElementById('form_ortu_nama').value = siswa.ortu_nama || '';
+                        document.getElementById('form_ortu_telepon').value = siswa.ortu_no_telp || '';
+                        document.getElementById('form_ortu_pekerjaan').value = siswa.ortu_pekerjaan || '';
+                        document.getElementById('form_ortu_alamat').value = siswa.ortu_alamat || '';
+                        document.getElementById('form_username').value = siswa.username || '';
+                        document.getElementById('form_password').value = '';
+
+                        let jk = (siswa.jenis_kelamin === 'Laki-laki' || siswa.jenis_kelamin === 'Laki-Laki' || siswa.jenis_kelamin === 'L') ? 'L' :
+                            ((siswa.jenis_kelamin === 'Perempuan' || siswa.jenis_kelamin === 'P') ? 'P' : 'L');
+                        updateCustomDropdown('form_jk', jk, jk === 'L' ? 'Laki-Laki' : 'Perempuan');
+
+                        document.getElementById('form_poin').value = siswa.poin || 0;
+                        updateCustomDropdown('form_status', siswa.status || 'Aktif', siswa.status || 'Aktif');
+
+                        let hubungan = siswa.ortu_hubungan || '';
+                        if (hubungan) {
+                            updateCustomDropdown('form_ortu_hubungan', hubungan, hubungan);
+                        }
+
+                        // Infer Jurusan from Kelas (e.g., "X RPL 1" -> "RPL")
+                        let inferredJurusan = '';
+                        if (siswa.kelas) {
+                            if (siswa.kelas.includes('RPL')) inferredJurusan = 'RPL';
+                            else if (siswa.kelas.includes('TKJ')) inferredJurusan = 'TKJ';
+                            else if (siswa.kelas.includes('DKV')) inferredJurusan = 'DKV';
+                        }
+
+                        if (inferredJurusan) {
+                            document.getElementById('form_jurusan').value = inferredJurusan; // Set val for logic
+                            // Trigger change to populate kelas options
+                            document.getElementById('form_jurusan').dispatchEvent(new Event('change'));
+
+                            const textJurusan = inferredJurusan === 'RPL' ? 'Rekayasa Perangkat Lunak' : (inferredJurusan === 'TKJ' ? 'Teknik Komputer Jaringan' : 'Desain Komunikasi Visual');
+                            updateCustomDropdown('form_jurusan', inferredJurusan, textJurusan);
+
+                            updateCustomDropdown('form_kelas', siswa.kelas, siswa.kelas);
+                        }
+                    } else {
+                        window.showToast("Kesalahan", "Gagal mengambil detail siswa", false);
+                        return;
+                    }
+                } catch (e) {
+                    console.error(e);
+                    window.showToast("Koneksi bermasalah", "Silahkan coba lagi", false);
+                    return;
+                }
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-90', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+
+        window.closeModal = function () {
+            const modal = document.getElementById('siswaModal');
+            const content = modal.children[1];
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        };
+
+        window.openConfirm = function (action, id = null, payload = null) {
+            actionType = action;
+            pendingActionId = id;
+            pendingActionPayload = payload;
+
+            const modal = document.getElementById('confirmModal');
+            const content = modal.children[1];
+            const title = document.getElementById('confirmTitle');
+            const message = document.getElementById('confirmMessage');
+            const iconWrapper = document.getElementById('confirmIconWrapper');
+            const icon = document.getElementById('confirmIcon');
+            const btn = document.getElementById('confirmActionPrimaryBtn');
+
+            btn.classList.add('hidden'); // hidden normally
+
+            if (action === 'create') {
+                title.textContent = 'Tambah Data';
+                message.textContent = 'Apakah Anda yakin ingin menambahkan data siswa ini?';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-emerald-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                icon.className = 'fas fa-plus text-emerald-500 text-[32px]';
+                // no explicit primary button in reference image (it is blank), 
+                // but let's just make it visible faintly or keep default "HAPUS" style. 
+                // Wait! Image 1 actually shows a white box, which is a ghost button.
+                btn.classList.remove('hidden');
+                btn.textContent = 'SIMPAN';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-[0_2px_10px_rgba(0,0,0,0.03)] rounded-2xl font-extrabold text-emerald-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-emerald-50 active:scale-95 mb-3';
+            } else if (action === 'edit') {
+                title.textContent = 'Simpan Perubahan';
+                message.textContent = 'Apakah Anda yakin ingin menyimpan perubahan data siswa ini?';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-blue-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                icon.className = 'fas fa-save text-blue-500 text-[32px]';
+                btn.classList.remove('hidden');
+                btn.textContent = 'SIMPAN';
+                // Button is white based on screenshot
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-[0_2px_10px_rgba(0,0,0,0.03)] rounded-2xl font-extrabold text-blue-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-blue-50 active:scale-95 mb-3';
+            } else if (action === 'delete') {
+                title.textContent = 'Hapus Data';
+                message.textContent = 'Apakah Anda yakin ingin menghapus data siswa ini? Aksi ini tidak dapat dibatalkan.';
+                iconWrapper.className = 'w-15 h-15 rounded-[28px] border-[3px] border-red-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                icon.className = 'fas fa-trash-alt text-red-500 text-[32px]';
+                btn.classList.remove('hidden');
+                btn.textContent = 'HAPUS';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-[0_2px_10px_rgba(0,0,0,0.03)] rounded-2xl font-extrabold text-red-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-red-50 active:scale-95 mb-3';
+            }
+
+            closeModal();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                content.classList.remove('scale-90', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        };
+
+        window.closeConfirm = function () {
+            const modal = document.getElementById('confirmModal');
+            const content = modal.children[1];
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        };
+
+        window.showToast = function (title, message, isSuccess = true) {
+            const toast = document.getElementById('toastNotification');
+            const iconContainer = document.getElementById('toastIconContainer');
+            const icon = document.getElementById('toastIcon');
+            const titleEl = document.getElementById('toastTitle');
+            const messageEl = document.getElementById('toastMessage');
+
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+
+            if (isSuccess) {
+                iconContainer.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-emerald-50 text-emerald-600';
+                icon.className = 'fas fa-check text-lg';
+            } else {
+                iconContainer.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-red-50 text-red-600';
+                icon.className = 'fas fa-xmark text-lg';
+            }
+
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+            }, 10);
+
+            toastTimeout = setTimeout(() => {
+                closeToast();
+            }, 4000);
+        };
+
+        window.closeToast = function () {
+            const toast = document.getElementById('toastNotification');
+            toast.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex');
+            }, 300);
+        };
+
+        window.executeConfirm = async function () {
+            closeConfirm();
+            try {
+                if (actionType === 'create') {
+                    const res = await postAPI('/siswa', pendingActionPayload);
+                    if (res && res.status === 201) {
+                        await loadSiswa();
+                        showToast('Berhasil', 'Data siswa berhasil ditambahkan', true);
+                    } else {
+                        showToast('Gagal', res.message || 'Gagal menambahkan data', false);
+                    }
+                } else if (actionType === 'edit') {
+                    const res = await putAPI(`/siswa/${pendingActionId}`, pendingActionPayload);
+                    if (res && res.status === 200) {
+                        await loadSiswa();
+                        showToast('Berhasil', 'Data siswa berhasil diubah', true);
+                    } else {
+                        showToast('Gagal', res.message || 'Gagal mengubah data', false);
+                    }
+                } else if (actionType === 'delete') {
+                    const res = await deleteAPI(`/siswa/${pendingActionId}`);
+                    if (res && res.status === 200) {
+                        await loadSiswa();
+                        showToast('Berhasil', 'Data siswa berhasil dihapus', true);
+                    } else {
+                        showToast('Gagal', res.message || 'Gagal menghapus data', false);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Error', 'Terjadi kesalahan koneksi. Silakan coba lagi.', false);
+            }
+        };
+
         function renderTable(data) {
             const tbody = document.getElementById('siswaTableBody');
             if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-500 font-medium">Belum ada data siswa.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-gray-500 font-medium">Belum ada data siswa.</td></tr>`;
                 return;
             }
 
             let html = '';
             data.forEach((item, index) => {
                 const isAktif = item.status === 'Aktif';
+                let displayGender = (item.jenis_kelamin === 'Laki-Laki' || item.jenis_kelamin === 'Laki-laki' || item.jenis_kelamin === 'L') ? 'Laki-Laki' : ((item.jenis_kelamin === 'Perempuan' || item.jenis_kelamin === 'P') ? 'Perempuan' : '-');
+
                 html += `
                     <tr class="hover:bg-gray-50/80 transition-colors group">
                         <td class="py-4 px-6 text-center text-gray-500 font-semibold">${index + 1}</td>
                         <td class="py-4 px-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 font-bold border border-emerald-100 uppercase shrink-0">
-                                    ${item.nama ? item.nama.charAt(0) : '-'}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-gray-900 group-hover:text-[#054030] transition-colors">${item.nama}</p>
-                                    <p class="text-xs text-gray-500 font-medium mt-0.5"><span class="text-gray-400">NIS:</span> ${item.nis}</p>
-                                </div>
-                            </div>
+                            <p class="font-bold text-gray-900 group-hover:text-[#054030] transition-colors">${item.nama || '-'}</p>
+                            <p class="text-xs text-gray-500 font-medium mt-0.5"><span class="text-gray-400">NIS:</span> ${item.nis || '-'}</p>
                         </td>
                         <td class="py-4 px-6">
-                            <p class="text-sm font-medium text-gray-700">${item.no_telp || '-'}</p>
-                            <p class="text-xs text-gray-500">${item.email || '-'}</p>
+                            <span class="px-3 py-1 bg-blue-50 text-blue-600 rounded-md text-xs font-bold tracking-wide">${item.kelas || '-'}</span>
                         </td>
-                        <td class="py-4 px-6">
-                            <div class="flex flex-col items-start gap-1">
-                                <span class="px-2.5 py-1 bg-blue-50 text-blue-600 rounded-md text-[11px] font-bold tracking-wide">${item.kelas || '-'}</span>
-                                <span class="text-xs text-gray-500 font-medium">${item.jurusan || '-'}</span>
-                            </div>
+                        <td class="py-4 px-6 font-medium text-sm text-gray-700">
+                            ${displayGender}
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <span class="font-bold border border-gray-200 px-3 py-1 rounded-md text-sm ${item.poin > 0 ? 'text-red-600 bg-red-50 border-red-100' : 'text-gray-600'}">${item.poin || 0}</span>
                         </td>
                         <td class="py-4 px-6 text-center">
                             <span class="inline-flex px-3 py-1 rounded-full text-[11px] font-bold ${isAktif ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
@@ -151,10 +911,10 @@
                         </td>
                         <td class="py-4 px-6 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <button class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Edit">
+                                <button onclick="window.openModal('edit', ${item.id})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Edit">
                                     <i class="fas fa-pen text-xs"></i>
                                 </button>
-                                <button class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Hapus">
+                                <button onclick="window.openConfirm('delete', ${item.id})" class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Hapus">
                                     <i class="fas fa-trash text-xs"></i>
                                 </button>
                             </div>
@@ -166,8 +926,9 @@
         }
 
         function renderError(msg) {
-            document.getElementById('siswaTableBody').innerHTML = `<tr><td colspan="6" class="py-8 text-center text-red-500 font-medium"><i class="fas fa-exclamation-triangle mr-2"></i> ${msg}</td></tr>`;
+            document.getElementById('siswaTableBody').innerHTML = `<tr><td colspan="7" class="py-12 text-center text-red-500 font-medium"><i class="fas fa-exclamation-triangle mr-2"></i> ${msg}</td></tr>`;
         }
     </script>
 </body>
+
 </html>

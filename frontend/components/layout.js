@@ -1,3 +1,5 @@
+import { putAPI, getAPI } from '../../utils/fetchData.js';
+
 export async function loadComponents() {
     try {
         const [sidebarRes, headerRes, footerRes] = await Promise.all([
@@ -73,6 +75,161 @@ export async function loadComponents() {
                 localStorage.removeItem('user');
                 localStorage.removeItem('token');
                 window.location.href = '../Login.html';
+            });
+        }
+
+        // --- Move Modals to Body to avoid stacking context issues ---
+        const modalOverlay = document.getElementById('modalOverlay');
+        const profileModal = document.getElementById('profileModal');
+        const confirmModal = document.getElementById('confirmModal');
+        
+        if (modalOverlay) document.body.appendChild(modalOverlay);
+        if (profileModal) document.body.appendChild(profileModal);
+        if (confirmModal) document.body.appendChild(confirmModal);
+
+        // --- Profile & Confirmation Modal Logic ---
+        const userProfileBtn = document.getElementById('userProfileBtn');
+        const closeProfileBtn = document.getElementById('closeProfileBtn');
+        const cancelProfileBtn = document.getElementById('cancelProfileBtn');
+        const saveProfileBtn = document.getElementById('saveProfileBtn');
+        
+        const confirmOverlay = document.getElementById('confirmOverlay');
+        const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+        const proceedConfirmBtn = document.getElementById('proceedConfirmBtn');
+
+        const profileUsername = document.getElementById('profileUsername');
+        const profilePassword = document.getElementById('profilePassword');
+        const toggleProfilePassword = document.getElementById('toggleProfilePassword');
+        const profileNama = document.getElementById('profileNama');
+        const profileEmail = document.getElementById('profileEmail');
+        
+        const guruOnlyFields = document.getElementById('guruOnlyFields');
+        const profileKodeGuru = document.getElementById('profileKodeGuru');
+        const profileRole = document.getElementById('profileRole');
+        
+        const siswaOnlyFields = document.getElementById('siswaOnlyFields');
+        const profileNIS = document.getElementById('profileNIS');
+        const profileKelas = document.getElementById('profileKelas');
+        const profileJurusan = document.getElementById('profileJurusan');
+        const siswaAddressField = document.getElementById('siswaAddressField');
+        const profileAlamat = document.getElementById('profileAlamat');
+
+        const openModal = (modal, overlay) => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.add('opacity-100');
+                overlay.classList.remove('opacity-0');
+                const content = modal.querySelector('div:not(.absolute)');
+                content.classList.remove('scale-90', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 50);
+        };
+
+        const closeModal = (modal, overlay, keepOverlay = false) => {
+            if (!keepOverlay) {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0');
+            }
+            const content = modal.querySelector('div:not(.absolute)');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                if (!keepOverlay) overlay.classList.add('hidden');
+            }, 300);
+        };
+
+        if (userProfileBtn && profileModal && confirmModal) {
+            userProfileBtn.addEventListener('click', async () => {
+                openModal(profileModal, modalOverlay);
+                
+                if (userStr) {
+                    const user = JSON.parse(userStr);
+                    const endpoint = user.type === 'siswa' ? '/siswa' : '/guru';
+                    try {
+                        const res = await getAPI(`${endpoint}?id=${user.id}`);
+                        if (res && res.status === 200 && res.data) {
+                            const data = res.data;
+                            profileUsername.value = data.username || '';
+                            profileNama.value = data.nama || '';
+                            profileEmail.value = data.email || '';
+                            profilePassword.value = '';
+
+                            if (user.type !== 'siswa') {
+                                guruOnlyFields.classList.remove('hidden');
+                                siswaOnlyFields.classList.add('hidden');
+                                siswaAddressField.classList.add('hidden');
+                                profileKodeGuru.value = data.kode_guru || '';
+                                profileRole.value = data.role || '';
+                            } else {
+                                guruOnlyFields.classList.add('hidden');
+                                siswaOnlyFields.classList.remove('hidden');
+                                siswaAddressField.classList.remove('hidden');
+                                profileNIS.value = data.nis || '';
+                                profileKelas.value = data.kelas || '';
+                                profileJurusan.value = data.jurusan || '';
+                                profileAlamat.value = data.alamat || '';
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Gagal mengambil data profil:", error);
+                    }
+                }
+            });
+
+            closeProfileBtn.addEventListener('click', () => closeModal(profileModal, modalOverlay));
+            cancelProfileBtn.addEventListener('click', () => closeModal(profileModal, modalOverlay));
+
+            toggleProfilePassword.addEventListener('click', () => {
+                const type = profilePassword.getAttribute('type') === 'password' ? 'text' : 'password';
+                profilePassword.setAttribute('type', type);
+                toggleProfilePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye text-sm"></i>' : '<i class="fas fa-eye-slash text-sm"></i>';
+            });
+
+            saveProfileBtn.addEventListener('click', () => {
+                if (!profileUsername.value.trim()) { alert("Username tidak boleh kosong"); return; }
+                openModal(confirmModal, confirmOverlay);
+            });
+
+            cancelConfirmBtn.addEventListener('click', () => {
+                closeModal(confirmModal, confirmOverlay);
+            });
+
+            proceedConfirmBtn.addEventListener('click', async () => {
+                try {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    const endpoint = user.type === 'siswa' ? '/siswa' : '/guru';
+                    const getRes = await getAPI(`${endpoint}?id=${user.id}`);
+                    if (!getRes || getRes.status !== 200) { alert("Gagal memuat data terbaru."); return; }
+
+                    const payload = getRes.data;
+                    payload.username = profileUsername.value;
+                    payload.nama = profileNama.value;
+                    payload.email = profileEmail.value;
+                    if (profilePassword.value) payload.password = profilePassword.value;
+                    else payload.password = '';
+
+                    if (user.type === 'siswa') payload.alamat = profileAlamat.value;
+                    else payload.kode_guru = payload.kode_guru || payload.kodeGuru || '0021.000';
+
+                    const res = await putAPI(endpoint, payload);
+                    if (res && (res.status === 200 || res.status === true)) {
+                        user.username = payload.username;
+                        localStorage.setItem('user', JSON.stringify(user));
+                        const adminNameEl = document.getElementById('adminName');
+                        if (adminNameEl) adminNameEl.textContent = user.username;
+                        closeModal(confirmModal, confirmOverlay);
+                        closeModal(profileModal, modalOverlay);
+                    } else {
+                        alert(res.message || "Gagal memperbarui profil.");
+                    }
+                } catch (error) {
+                    console.error("Error updating profile:", error);
+                    alert("Terjadi kesalahan sistem saat memperbarui profil.");
+                }
             });
         }
     } catch (error) {

@@ -10,6 +10,8 @@ RUN npm install
 # Copy all application files
 COPY . .
 
+RUN chmod -R +x /app/node_modules/.bin
+
 # Expose port for HTTP Server
 EXPOSE 5173
 
