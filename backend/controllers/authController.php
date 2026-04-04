@@ -30,7 +30,7 @@ class authController
         if ($guru && password_verify($password, $guru['password'])) {
             $token = Token::generate([
                 "id" => $guru['id'],
-                "role" => $guru['role'], // admin | guru | bk
+                "role" => $guru['role'],
                 "type" => "guru"
             ]);
 
@@ -43,7 +43,7 @@ class authController
                     "nama" => $guru['nama'],
                     "username" => $guru['username'],
                     "email" => $guru['email'],
-                    "role" => $guru['role'], // admin | guru | bk
+                    "role" => $guru['role'],
                     "type" => "guru"
                 ]
             ]);

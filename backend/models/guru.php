@@ -12,7 +12,7 @@ class GuruModel
 
     public function getAllGuru()
     {
-        $stmt = $this->db->prepare("SELECT * FROM guru ORDER BY kode_guru ASC");
+        $stmt = $this->db->prepare("SELECT * FROM guru WHERE deleted_at IS NULL ORDER BY kode_guru ASC");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -72,8 +72,7 @@ class GuruModel
         if (!empty($password)) {
             $stmt = $this->db->prepare("UPDATE guru SET username = :username, password = :password, nama = :nama, kode_guru = :kode_guru, email = :email, jenis_kelamin = :jenis_kelamin, role = :role WHERE id = :id");
             $stmt->bindParam(':password', $password);
-        }
-        else {
+        } else {
             $stmt = $this->db->prepare("UPDATE guru SET username = :username, nama = :nama, kode_guru = :kode_guru, email = :email, jenis_kelamin = :jenis_kelamin, role = :role WHERE id = :id");
         }
         $stmt->bindParam(':id', $id);
@@ -83,7 +82,11 @@ class GuruModel
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':jenis_kelamin', $jenisKelamin);
         $stmt->bindParam(':role', $role);
-        return $stmt->execute();
+        $result = $stmt->execute();
+        if (!$result) {
+            error_log('updateGuru PDO error: ' . implode(' | ', $stmt->errorInfo()));
+        }
+        return $result;
     }
 
     public function deleteGuru($id)

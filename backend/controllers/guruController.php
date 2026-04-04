@@ -20,12 +20,10 @@ class GuruController
                 if ($guru) {
                     // Jika guru dengan ID tersebut ditemukan
                     Success($guru, "Data guru dengan ID $id berhasil diambil");
-                }
-                else {
+                } else {
                     NotFound(null, "Guru dengan ID $id tidak ditemukan");
                 }
-            }
-            else {
+            } else {
                 $guru = $this->model->getAllGuru();
                 Success($guru, "Data guru berhasil diambil");
             }
@@ -36,13 +34,13 @@ class GuruController
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $data = json_decode(file_get_contents("php://input"), true);
-            $username = $data['username'];
-            $password = $data['password'];
-            $nama = $data['nama'];
-            $kodeGuru = $data['kode_guru'];
-            $jenisKelamin = $data['jenis_kelamin'];
-            $email = $data['email'];
-            $role = $data['role'];
+            $username = $data['username'] ?? '';
+            $password = $data['password'] ?? '';
+            $nama = $data['nama'] ?? '';
+            $kodeGuru = $data['kode_guru'] ?? '';
+            $jenisKelamin = $data['jenis_kelamin'] ?? '';
+            $email = $data['email'] ?? '';
+            $role = $data['role'] ?? '';
 
             // Validasi format kode guru
             if (!preg_match('/^0021\.\d{3}$/', $kodeGuru)) {
@@ -72,8 +70,7 @@ class GuruController
                 // Return data dengan password yang sudah di-hash
                 $data['password'] = $hashedPassword;
                 Created($data, 'Data Guru berhasil ditambahkan');
-            }
-            else {
+            } else {
                 Conflict(null, 'Gagal menambahkan data Guru! Coba lagi.');
             }
         }
@@ -84,13 +81,13 @@ class GuruController
         if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
             $data = json_decode(file_get_contents("php://input"), true);
             $id = isset($data['id']) ? $data['id'] : (isset($_GET['id']) ? $_GET['id'] : null);
-            $username = $data['username'];
-            $password = $data['password'];
-            $nama = $data['nama'];
-            $kodeGuru = $data['kode_guru'];
-            $jenisKelamin = $data['jenis_kelamin'];
-            $email = $data['email'];
-            $role = $data['role'];
+            $username = $data['username'] ?? '';
+            $password = $data['password'] ?? ''; // kosong jika tidak dikirim
+            $nama = $data['nama'] ?? '';
+            $kodeGuru = $data['kode_guru'] ?? '';
+            $jenisKelamin = $data['jenis_kelamin'] ?? '';
+            $email = $data['email'] ?? '';
+            $role = $data['role'] ?? '';
 
             // Validasi format kode guru
             if (!preg_match('/^0021\.\d{3}$/', $kodeGuru)) {
@@ -122,8 +119,7 @@ class GuruController
                     $data['password'] = $hashedPassword;
                 }
                 Success($data, 'Data Guru berhasil diupdate');
-            }
-            else {
+            } else {
                 Conflict(null, 'Gagal mengupdate data Guru! Coba lagi.');
             }
         }
@@ -138,8 +134,7 @@ class GuruController
             $result = $this->model->deleteGuru($id);
             if ($result) {
                 Success(null, 'Data Guru berhasil dihapus');
-            }
-            else {
+            } else {
                 Conflict(null, 'Gagal menghapus data Guru! Coba lagi.');
             }
         }

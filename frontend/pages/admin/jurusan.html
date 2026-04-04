@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Jurusan - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <div id="sidebar-container"></div>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <div id="header-container"></div>
+
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <div
+                class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10">
+            </div>
+
+            <div class="max-w-7xl mx-auto space-y-8">
+                <!-- Header Section -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Manajemen Jurusan</h2>
+                    </div>
+                    <button onclick="window.openModal('add')"
+                        class="bg-[#054030] hover:bg-[#032e22] text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm">
+                        <i class="fas fa-plus"></i> Tambah Jurusan Baru
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <div class="relative z-[60] mb-4">
+                    <h3 class="text-[13px] font-bold text-gray-500 mb-3 ml-1">Pencarian Jurusan</h3>
+                    <div class="flex justify-end">
+                        <div class="relative w-full xl:w-80">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="searchInput" autocomplete="off"
+                                placeholder="Cari kode, nama, atau ketua kompetensi..."
+                                class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-[13px] font-bold shadow-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div
+                class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden mt-4">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap min-w-[600px]">
+                        <thead>
+                            <tr
+                                class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-100">
+                                <th class="py-5 px-6 font-bold text-center w-16">No</th>
+                                <th class="py-5 px-6 font-bold w-24">Kode</th>
+                                <th class="py-5 px-6 font-bold min-w-[220px]">Nama Jurusan</th>
+                                <th class="py-5 px-6 font-bold">Ketua Kompetensi</th>
+                                <th class="py-5 px-6 font-bold text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jurusanTableBody" class="divide-y divide-gray-50">
+                            <tr>
+                                <td colspan="5" class="py-12 text-center text-gray-400">
+                                    <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
+                                    <p class="text-sm font-medium">Memuat data jurusan...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="footer-container"></div>
+    </main>
+
+    <!-- Modal Form Jurusan -->
+    <div id="jurusanModal"
+        class="fixed inset-0 hidden items-center justify-center p-3 sm:p-4 transition-all duration-300"
+        style="z-index: 9991;">
+        <div class="fixed inset-0 bg-gray-900/60 transition-opacity duration-300"
+            style="backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"></div>
+        <div
+            class="bg-white rounded-[24px] shadow-2xl w-full max-w-lg overflow-hidden transform scale-90 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh] relative z-10 border border-gray-100">
+            <!-- Modal Header -->
+            <div
+                class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                        <i class="fas fa-layer-group text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalTitle" class="font-extrabold text-lg text-gray-900 tracking-tight leading-tight">
+                            Tambah Jurusan</h3>
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-0.5">Manajemen
+                            Jurusan</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModal()"
+                    class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all focus:outline-none flex items-center justify-center">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 sm:p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
+                <form id="jurusanForm" class="space-y-6">
+                    <!-- Kode Jurusan -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Kode
+                            Jurusan</label>
+                        <input type="text" id="form_kode" placeholder="Contoh: RPL, TKJ, DKV" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300 uppercase">
+                        <p class="text-[11px] text-gray-400 mt-1.5 ml-1">Kode singkat untuk jurusan (maks. 10 karakter)
+                        </p>
+                    </div>
+
+                    <!-- Nama Jurusan -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nama
+                            Jurusan</label>
+                        <input type="text" id="form_nama" placeholder="Contoh: Rekayasa Perangkat Lunak" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                    </div>
+
+                    <!-- Ketua Kompetensi -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Ketua
+                            Kompetensi</label>
+                        <div class="relative custom-dropdown group" tabindex="0" id="dropdown_ketua">
+                            <div
+                                class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all text-[13px] font-bold text-gray-400">
+                                <span class="selected-text">Pilih Ketua Kompetensi</span>
+                                <i
+                                    class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                            </div>
+                            <div class="dropdown-options hidden absolute z-50 left-0 right-0 bottom-full mb-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200 max-h-48 overflow-y-auto custom-scrollbar"
+                                id="ketua_options_list">
+                                <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
+                                    data-value="" data-name="">— Pilih Guru —</div>
+                            </div>
+                            <input type="hidden" id="form_ketua_kompetensi" required value="">
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-1.5 ml-1">Nama ketua kompetensi yang akan disimpan ke
+                            database</p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div
+                class="px-6 py-5 bg-white border-t border-gray-50 flex items-center justify-end gap-2 sticky bottom-0 z-10 w-full shrink-0">
+                <button type="button" onclick="closeModal()"
+                    class="px-6 py-2.5 font-black text-gray-400 hover:text-gray-600 rounded-xl transition-all text-xs">Batal</button>
+                <button type="submit" form="jurusanForm"
+                    class="w-full sm:w-auto px-8 py-3.5 font-black text-white bg-[#054030] hover:bg-[#0a6148] rounded-2xl transition-all text-xs uppercase tracking-widest shadow-xl shadow-emerald-900/20 active:scale-95">Simpan
+                    Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="fixed inset-0 hidden items-center justify-center p-4 transition-all duration-300"
+        style="z-index: 9999;">
+        <div class="absolute inset-0 bg-gray-900/40 transition-opacity duration-300"
+            style="backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"></div>
+        <div
+            class="bg-white rounded-2xl shadow-3xl p-8 max-w-[340px] w-full text-center transform scale-90 opacity-0 transition-all duration-300 relative z-10 flex flex-col items-center">
+            <div id="confirmIconWrapper"
+                class="w-20 h-20 rounded-[28px] border-[3px] border-blue-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm">
+                <i id="confirmIcon" class="fas fa-save text-blue-500 text-[32px]"></i>
+            </div>
+            <h3 id="confirmTitle" class="text-[19px] font-black text-gray-900 mb-2 tracking-tight">Simpan Perubahan</h3>
+            <p id="confirmMessage" class="text-[12px] font-medium text-gray-500 leading-relaxed mb-6 px-2">Apakah Anda
+                yakin?</p>
+            <div class="w-full flex flex-col gap-0 mt-1 pb-1">
+                <button type="button" onclick="executeConfirm()" id="confirmActionPrimaryBtn"
+                    class="w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-gray-800 text-[11px] uppercase tracking-widest transition-all active:scale-95 mb-3 hidden">SIMPAN</button>
+                <button type="button" onclick="closeConfirm()"
+                    class="w-full py-3 font-extrabold text-gray-400 hover:text-gray-600 bg-transparent rounded-[16px] transition-all text-[11px] uppercase tracking-widest">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification"
+        class="fixed top-6 right-6 hidden items-center gap-4 p-4 bg-white border border-gray-100 rounded-2xl shadow-xl transform transition-all duration-300 translate-x-full opacity-0"
+        style="z-index: 10000; min-width: 300px;">
+        <div id="toastIconContainer" class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+            <i id="toastIcon" class="fas fa-check text-lg"></i>
+        </div>
+        <div>
+            <h4 id="toastTitle" class="text-sm font-bold text-gray-900">Berhasil</h4>
+            <p id="toastMessage" class="text-xs font-medium text-gray-500 mt-0.5">Operasi berhasil</p>
+        </div>
+        <button onclick="closeToast()" class="ml-auto text-gray-400 hover:text-gray-600"><i
+                class="fas fa-times"></i></button>
+    </div>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #e2e8f0;
+        }
+    </style>
+
+    <script type="module">
+        import { loadComponents } from '../../components/layout.js';
+        import { getAPI, postAPI, putAPI, deleteAPI } from '../../utils/fetchData.js';
+
+        let dataJurusan = [];
+        let dataGuru = [];
+        let modalMode = 'add';
+        let currentJurusanId = null;
+        let actionType = '';
+        let pendingActionPayload = null;
+        let pendingActionId = null;
+        let toastTimeout = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadComponents();
+            await loadGuru();
+            await loadJurusan();
+            initializeCustomDropdowns();
+
+            document.getElementById('searchInput').addEventListener('input', () => applyFilters());
+
+            document.getElementById('jurusanForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const payload = {
+                    kode: document.getElementById('form_kode').value.trim().toUpperCase(),
+                    nama: document.getElementById('form_nama').value.trim(),
+                    ketua_kompetensi: document.getElementById('form_ketua_kompetensi').value.trim(),
+                };
+                if (modalMode === 'add') window.openConfirm('create', null, payload);
+                else window.openConfirm('edit', currentJurusanId, payload);
+            });
+        });
+
+        function applyFilters() {
+            const keyword = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            let filtered = [...dataJurusan];
+            if (keyword) {
+                filtered = filtered.filter(j =>
+                    (j.kode && j.kode.toLowerCase().includes(keyword)) ||
+                    (j.nama && j.nama.toLowerCase().includes(keyword)) ||
+                    (j.ketua_kompetensi && j.ketua_kompetensi.toLowerCase().includes(keyword))
+                );
+            }
+            renderTable(filtered);
+        }
+
+        async function loadJurusan() {
+            try {
+                const res = await getAPI('/jurusan');
+                if (res && res.status === 200) {
+                    dataJurusan = res.data;
+                    renderTable(dataJurusan);
+                } else {
+                    renderError('Gagal mengambil data jurusan.');
+                }
+            } catch (e) {
+                console.error(e);
+                renderError('Terjadi kesalahan koneksi.');
+            }
+        }
+
+        async function loadGuru() {
+            try {
+                const res = await getAPI('/guru');
+                if (res && res.status === 200) {
+                    dataGuru = res.data;
+                    const list = document.getElementById('ketua_options_list');
+                    if (list) {
+                        dataGuru.forEach(g => {
+                            const div = document.createElement('div');
+                            div.className = 'dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors';
+                            div.setAttribute('data-value', g.nama); // simpan nama langsung
+                            div.textContent = g.nama;
+                            list.appendChild(div);
+                        });
+                    }
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function initializeCustomDropdowns() {
+            document.querySelectorAll('.custom-dropdown').forEach(wrapper => {
+                const selected = wrapper.querySelector('.dropdown-selected');
+                const items = wrapper.querySelector('.dropdown-options');
+                const text = wrapper.querySelector('.selected-text');
+                const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                const icon = wrapper.querySelector('.dropdown-icon');
+
+                selected.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.dropdown-options').forEach(el => {
+                        if (el !== items) {
+                            el.classList.add('opacity-0', '-translate-y-2');
+                            setTimeout(() => { el.classList.add('hidden'); if (el.parentElement) el.parentElement.style.zIndex = '10'; }, 200);
+                            el.parentElement?.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                        }
+                    });
+                    if (items.classList.contains('hidden')) {
+                        wrapper.style.zIndex = '999';
+                        items.classList.remove('hidden');
+                        setTimeout(() => items.classList.remove('opacity-0', '-translate-y-2'), 10);
+                        icon.classList.add('rotate-180');
+                    } else {
+                        items.classList.add('opacity-0', '-translate-y-2');
+                        setTimeout(() => { items.classList.add('hidden'); wrapper.style.zIndex = '10'; }, 200);
+                        icon.classList.remove('rotate-180');
+                    }
+                });
+
+                items.addEventListener('click', (e) => {
+                    const option = e.target.closest('.dropdown-item');
+                    if (!option) return;
+                    const val = option.getAttribute('data-value');
+                    text.textContent = option.textContent.trim();
+                    hiddenInput.value = val;
+                    items.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('bg-emerald-50', 'text-emerald-600'));
+                    option.classList.add('bg-emerald-50', 'text-emerald-600');
+                    if (val) { text.parentElement.classList.remove('text-gray-400'); text.parentElement.classList.add('text-gray-900'); }
+                    else { text.parentElement.classList.add('text-gray-400'); text.parentElement.classList.remove('text-gray-900'); }
+                    items.classList.add('opacity-0', '-translate-y-2');
+                    setTimeout(() => items.classList.add('hidden'), 200);
+                    icon.classList.remove('rotate-180');
+                    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+            });
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.dropdown-options').forEach(el => {
+                    el.classList.add('opacity-0', '-translate-y-2');
+                    setTimeout(() => { el.classList.add('hidden'); if (el.parentElement) el.parentElement.style.zIndex = '10'; }, 200);
+                    el.parentElement?.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                });
+            });
+        }
+
+        function updateCustomDropdown(id, value, textContent) {
+            const hidden = document.getElementById(id);
+            if (!hidden) return;
+            hidden.value = value;
+            const wrapper = hidden.closest('.custom-dropdown');
+            if (!wrapper) return;
+            const text = wrapper.querySelector('.selected-text');
+            if (text) text.textContent = textContent;
+            wrapper.querySelectorAll('.dropdown-item').forEach(el => {
+                el.getAttribute('data-value') === value
+                    ? el.classList.add('bg-emerald-50', 'text-emerald-600')
+                    : el.classList.remove('bg-emerald-50', 'text-emerald-600');
+            });
+            if (text && value) { text.parentElement.classList.remove('text-gray-400'); text.parentElement.classList.add('text-gray-900'); }
+            else if (text) { text.parentElement.classList.add('text-gray-400'); text.parentElement.classList.remove('text-gray-900'); }
+        }
+
+        window.openModal = async function (mode, id = null) {
+            modalMode = mode;
+            const modal = document.getElementById('jurusanModal');
+            const content = modal.children[1];
+            const title = document.getElementById('modalTitle');
+
+            document.getElementById('jurusanForm').reset();
+            updateCustomDropdown('form_ketua_kompetensi', '', 'Pilih Ketua Kompetensi');
+
+            if (mode === 'add') {
+                title.textContent = 'Tambah Jurusan Baru';
+                currentJurusanId = null;
+            } else if (mode === 'edit') {
+                title.textContent = 'Edit Data Jurusan';
+                currentJurusanId = id;
+                try {
+                    const res = await getAPI('/jurusan/' + id);
+                    if (res && res.status === 200 && res.data) {
+                        const j = res.data;
+                        document.getElementById('form_kode').value = j.kode || '';
+                        document.getElementById('form_nama').value = j.nama || '';
+                        if (j.ketua_kompetensi) {
+                            updateCustomDropdown('form_ketua_kompetensi', j.ketua_kompetensi, j.ketua_kompetensi);
+                        }
+                    } else {
+                        showToast('Kesalahan', 'Gagal mengambil detail jurusan', false);
+                        return;
+                    }
+                } catch (e) {
+                    console.error(e);
+                    showToast('Koneksi bermasalah', 'Silahkan coba lagi', false);
+                    return;
+                }
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { content.classList.remove('scale-90', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+        };
+
+        window.closeModal = function () {
+            const modal = document.getElementById('jurusanModal');
+            const content = modal.children[1];
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        };
+
+        window.openConfirm = function (action, id = null, payload = null) {
+            actionType = action;
+            pendingActionId = id;
+            pendingActionPayload = payload;
+
+            const modal = document.getElementById('confirmModal');
+            const content = modal.children[1];
+            const title = document.getElementById('confirmTitle');
+            const message = document.getElementById('confirmMessage');
+            const iconWrapper = document.getElementById('confirmIconWrapper');
+            const icon = document.getElementById('confirmIcon');
+            const btn = document.getElementById('confirmActionPrimaryBtn');
+
+            if (action === 'create') {
+                title.textContent = 'Tambah Jurusan';
+                message.textContent = 'Apakah Anda yakin ingin menambahkan jurusan baru ini?';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-emerald-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                icon.className = 'fas fa-plus text-emerald-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-emerald-600 text-[11px] uppercase tracking-widest transition-all active:scale-95 mb-3';
+                btn.textContent = 'SIMPAN';
+            } else if (action === 'edit') {
+                title.textContent = 'Simpan Perubahan';
+                message.textContent = 'Apakah Anda yakin ingin menyimpan perubahan data jurusan ini?';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-blue-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                icon.className = 'fas fa-save text-blue-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-blue-600 text-[11px] uppercase tracking-widest transition-all active:scale-95 mb-3';
+                btn.textContent = 'SIMPAN';
+            } else if (action === 'delete') {
+                title.textContent = 'Hapus Jurusan';
+                message.textContent = 'Apakah Anda yakin ingin menghapus jurusan ini? Aksi ini tidak dapat dibatalkan.';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-red-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                icon.className = 'fas fa-trash-alt text-red-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-red-600 text-[11px] uppercase tracking-widest transition-all active:scale-95 mb-3';
+                btn.textContent = 'HAPUS';
+            }
+            btn.classList.remove('hidden');
+            closeModal();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { content.classList.remove('scale-90', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+        };
+
+        window.closeConfirm = function () {
+            const modal = document.getElementById('confirmModal');
+            const content = modal.children[1];
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        };
+
+        window.executeConfirm = async function () {
+            closeConfirm();
+            try {
+                if (actionType === 'create') {
+                    const res = await postAPI('/jurusan', pendingActionPayload);
+                    if (res && res.status === 201) {
+                        await loadJurusan();
+                        showToast('Berhasil', 'Data jurusan berhasil ditambahkan', true);
+                    } else {
+                        showToast('Gagal', res.message || 'Gagal menambahkan data', false);
+                    }
+                } else if (actionType === 'edit') {
+                    const res = await putAPI(`/jurusan/${pendingActionId}`, pendingActionPayload);
+                    if (res && res.status === 200) {
+                        await loadJurusan();
+                        showToast('Berhasil', 'Data jurusan berhasil diubah', true);
+                    } else {
+                        showToast('Gagal', res.message || 'Gagal mengubah data', false);
+                    }
+                } else if (actionType === 'delete') {
+                    const res = await deleteAPI(`/jurusan/${pendingActionId}`);
+                    if (res && res.status === 200) {
+                        await loadJurusan();
+                        showToast('Berhasil', 'Data jurusan berhasil dihapus', true);
+                    } else {
+                        showToast('Gagal', res.message || 'Gagal menghapus data', false);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Error', 'Terjadi kesalahan koneksi. Silakan coba lagi.', false);
+            }
+        };
+
+        window.showToast = function (title, message, isSuccess = true) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            const iconContainer = document.getElementById('toastIconContainer');
+            const icon = document.getElementById('toastIcon');
+            if (isSuccess) {
+                iconContainer.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-emerald-50 text-emerald-600';
+                icon.className = 'fas fa-check text-lg';
+            } else {
+                iconContainer.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-red-50 text-red-600';
+                icon.className = 'fas fa-xmark text-lg';
+            }
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            setTimeout(() => toast.classList.remove('translate-x-full', 'opacity-0'), 10);
+            toastTimeout = setTimeout(() => closeToast(), 4000);
+        };
+
+        window.closeToast = function () {
+            const toast = document.getElementById('toastNotification');
+            toast.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => { toast.classList.add('hidden'); toast.classList.remove('flex'); }, 300);
+        };
+
+        function renderTable(data) {
+            const tbody = document.getElementById('jurusanTableBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-gray-500 font-medium">Belum ada data jurusan.</td></tr>`;
+                return;
+            }
+            // Color palette for jurusan badges
+            const colors = ['purple', 'blue', 'indigo', 'teal', 'cyan', 'violet'];
+            let html = '';
+            data.forEach((item, index) => {
+                const color = colors[index % colors.length];
+                const colorMap = {
+                    purple: 'bg-purple-50 text-purple-600',
+                    blue: 'bg-blue-50 text-blue-600',
+                    indigo: 'bg-indigo-50 text-indigo-600',
+                    teal: 'bg-teal-50 text-teal-600',
+                    cyan: 'bg-cyan-50 text-cyan-600',
+                    violet: 'bg-violet-50 text-violet-600',
+                };
+                const badgeClass = colorMap[color] || 'bg-gray-50 text-gray-600';
+                html += `
+                    <tr class="hover:bg-gray-50/80 transition-colors group">
+                        <td class="py-4 px-6 text-center text-gray-500 font-semibold">${index + 1}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-3 py-1.5 ${badgeClass} rounded-lg text-xs font-black tracking-widest uppercase">${item.kode || '-'}</span>
+                        </td>
+                        <td class="py-4 px-6">
+                            <p class="font-bold text-gray-900 group-hover:text-[#054030] transition-colors">${item.nama || '-'}</p>
+                        </td>
+                        <td class="py-4 px-6">
+                            ${item.ketua_kompetensi
+                        ? `<div class="flex items-center gap-2">
+                                    <span class="text-sm font-semibold text-gray-700">${item.ketua_kompetensi}</span>
+                                   </div>`
+                        : `<span class="text-sm text-gray-400 font-medium">— Belum Ditentukan</span>`
+                    }
+                        </td>
+                        <td class="py-4 px-6 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <button onclick="window.openModal('edit', ${item.id})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Edit">
+                                    <i class="fas fa-pen text-xs"></i>
+                                </button>
+                                <button onclick="window.openConfirm('delete', ${item.id})" class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Hapus">
+                                    <i class="fas fa-trash text-xs"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function renderError(msg) {
+            document.getElementById('jurusanTableBody').innerHTML =
+                `<tr><td colspan="5" class="py-12 text-center text-red-500 font-medium"><i class="fas fa-exclamation-triangle mr-2"></i>${msg}</td></tr>`;
+        }
+    </script>
+</body>
+
+</html>

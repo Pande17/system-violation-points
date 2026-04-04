@@ -29,20 +29,10 @@ export const fetchData = async (endpoint, options = {}) => {
     config.body = body;
   }
 
-  try {
-    const url = `${BASE_URL}${endpoint}`;
-    const response = await fetch(url, config);
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong');
-    }
-
-    return data;
-  } catch (error) {
-    console.error('Fetch error:', error);
-    throw error;
-  }
+  const url = `${BASE_URL}${endpoint}`;
+  const response = await fetch(url, config);
+  const data = await response.json();
+  return data;
 };
 
 export const getAPI = (endpoint) => fetchData(endpoint, { method: 'GET' });
