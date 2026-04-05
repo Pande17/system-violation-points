@@ -40,6 +40,38 @@
                     <h3 class="text-[13px] font-bold text-gray-500 mb-3 ml-1">Filter Data Kelas</h3>
                     <div class="flex flex-col xl:flex-row justify-between items-center gap-4">
                         <div class="flex flex-wrap gap-3 w-full xl:w-auto">
+                            <!-- Sort Urutkan -->
+                            <div class="relative filter-dropdown group" data-type="single" id="sort_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-4 justify-between items-center text-[13px] font-bold text-gray-600 hover:border-purple-500 hover:text-purple-600 transition-all dropdown-toggle shadow-sm w-[200px]">
+                                    <span id="sort_label"><i
+                                            class="fas fa-arrow-up-short-wide mr-1.5 text-[11px]"></i>Tingkat X →
+                                        XII</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-50 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        URUTKAN TINGKAT</div>
+                                    <div id="sort_asc"
+                                        class="sort-option flex items-center gap-3 px-4 py-2 hover:bg-purple-50 hover:text-purple-600 cursor-pointer select-none transition-colors bg-purple-50 text-purple-600"
+                                        onclick="setSortOrder('asc')">
+                                        <i class="fas fa-arrow-up-short-wide text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Tingkat X → XII</span>
+                                        <i class="fas fa-check ml-auto text-[10px] sort-check-asc"></i>
+                                    </div>
+                                    <div id="sort_desc"
+                                        class="sort-option flex items-center gap-3 px-4 py-2 hover:bg-purple-50 hover:text-purple-600 cursor-pointer select-none transition-colors text-gray-700"
+                                        onclick="setSortOrder('desc')">
+                                        <i class="fas fa-arrow-down-short-wide text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Tingkat XII → X</span>
+                                        <i class="fas fa-check ml-auto text-[10px] sort-check-desc" style="display:none"></i>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Filter Tingkat -->
                             <div class="relative filter-dropdown group" data-type="multi">
                                 <div
@@ -92,6 +124,8 @@
                                         FILTER JURUSAN</div>
                                 </div>
                             </div>
+
+
                         </div>
                         <div class="relative w-full xl:w-80">
                             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -232,9 +266,9 @@
                                 <i
                                     class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
                             </div>
-                            <div class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200 max-h-48 overflow-y-auto custom-scrollbar"
+                            <div class="dropdown-options hidden absolute z-50 left-0 right-0 bottom-full mb-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200 max-h-48 overflow-y-auto custom-scrollbar"
                                 id="wali_kelas_options_list">
-                                <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-400 hover:bg-gray-50 cursor-pointer transition-colors"
+                                <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
                                     data-value="">— Tidak Ada —</div>
                             </div>
                             <input type="hidden" id="form_wali_kelas" value="">
@@ -326,6 +360,54 @@
         let pendingActionId = null;
         let toastTimeout = null;
 
+        let sortOrder = 'asc'; // default: X → XII
+        const TINGKAT_ORDER = { 'X': 1, 'XI': 2, 'XII': 3 };
+
+        window.setSortOrder = function (order) {
+            sortOrder = order;
+            // Update UI label
+            const label = document.getElementById('sort_label');
+            const ascEl = document.getElementById('sort_asc');
+            const descEl = document.getElementById('sort_desc');
+            const checkAsc = document.querySelector('.sort-check-asc');
+            const checkDesc = document.querySelector('.sort-check-desc');
+            const sortToggle = document.querySelector('#sort_dropdown .dropdown-toggle');
+
+            if (order === 'asc') {
+                label.innerHTML = '<i class="fas fa-arrow-up-short-wide mr-1.5 text-[11px]"></i>Tingkat X → XII';
+                ascEl.classList.add('bg-purple-50', 'text-purple-600');
+                ascEl.classList.remove('text-gray-700');
+                descEl.classList.remove('bg-purple-50', 'text-purple-600');
+                descEl.classList.add('text-gray-700');
+                checkAsc?.classList.remove('hidden');
+                checkDesc?.classList.add('hidden');
+                if (checkAsc) checkAsc.style.display = 'inline-block';
+                if (checkDesc) checkDesc.style.display = 'none';
+                sortToggle?.classList.remove('border-purple-500', 'text-purple-600');
+            } else {
+                label.innerHTML = '<i class="fas fa-arrow-down-short-wide mr-1.5 text-[11px]"></i>Tingkat XII → X';
+                descEl.classList.add('bg-purple-50', 'text-purple-600');
+                descEl.classList.remove('text-gray-700');
+                ascEl.classList.remove('bg-purple-50', 'text-purple-600');
+                ascEl.classList.add('text-gray-700');
+                checkDesc?.classList.remove('hidden');
+                checkAsc?.classList.add('hidden');
+                if (checkDesc) checkDesc.style.display = 'inline-block';
+                if (checkAsc) checkAsc.style.display = 'none';
+                sortToggle?.classList.add('border-purple-500', 'text-purple-600');
+            }
+
+            // Tutup dropdown sort
+            const menu = document.querySelector('#sort_dropdown .dropdown-menu');
+            if (menu) {
+                menu.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => menu.classList.add('hidden'), 200);
+                document.querySelector('#sort_dropdown .dropdown-icon')?.classList.remove('rotate-180');
+            }
+
+            applyFilters();
+        };
+
         window.applyFilters = function () {
             const selTingkat = Array.from(document.querySelectorAll('.filter-tingkat-cb:checked')).map(c => c.value);
             const selJurusan = Array.from(document.querySelectorAll('.filter-jurusan-cb:checked')).map(c => c.value);
@@ -353,6 +435,13 @@
             }
             if (selTingkat.length > 0) filtered = filtered.filter(k => selTingkat.includes(k.tingkat));
             if (selJurusan.length > 0) filtered = filtered.filter(k => selJurusan.includes(k.jurusan));
+
+            // Sort berdasarkan tingkat
+            filtered.sort((a, b) => {
+                const orderA = TINGKAT_ORDER[a.tingkat] ?? 99;
+                const orderB = TINGKAT_ORDER[b.tingkat] ?? 99;
+                return sortOrder === 'asc' ? orderA - orderB : orderB - orderA;
+            });
 
             renderTable(filtered);
         };

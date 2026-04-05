@@ -542,7 +542,7 @@
                 return;
             }
             // Color palette for jurusan badges
-            const colors = ['purple', 'blue', 'indigo', 'teal', 'cyan', 'violet'];
+            const colors = ['purple', 'blue', 'indigo', 'teal', 'cyan', 'violet', 'pink', 'orange', 'yellow', 'lime', 'emerald'];
             let html = '';
             data.forEach((item, index) => {
                 const color = colors[index % colors.length];
@@ -553,6 +553,12 @@
                     teal: 'bg-teal-50 text-teal-600',
                     cyan: 'bg-cyan-50 text-cyan-600',
                     violet: 'bg-violet-50 text-violet-600',
+                    pink: 'bg-pink-50 text-pink-600',
+                    orange: 'bg-orange-50 text-orange-600',
+                    yellow: 'bg-yellow-50 text-yellow-600',
+                    lime: 'bg-lime-50 text-lime-600',
+                    emerald: 'bg-emerald-50 text-emerald-600',
+
                 };
                 const badgeClass = colorMap[color] || 'bg-gray-50 text-gray-600';
                 html += `

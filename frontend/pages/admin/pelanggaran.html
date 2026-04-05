@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Pelanggaran - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Date input custom styling */
+        input[type="date"] {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: #4b5563;
+            appearance: none;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        /* Active filter badge */
+        .filter-active-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <div id="sidebar-container"></div>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <div id="header-container"></div>
+
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <div
+                class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10">
+            </div>
+
+            <div class="max-w-7xl mx-auto space-y-8">
+                <!-- Header Section -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Data Pelanggaran</h2>
+                        <p class="text-[13px] text-gray-500 mt-1 font-medium">Rekap pelanggaran siswa dan pengelolaan
+                            poin</p>
+                    </div>
+                    <button onclick="window.openModal('add')"
+                        class="bg-[#054030] hover:bg-[#032e22] text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm">
+                        <i class="fas fa-plus"></i> Tambah Pelanggaran
+                    </button>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="relative z-[60] mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-[13px] font-bold text-gray-500 ml-1">Filter &amp; Urutkan</h3>
+                        <button onclick="resetAllFilters()"
+                            class="text-[12px] font-bold text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1.5"
+                            id="resetBtn" style="display:none">
+                            <i class="fas fa-rotate-left text-[10px]"></i> Reset Filter
+                        </button>
+                    </div>
+                    <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+                        <div class="flex flex-wrap gap-3 w-full xl:w-auto">
+
+                            <!-- 1. Sort Tanggal -->
+                            <div class="relative filter-dropdown group" data-type="single" id="sort_date_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-purple-500 hover:text-purple-600 transition-all dropdown-toggle shadow-sm w-[190px]">
+                                    <span id="sort_date_label"><i
+                                            class="fas fa-arrow-down-wide-short mr-1.5 text-[11px]"></i>Terbaru</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-52 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        URUT TANGGAL</div>
+                                    <div id="sort_date_newest"
+                                        class="sort-date-opt flex items-center gap-3 px-4 py-2 hover:bg-purple-50 hover:text-purple-600 cursor-pointer select-none transition-colors bg-purple-50 text-purple-600"
+                                        onclick="setSortDate('newest')">
+                                        <i class="fas fa-arrow-down-wide-short text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Terbaru ke Terlama</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-date-newest"></i>
+                                    </div>
+                                    <div id="sort_date_oldest"
+                                        class="sort-date-opt flex items-center gap-3 px-4 py-2 hover:bg-purple-50 hover:text-purple-600 cursor-pointer select-none transition-colors text-gray-700"
+                                        onclick="setSortDate('oldest')">
+                                        <i class="fas fa-arrow-up-wide-short text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Terlama ke Terbaru</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-date-oldest"
+                                            style="display:none"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Sort Poin -->
+                            <div class="relative filter-dropdown group" data-type="single" id="sort_poin_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-amber-500 hover:text-amber-600 transition-all dropdown-toggle shadow-sm w-[180px]">
+                                    <span id="sort_poin_label"><i class="fas fa-star mr-1.5 text-[11px]"></i>Semua
+                                        Poin</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-52 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        URUT POIN</div>
+                                    <div id="sort_poin_none"
+                                        class="sort-poin-opt flex items-center gap-3 px-4 py-2 hover:bg-amber-50 hover:text-amber-600 cursor-pointer select-none transition-colors bg-amber-50 text-amber-600"
+                                        onclick="setSortPoin('none')">
+                                        <i class="fas fa-minus text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Default</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-poin-none"></i>
+                                    </div>
+                                    <div id="sort_poin_asc"
+                                        class="sort-poin-opt flex items-center gap-3 px-4 py-2 hover:bg-amber-50 hover:text-amber-600 cursor-pointer select-none transition-colors text-gray-700"
+                                        onclick="setSortPoin('asc')">
+                                        <i class="fas fa-arrow-up-short-wide text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Poin Terendah</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-poin-asc"
+                                            style="display:none"></i>
+                                    </div>
+                                    <div id="sort_poin_desc"
+                                        class="sort-poin-opt flex items-center gap-3 px-4 py-2 hover:bg-amber-50 hover:text-amber-600 cursor-pointer select-none transition-colors text-gray-700"
+                                        onclick="setSortPoin('desc')">
+                                        <i class="fas fa-arrow-down-short-wide text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Poin Tertinggi</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-poin-desc"
+                                            style="display:none"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Filter Kelas (Angkatan + Kelas digabung) -->
+                            <div class="relative filter-dropdown" data-type="multi" id="filter_kelas_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all dropdown-toggle shadow-sm w-[190px]">
+                                    <span id="filter_kelas_label"><i class="fas fa-school mr-1.5 text-[11px]"></i>Semua
+                                        Kelas</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto"></i>
+                                </div>
+                                <div class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-64 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200 max-h-72 overflow-y-auto"
+                                    id="filter_kelas_options">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        FILTER ANGKATAN &amp; KELAS</div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Range Tanggal -->
+                            <div class="relative filter-dropdown group" data-type="single" id="date_range_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-emerald-500 hover:text-emerald-600 transition-all dropdown-toggle shadow-sm w-[160px] overflow-hidden">
+                                    <i class="fas fa-calendar-days text-[11px] shrink-0"></i>
+                                    <span id="date_range_label" class="truncate flex-1 min-w-0">Rentang Tgl</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto shrink-0"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-[280px] bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 p-4 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">
+                                        RENTANG TANGGAL</div>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="text-[11px] font-bold text-gray-500 mb-1 block">Dari
+                                                Tanggal</label>
+                                            <input type="date" id="date_start"
+                                                class="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all bg-gray-50"
+                                                onchange="onDateRangeChange()">
+                                        </div>
+                                        <div>
+                                            <label class="text-[11px] font-bold text-gray-500 mb-1 block">Sampai
+                                                Tanggal</label>
+                                            <input type="date" id="date_end"
+                                                class="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all bg-gray-50"
+                                                onchange="onDateRangeChange()">
+                                        </div>
+                                        <button onclick="clearDateRange()"
+                                            class="w-full py-2 rounded-lg border border-gray-200 text-[12px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
+                                            <i class="fas fa-xmark mr-1"></i> Hapus Rentang
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="relative w-full xl:w-80 flex-shrink-0">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="searchInput" autocomplete="off"
+                                placeholder="Cari nama siswa, kelas, pelanggaran..."
+                                class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-[13px] font-bold shadow-sm">
+                        </div>
+                    </div>
+
+                    <!-- Active Filter Tags -->
+                    <div class="flex flex-wrap gap-2 mt-2" id="activeFilterTags"></div>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div
+                class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden mt-4">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
+                        <thead>
+                            <tr
+                                class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-100">
+                                <th class="py-5 px-6 font-bold text-center w-16">No</th>
+                                <th class="py-5 px-6 font-bold">Tanggal</th>
+                                <th class="py-5 px-6 font-bold min-w-[200px]">Siswa</th>
+                                <th class="py-5 px-6 font-bold">Kelas</th>
+                                <th class="py-5 px-6 font-bold min-w-[200px]">Jenis Pelanggaran</th>
+                                <th class="py-5 px-6 font-bold w-[120px] text-center">Poin</th>
+                                <th class="py-5 px-6 font-bold">Keterangan</th>
+                                <th class="py-5 px-6 font-bold text-center w-[130px]">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="divide-y divide-gray-50">
+                            <tr>
+                                <td colspan="8" class="py-12 text-center text-gray-400">
+                                    <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
+                                    <p class="text-sm font-medium">Memuat data pelanggaran...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===================== MODAL TAMBAH/EDIT ===================== -->
+    <div id="modal" class="fixed inset-0 hidden items-center justify-center p-3 sm:p-4 transition-all duration-300"
+        style="z-index: 9991;">
+        <div class="fixed inset-0 bg-gray-900/60 transition-opacity duration-300"
+            style="backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"></div>
+        <div
+            class="bg-white rounded-[24px] shadow-2xl w-full max-w-lg overflow-hidden transform scale-90 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh] relative z-10 border border-gray-100">
+            <!-- Modal Header -->
+            <div
+                class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                        <i class="fas fa-gavel text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalTitle" class="font-extrabold text-lg text-gray-900 tracking-tight leading-tight">
+                            Tambah Pelanggaran</h3>
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-0.5">Manajemen
+                            Pelanggaran Siswa
+                        </p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModal()"
+                    class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all focus:outline-none flex items-center justify-center">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 sm:p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
+                <div class="space-y-5">
+                    <!-- Siswa dropdown (custom + searchable) -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Siswa</label>
+                        <div class="relative custom-dropdown" tabindex="0" id="dropdown_siswa" style="z-index:10;">
+                            <div
+                                class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all text-[13px] font-bold text-gray-400 hover:border-emerald-400 hover:bg-white focus:ring-2 focus:ring-emerald-500/20">
+                                <div class="flex items-center gap-2.5">
+                                    <i class="fas fa-user-graduate text-gray-400 text-[13px]"></i>
+                                    <span class="selected-text">Pilih Siswa</span>
+                                </div>
+                                <i
+                                    class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                            </div>
+                            <div class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200"
+                                style="max-height:260px; display:none;">
+                                <!-- Search input inside dropdown -->
+                                <div class="px-3 pt-3 pb-2 border-b border-gray-50">
+                                    <div class="relative">
+                                        <i
+                                            class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-300 text-[11px]"></i>
+                                        <input type="text" id="siswa_search_input"
+                                            placeholder="Cari nama atau NIS siswa..." autocomplete="off"
+                                            class="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-100 rounded-lg text-[12px] font-bold text-gray-700 placeholder-gray-300 outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400/20">
+                                    </div>
+                                </div>
+                                <div id="siswa_options_list" class="overflow-y-auto custom-scrollbar"
+                                    style="max-height:180px;">
+                                    <!-- populated by JS -->
+                                </div>
+                            </div>
+                            <input type="hidden" id="form_siswa" value="">
+                        </div>
+                    </div>
+
+                    <!-- Jenis Pelanggaran dropdown (custom) -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Jenis
+                            Pelanggaran</label>
+                        <div class="relative custom-dropdown" tabindex="0" id="dropdown_jenis" style="z-index:10;">
+                            <div
+                                class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all text-[13px] font-bold text-gray-400 hover:border-emerald-400 hover:bg-white focus:ring-2 focus:ring-emerald-500/20">
+                                <div class="flex items-center gap-2.5">
+                                    <i class="fas fa-exclamation-triangle text-gray-400 text-[13px]"></i>
+                                    <span class="selected-text">Pilih Jenis Pelanggaran</span>
+                                </div>
+                                <i
+                                    class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                            </div>
+                            <div class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200 max-h-52 overflow-y-auto custom-scrollbar"
+                                id="jenis_options_list">
+                                <!-- populated by JS -->
+                            </div>
+                            <input type="hidden" id="form_jenis" value="">
+                        </div>
+                    </div>
+
+                    <!-- Poin (readonly, auto-fill dari jenis) -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Poin
+                            <span class="text-gray-400 normal-case font-medium">(otomatis dari jenis)</span></label>
+                        <div class="relative">
+                            <i
+                                class="fas fa-star absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 text-[13px]"></i>
+                            <input type="number" id="form_poin" placeholder="0" min="1" readonly
+                                class="w-full pl-11 pr-4 py-3 bg-gray-100 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-400 placeholder-gray-300 cursor-not-allowed pointer-events-none select-none outline-none">
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-1.5 ml-1">Poin diisi otomatis berdasarkan jenis
+                            pelanggaran yang dipilih.</p>
+                    </div>
+
+                    <!-- Keterangan -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Keterangan
+                            <span class="text-gray-400 normal-case font-medium">(opsional)</span></label>
+                        <div class="relative group">
+                            <textarea id="form_keterangan" rows="3"
+                                placeholder="Deskripsi tambahan mengenai pelanggaran..."
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300 resize-none"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div
+                class="px-6 py-5 bg-white border-t border-gray-50 flex items-center justify-end gap-2 sticky bottom-0 z-10 w-full shrink-0">
+                <button type="button" onclick="closeModal()"
+                    class="px-6 py-2.5 font-black text-gray-400 hover:text-gray-600 rounded-xl transition-all text-xs">Batal</button>
+                <button id="submitBtn" type="button" onclick="submitForm()"
+                    class="w-full sm:w-auto px-8 py-3.5 font-black text-white bg-[#054030] hover:bg-[#0a6148] rounded-2xl transition-all text-xs uppercase tracking-widest shadow-xl shadow-emerald-900/20 active:scale-95 flex items-center justify-center gap-2">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== CONFIRM MODAL ===================== -->
+    <div id="confirmModal" class="fixed inset-0 hidden items-center justify-center p-4 transition-all duration-300"
+        style="z-index: 9999;">
+        <div class="absolute inset-0 bg-gray-900/40 transition-opacity duration-300"
+            style="backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"></div>
+        <div
+            class="bg-white rounded-2xl shadow-3xl p-8 max-w-[340px] w-full text-center transform scale-90 opacity-0 transition-all duration-300 relative z-10 flex flex-col items-center">
+            <div id="confirmIconWrapper"
+                class="w-20 h-20 rounded-[28px] border-[3px] border-red-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm">
+                <i id="confirmIcon" class="fas fa-trash-alt text-red-500 text-[32px]"></i>
+            </div>
+            <h3 id="confirmTitle" class="text-[19px] font-black text-gray-900 mb-2 tracking-tight">Hapus Pelanggaran?
+            </h3>
+            <p id="confirmMessage" class="text-[12px] font-medium text-gray-500 leading-relaxed mb-6 px-2">Data
+                pelanggaran yang dihapus
+                tidak dapat dikembalikan.</p>
+            <div class="w-full flex flex-col gap-0 mt-1 pb-1">
+                <button type="button" id="confirmActionBtn" onclick="executeConfirm()"
+                    class="w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-red-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3">HAPUS</button>
+                <button type="button" onclick="closeConfirm()"
+                    class="w-full py-3 font-extrabold text-gray-400 hover:text-gray-600 bg-transparent rounded-[16px] transition-all text-[11px] uppercase tracking-widest">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== TOAST ===================== -->
+    <div id="toastNotification"
+        class="fixed top-6 right-6 hidden items-center gap-4 p-4 bg-white border border-gray-100 rounded-2xl shadow-xl transform transition-all duration-300 translate-x-full opacity-0"
+        style="z-index: 10000; min-width: 300px;">
+        <div id="toastIconContainer" class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+            <i id="toastIcon" class="fas fa-check text-lg"></i>
+        </div>
+        <div>
+            <h4 id="toastTitle" class="text-sm font-bold text-gray-900">Berhasil</h4>
+            <p id="toastMessage" class="text-xs font-medium text-gray-500 mt-0.5">Operasi berhasil</p>
+        </div>
+        <button onclick="closeToast()" class="ml-auto text-gray-400 hover:text-gray-600"><i
+                class="fas fa-times"></i></button>
+    </div>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #e2e8f0;
+        }
+    </style>
+
+    <script type="module">
+        import { loadComponents } from '../../components/layout.js';
+        import { getAPI, postAPI, putAPI, deleteAPI } from '../../utils/fetchData.js';
+
+        // ─── STATE ────────────────────────────────────────────────
+        let dataList = [];
+        let dataKelas = [];
+        let dataJenis = [];
+        let dataSiswa = [];
+        let modalMode = 'add';
+        let currentId = null;
+        let pendingDeleteId = null;
+        let toastTimeout = null;
+        let pendingAction = null;
+
+        let sortDate = 'newest';  // 'newest' | 'oldest'
+        let sortPoin = 'none';    // 'none' | 'asc' | 'desc'
+
+        // ─── FORMAT DATE ─────────────────────────────────────────
+        function formatDate(str) {
+            if (!str) return '-';
+            const d = new Date(str);
+            if (isNaN(d)) return str;
+            return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        // ─── TOAST ───────────────────────────────────────────────
+        function showToast(title, message, isSuccess) {
+            clearTimeout(toastTimeout);
+            const toast = document.getElementById('toastNotification');
+            const iconContainer = document.getElementById('toastIconContainer');
+            const icon = document.getElementById('toastIcon');
+            const titleEl = document.getElementById('toastTitle');
+            const msgEl = document.getElementById('toastMessage');
+
+            if (isSuccess) {
+                iconContainer.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-emerald-50';
+                icon.className = 'fas fa-check text-lg text-emerald-500';
+            } else {
+                iconContainer.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-red-50';
+                icon.className = 'fas fa-times text-lg text-red-500';
+            }
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            setTimeout(() => { toast.classList.remove('translate-x-full', 'opacity-0'); }, 10);
+            toastTimeout = setTimeout(() => closeToast(), 4000);
+        }
+
+        window.closeToast = function () {
+            const toast = document.getElementById('toastNotification');
+            toast.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => { toast.classList.add('hidden'); toast.classList.remove('flex'); }, 300);
+        };
+
+        // ─── RENDER TABLE ─────────────────────────────────────────
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="py-16 text-center">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center">
+                            <i class="fas fa-folder-open text-2xl text-gray-300"></i>
+                        </div>
+                        <p class="text-[13px] font-bold text-gray-400">Tidak ada data yang ditemukan</p>
+                        <p class="text-[12px] text-gray-300 font-medium">Coba ubah filter atau kata kunci pencarian</p>
+                    </div></td></tr>`;
+                return;
+            }
+
+            const poinBadge = (p) => {
+                const n = parseInt(p) || 0;
+                let cls = n <= 5 ? 'bg-amber-50 text-amber-600' : n <= 15 ? 'bg-orange-50 text-orange-600' : 'bg-red-50 text-red-600';
+                return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-black ${cls}">
+                    <i class="fas fa-star text-[10px]"></i>${n}</span>`;
+            };
+
+            tbody.innerHTML = data.map((item, i) => `
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                    <td class="py-4 px-6 text-center text-[13px] font-bold text-gray-400">${i + 1}</td>
+                    <td class="py-4 px-6">
+                        <div class="flex flex-col gap-0.5 max-w-[100px]">
+                            <span class="text-[12px] font-black text-gray-800 truncate" title="${formatDate(item.created_at)}">${formatDate(item.created_at)}</span>
+                            <span class="text-[11px] text-gray-400 font-medium truncate">${item.created_at ? new Date(item.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : ''}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-user-graduate text-[#054030] text-[13px]"></i>
+                            </div>
+                            <div>
+                                <p class="text-[13px] font-bold text-gray-800">${item.nama_siswa || '-'}</p>
+                                <p class="text-[11px] text-gray-400 font-medium">NIS: ${item.nis_siswa || '-'}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-[12px] font-black">
+                            <i class="fas fa-door-open text-[10px]"></i>${item.kelas_nama || item.kelas || '-'}
+                        </span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <p class="text-[13px] font-bold text-gray-800 max-w-[220px] whitespace-normal leading-tight">${item.nama_pelanggaran || '-'}</p>
+                        <p class="text-[11px] text-gray-400 font-bold mt-0.5">${item.kode_pelanggaran || ''}</p>
+                    </td>
+                    <td class="py-4 px-6 text-center">${poinBadge(item.poin)}</td>
+                    <td class="py-4 px-6">
+                        <p class="text-[12px] text-gray-500 font-medium max-w-[160px] truncate">${item.keterangan || '—'}</p>
+                    </td>
+                    <td class="py-4 px-6">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="window.openModal('edit', ${item.id})"
+                                class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
+                                <i class="fas fa-edit text-[13px]"></i>
+                            </button>
+                            <button onclick="window.deleteItem(${item.id})"
+                                class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
+                                <i class="fas fa-trash text-[13px]"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`).join('');
+        }
+
+        // ─── APPLY FILTERS ────────────────────────────────────────
+        window.applyFilters = function () {
+            const keyword = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            const dateStart = document.getElementById('date_start')?.value;
+            const dateEnd = document.getElementById('date_end')?.value;
+
+            let filtered = [...dataList];
+
+            // Keyword search
+            if (keyword) {
+                filtered = filtered.filter(d =>
+                    (d.nama_siswa && d.nama_siswa.toLowerCase().includes(keyword)) ||
+                    (d.nis_siswa && String(d.nis_siswa).includes(keyword)) ||
+                    (d.kelas_nama && d.kelas_nama.toLowerCase().includes(keyword)) ||
+                    (d.nama_pelanggaran && d.nama_pelanggaran.toLowerCase().includes(keyword)) ||
+                    (d.kode_pelanggaran && d.kode_pelanggaran.toLowerCase().includes(keyword)) ||
+                    (d.keterangan && d.keterangan.toLowerCase().includes(keyword))
+                );
+            }
+
+            // Combined kelas & angkatan filter
+            const selKelas = Array.from(document.querySelectorAll('.filter-kelas-cb:checked')).map(c => c.value);
+            const selTingkat = Array.from(document.querySelectorAll('.filter-angkatan-cb:checked')).map(c => c.value);
+
+            if (selKelas.length > 0 || selTingkat.length > 0) {
+                filtered = filtered.filter(d => {
+                    // 1. Match by class ID
+                    if (selKelas.includes(String(d.id_kelas))) return true;
+
+                    // 2. Match by grade prefix (e.g., 'X', 'XI') in class name
+                    const className = d.kelas_nama || d.kelas || '';
+                    if (className && selTingkat.length > 0) {
+                        return selTingkat.some(t => className.startsWith(t + ' ') || className === t);
+                    }
+                    return false;
+                });
+            }
+
+            // Date range filter
+            if (dateStart) {
+                const start = new Date(dateStart);
+                start.setHours(0, 0, 0, 0);
+                filtered = filtered.filter(d => d.created_at && new Date(d.created_at) >= start);
+            }
+            if (dateEnd) {
+                const end = new Date(dateEnd);
+                end.setHours(23, 59, 59, 999);
+                filtered = filtered.filter(d => d.created_at && new Date(d.created_at) <= end);
+            }
+
+            // Sort by date
+            filtered.sort((a, b) => {
+                const da = new Date(a.created_at || 0);
+                const db = new Date(b.created_at || 0);
+                return sortDate === 'newest' ? db - da : da - db;
+            });
+
+            // Sort by poin (overrides date sort only for poin)
+            if (sortPoin !== 'none') {
+                filtered.sort((a, b) => {
+                    const pa = parseInt(a.poin) || 0;
+                    const pb = parseInt(b.poin) || 0;
+                    return sortPoin === 'asc' ? pa - pb : pb - pa;
+                });
+            }
+
+            renderTable(filtered);
+            updateFilterTags(selKelas, dateStart, dateEnd);
+        };
+
+        // ─── ACTIVE FILTER TAGS ──────────────────────────────────
+        function updateFilterTags(selKelas, dateStart, dateEnd) {
+            const container = document.getElementById('activeFilterTags');
+            const resetBtn = document.getElementById('resetBtn');
+            const tags = [];
+
+            const selTingkat = Array.from(document.querySelectorAll('.filter-angkatan-cb:checked')).map(c => c.value);
+
+            (selKelas || []).forEach(v => {
+                const cb = document.querySelector(`.filter-kelas-cb[value="${v}"]`);
+                const tinkat = cb ? cb.getAttribute('data-tingkat') : null;
+                if (tinkat && selTingkat.includes(tinkat)) return; // Skip individually if Angkatan is already checked
+                const customLabel = cb ? cb.getAttribute('data-label') : null;
+                tags.push({ label: `Kelas: ${customLabel || v}`, clear: () => { document.querySelector(`.filter-kelas-cb[value="${v}"]`).checked = false; updateKelasFilterLabel(); applyFilters(); } });
+            });
+            selTingkat.forEach(t => {
+                tags.push({ label: `Angkatan ${t}`, clear: () => { toggleAngkatan(t, false); } });
+            });
+
+            if (dateStart) tags.push({ label: `Dari: ${formatDate(dateStart)}`, clear: () => { document.getElementById('date_start').value = ''; onDateRangeChange(); } });
+            if (dateEnd) tags.push({ label: `Sampai: ${formatDate(dateEnd)}`, clear: () => { document.getElementById('date_end').value = ''; onDateRangeChange(); } });
+
+            resetBtn.style.display = tags.length > 0 ? '' : 'none';
+            container.innerHTML = tags.map((t, i) => `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-[12px] font-bold border border-blue-100">
+                    ${t.label}
+                    <button onclick="clearTag(${i})" class="w-4 h-4 flex items-center justify-center rounded-full hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-xmark text-[9px]"></i>
+                    </button>
+                </span>`).join('');
+
+            window._tagClearers = tags.map(t => t.clear);
+        }
+
+        window.clearTag = function (i) {
+            if (window._tagClearers && window._tagClearers[i]) window._tagClearers[i]();
+        };
+
+        // ─── RESET ALL ───────────────────────────────────────────
+        window.resetAllFilters = function () {
+            document.querySelectorAll('.filter-kelas-cb').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.filter-angkatan-cb').forEach(cb => { cb.checked = false; cb.indeterminate = false; });
+            document.getElementById('date_start').value = '';
+            document.getElementById('date_end').value = '';
+            document.getElementById('searchInput').value = '';
+            updateKelasFilterLabel();
+            setSortDate('newest');
+            setSortPoin('none');
+        };
+
+        // ─── SORT DATE ───────────────────────────────────────────
+        window.setSortDate = function (order) {
+            sortDate = order;
+            const label = document.getElementById('sort_date_label');
+            const newestEl = document.getElementById('sort_date_newest');
+            const oldestEl = document.getElementById('sort_date_oldest');
+            const chkNew = document.querySelector('.check-date-newest');
+            const chkOld = document.querySelector('.check-date-oldest');
+            const toggle = document.querySelector('#sort_date_dropdown .dropdown-toggle');
+
+            if (order === 'newest') {
+                label.innerHTML = '<i class="fas fa-arrow-down-wide-short mr-1.5 text-[11px]"></i>Terbaru';
+                newestEl.classList.add('bg-purple-50', 'text-purple-600');
+                newestEl.classList.remove('text-gray-700');
+                oldestEl.classList.remove('bg-purple-50', 'text-purple-600');
+                oldestEl.classList.add('text-gray-700');
+                if (chkNew) chkNew.style.display = 'inline-block';
+                if (chkOld) chkOld.style.display = 'none';
+                toggle?.classList.remove('border-purple-500', 'text-purple-600');
+            } else {
+                label.innerHTML = '<i class="fas fa-arrow-up-wide-short mr-1.5 text-[11px]"></i>Terlama';
+                oldestEl.classList.add('bg-purple-50', 'text-purple-600');
+                oldestEl.classList.remove('text-gray-700');
+                newestEl.classList.remove('bg-purple-50', 'text-purple-600');
+                newestEl.classList.add('text-gray-700');
+                if (chkOld) chkOld.style.display = 'inline-block';
+                if (chkNew) chkNew.style.display = 'none';
+                toggle?.classList.add('border-purple-500', 'text-purple-600');
+            }
+            // Close dropdown
+            const menu = document.querySelector('#sort_date_dropdown .dropdown-menu');
+            if (menu) { menu.classList.add('opacity-0', '-translate-y-2'); setTimeout(() => menu.classList.add('hidden'), 200); }
+            document.querySelector('#sort_date_dropdown .dropdown-icon')?.classList.remove('rotate-180');
+            applyFilters();
+        };
+
+        // ─── SORT POIN ───────────────────────────────────────────
+        window.setSortPoin = function (order) {
+            sortPoin = order;
+            const label = document.getElementById('sort_poin_label');
+            const toggle = document.querySelector('#sort_poin_dropdown .dropdown-toggle');
+            const opts = ['none', 'asc', 'desc'];
+            const labels = {
+                none: '<i class="fas fa-star mr-1.5 text-[11px]"></i>Semua Poin',
+                asc: '<i class="fas fa-arrow-up-short-wide mr-1.5 text-[11px]"></i>Poin ↑ Rendah',
+                desc: '<i class="fas fa-arrow-down-short-wide mr-1.5 text-[11px]"></i>Poin ↓ Tinggi',
+            };
+            label.innerHTML = labels[order];
+
+            opts.forEach(o => {
+                const el = document.getElementById(`sort_poin_${o}`);
+                const chk = document.querySelector(`.check-poin-${o}`);
+                if (o === order) {
+                    el?.classList.add('bg-amber-50', 'text-amber-600');
+                    el?.classList.remove('text-gray-700');
+                    if (chk) chk.style.display = 'inline-block';
+                } else {
+                    el?.classList.remove('bg-amber-50', 'text-amber-600');
+                    el?.classList.add('text-gray-700');
+                    if (chk) chk.style.display = 'none';
+                }
+            });
+
+            if (order !== 'none') toggle?.classList.add('border-amber-500', 'text-amber-600');
+            else toggle?.classList.remove('border-amber-500', 'text-amber-600');
+
+            const menu = document.querySelector('#sort_poin_dropdown .dropdown-menu');
+            if (menu) { menu.classList.add('opacity-0', '-translate-y-2'); setTimeout(() => menu.classList.add('hidden'), 200); }
+            document.querySelector('#sort_poin_dropdown .dropdown-icon')?.classList.remove('rotate-180');
+            applyFilters();
+        };
+
+        // ─── DATE RANGE ──────────────────────────────────────────
+        window.onDateRangeChange = function () {
+            const start = document.getElementById('date_start').value;
+            const end = document.getElementById('date_end').value;
+            const label = document.getElementById('date_range_label');
+            const toggle = document.querySelector('#date_range_dropdown .dropdown-toggle');
+
+            if (start || end) {
+                const s = start ? formatDate(start) : '...';
+                const e = end ? formatDate(end) : '...';
+                label.textContent = `${s} – ${e}`;
+                toggle?.classList.add('border-emerald-500', 'text-emerald-600');
+            } else {
+                label.textContent = 'Rentang Tgl';
+                toggle?.classList.remove('border-emerald-500', 'text-emerald-600');
+            }
+            applyFilters();
+        };
+
+        window.clearDateRange = function () {
+            document.getElementById('date_start').value = '';
+            document.getElementById('date_end').value = '';
+            onDateRangeChange();
+        };
+
+        // ─── LOAD KELAS (for combined filter dropdown) ────────────
+        async function loadKelas() {
+            try {
+                const res = await getAPI('/kelas', { skipErrorRedirect: true });
+                if (res && res.status === 200) {
+                    dataKelas = res.data || [];
+                    const container = document.getElementById('filter_kelas_options');
+
+                    // Group by tingkat for section headers
+                    const grouped = {};
+                    dataKelas.forEach(k => {
+                        const tingkat = k.tingkat || k.kelas?.match(/^(X{1,3}I{0,2})/)?.[1] || 'Lainnya';
+                        if (!grouped[tingkat]) grouped[tingkat] = [];
+                        grouped[tingkat].push(k);
+                    });
+
+                    // Clear previous options except header
+                    const header = container.firstElementChild;
+                    container.innerHTML = '';
+                    if (header) container.appendChild(header);
+
+                    // Render "Angkatan X" checkboxes + per-class options
+                    const tingkatOrder = ['X', 'XI', 'XII'];
+                    tingkatOrder.forEach(tingkat => {
+                        if (!grouped[tingkat]) return;
+
+                        // Angkatan/Grade checkbox
+                        const section = document.createElement('label');
+                        section.className = 'flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer select-none border-b border-gray-50 bg-gray-50/30';
+                        section.innerHTML = `
+                            <input type="checkbox" value="${tingkat}" class="filter-angkatan-cb w-4 h-4 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500" onchange="toggleAngkatan('${tingkat}', this.checked)">
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Angkatan ${tingkat}</span>
+                        `;
+                        container.appendChild(section);
+
+                        grouped[tingkat].forEach(k => {
+                            const className = k.kelas || '';
+                            // Ensure the name shows grade (e.g. "XI RPL 1")
+                            const fullClassName = className.startsWith(tingkat) ? className : `${tingkat} ${className}`;
+
+                            const label = document.createElement('label');
+                            label.className = 'flex items-center px-4 py-2 hover:bg-gray-50 cursor-pointer select-none';
+                            label.innerHTML = `
+                                <input type="checkbox" value="${k.id}" class="filter-kelas-cb w-4 h-4 mr-3 rounded border-gray-300 text-blue-600 focus:ring-blue-500" data-tingkat="${tingkat}" data-label="${fullClassName}" onchange="updateKelasFilterLabel(); applyFilters();">
+                                <div>
+                                    <span class="text-[13px] text-gray-700 font-bold">${fullClassName}</span>
+                                    ${k.jurusan ? `<span class="text-[11px] text-gray-400 ml-1">${k.jurusan}</span>` : ''}
+                                </div>`;
+                            container.appendChild(label);
+                        });
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        window.toggleAngkatan = function (tingkat, isChecked) {
+            const classes = dataKelas.filter(k => k.tingkat === tingkat);
+            classes.forEach(k => {
+                const cb = document.querySelector(`.filter-kelas-cb[value="${k.id}"]`);
+                if (cb) cb.checked = isChecked;
+            });
+            updateKelasFilterLabel();
+            applyFilters();
+        };
+
+        function updateKelasFilterLabel() {
+            const sel = Array.from(document.querySelectorAll('.filter-kelas-cb:checked'));
+            const label = document.getElementById('filter_kelas_label');
+            const toggle = document.querySelector('#filter_kelas_dropdown .dropdown-toggle');
+
+            // Update Angkatan checkboxes state
+            const tingkatOrder = ['X', 'XI', 'XII'];
+            tingkatOrder.forEach(tingkat => {
+                const angkatanCb = document.querySelector(`.filter-angkatan-cb[value="${tingkat}"]`);
+                if (angkatanCb) {
+                    const children = document.querySelectorAll(`.filter-kelas-cb[data-tingkat="${tingkat}"]`);
+                    const checkedCount = Array.from(children).filter(c => c.checked).length;
+                    angkatanCb.checked = children.length > 0 && checkedCount === children.length;
+                    angkatanCb.indeterminate = checkedCount > 0 && checkedCount < children.length;
+                }
+            });
+
+            if (sel.length === 0) {
+                label.innerHTML = '<i class="fas fa-school mr-1.5 text-[11px]"></i>Semua Kelas';
+                toggle?.classList.remove('border-blue-500', 'text-blue-600');
+            } else {
+                const selTingkat = Array.from(document.querySelectorAll('.filter-angkatan-cb:checked')).map(c => c.value);
+                if (selTingkat.length > 0 && selTingkat.length === tingkatOrder.filter(t => document.querySelector(`.filter-angkatan-cb[value="${t}"]`)).length) {
+                    label.textContent = "Semua Kelas Terpilih";
+                } else if (selTingkat.length > 0) {
+                    label.textContent = `Angkatan ${selTingkat.join(', ')}`;
+                } else {
+                    label.textContent = `${sel.length} Kelas Dipilih`;
+                }
+                toggle?.classList.add('border-blue-500', 'text-blue-600');
+            }
+        }
+
+        // ─── LOAD JENIS PELANGGARAN (for form, custom dropdown) ──────────────────────────────
+        async function loadJenis() {
+            try {
+                const res = await getAPI('/jenis-pelanggaran', { skipErrorRedirect: true });
+                if (res && res.status === 200) {
+                    dataJenis = res.data || [];
+                    const list = document.getElementById('jenis_options_list');
+                    if (!list) return;
+                    list.innerHTML = '';
+                    const noneDiv = document.createElement('div');
+                    noneDiv.className = 'dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-400 hover:bg-gray-50 cursor-pointer transition-colors';
+                    noneDiv.setAttribute('data-value', '');
+                    noneDiv.setAttribute('data-label', 'Pilih Jenis Pelanggaran');
+                    noneDiv.textContent = '— Pilih Jenis Pelanggaran —';
+                    list.appendChild(noneDiv);
+
+                    dataJenis.forEach(j => {
+                        const div = document.createElement('div');
+                        div.className = 'dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors';
+                        div.setAttribute('data-value', j.id);
+                        div.setAttribute('data-value-poin', j.poin);
+                        const label = `[${j.kode_pelanggaran}] ${j.nama_pelanggaran}`;
+                        div.setAttribute('data-label', label);
+                        div.innerHTML = `<span class="font-black text-[12px] text-gray-500">[${j.kode_pelanggaran}]</span> <span>${j.nama_pelanggaran}</span> <span class="ml-1 text-[11px] font-bold text-amber-500">${j.poin} poin</span>`;
+                        list.appendChild(div);
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // ─── LOAD SISWA (for form) ────────────────────────────────
+        async function loadSiswa() {
+            try {
+                const res = await getAPI('/siswa', { skipErrorRedirect: true });
+                if (res && res.status === 200) {
+                    dataSiswa = res.data || [];
+                    const sel = document.getElementById('form_siswa');
+                    dataSiswa.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.textContent = `${s.nama}${s.nis ? ' (' + s.nis + ')' : ''} — ${s.kelas || ''}`;
+                        sel.appendChild(opt);
+                    });
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // ─── LOAD DATA PELANGGARAN ────────────────────────────────
+        async function loadData() {
+            try {
+                const res = await getAPI('/pelanggaran', { skipErrorRedirect: true });
+                if (res && res.status === 200) {
+                    dataList = res.data || [];
+                    applyFilters();
+                } else {
+                    showToast('error', 'Gagal', res?.message || 'Tidak dapat memuat data.');
+                    renderTable([]);
+                }
+            } catch (e) {
+                console.error(e);
+                renderTable([]);
+            }
+        }
+
+        // ─── AUTO-FILL POIN (triggered by hidden input change) ───────────────────────────────
+        document.addEventListener('DOMContentLoaded', () => {
+            // Listen on hidden input change for jenis
+            document.getElementById('form_jenis')?.addEventListener('change', () => {
+                const jenisId = document.getElementById('form_jenis').value;
+                const opt = document.querySelector(`#jenis_options_list .dropdown-item[data-value="${jenisId}"]`);
+                document.getElementById('form_poin').value = opt ? opt.getAttribute('data-value-poin') || '' : '';
+            });
+        });
+
+        // ─── CUSTOM DROPDOWN HELPERS ─────────────────────────────
+        function setCustomDropdown(wrapperId, value, label) {
+            const wrapper = document.getElementById(wrapperId);
+            if (!wrapper) return;
+            const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+            const text = wrapper.querySelector('.selected-text');
+            const selected = wrapper.querySelector('.dropdown-selected');
+            if (hiddenInput) hiddenInput.value = value;
+            if (text) text.textContent = label || 'Pilih';
+            if (selected) {
+                if (value) { selected.classList.remove('text-gray-400'); selected.classList.add('text-gray-900'); }
+                else { selected.classList.add('text-gray-400'); selected.classList.remove('text-gray-900'); }
+            }
+            // Highlight active item
+            wrapper.querySelectorAll('.dropdown-item').forEach(el => {
+                el.getAttribute('data-value') === String(value)
+                    ? el.classList.add('bg-emerald-50', 'text-emerald-600')
+                    : el.classList.remove('bg-emerald-50', 'text-emerald-600');
+            });
+            if (hiddenInput) hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        function resetCustomDropdown(wrapperId, placeholder) {
+            setCustomDropdown(wrapperId, '', placeholder);
+        }
+
+        // ─── MODAL ────────────────────────────────────────────────
+        window.openModal = function (mode, id = null) {
+            modalMode = mode;
+            currentId = id;
+            // Reset form
+            resetCustomDropdown('dropdown_siswa', 'Pilih Siswa');
+            resetCustomDropdown('dropdown_jenis', 'Pilih Jenis Pelanggaran');
+            document.getElementById('form_poin').value = '';
+            document.getElementById('form_keterangan').value = '';
+            // Reset search
+            const siswaSearch = document.getElementById('siswa_search_input');
+            if (siswaSearch) { siswaSearch.value = ''; document.querySelectorAll('#siswa_options_list .dropdown-item').forEach(el => el.style.display = ''); }
+            document.getElementById('modalTitle').textContent = mode === 'edit' ? 'Edit Pelanggaran' : 'Tambah Pelanggaran';
+
+            if (mode === 'edit' && id) {
+                const item = dataList.find(d => d.id === id);
+                if (item) {
+                    // Set Siswa
+                    const siswaOpt = document.querySelector(`#siswa_options_list .dropdown-item[data-value="${item.id_siswa}"]`);
+                    setCustomDropdown('dropdown_siswa', item.id_siswa, siswaOpt ? siswaOpt.getAttribute('data-label') : item.nama_siswa || 'Siswa');
+                    // Set Jenis
+                    const jenisOpt = document.querySelector(`#jenis_options_list .dropdown-item[data-value="${item.id_jenis_pelanggaran}"]`);
+                    setCustomDropdown('dropdown_jenis', item.id_jenis_pelanggaran, jenisOpt ? jenisOpt.getAttribute('data-label') : item.nama_pelanggaran || 'Jenis');
+                    document.getElementById('form_poin').value = item.poin || '';
+                    document.getElementById('form_keterangan').value = item.keterangan || '';
+                }
+            }
+            const modal = document.getElementById('modal');
+            const content = modal.children[1];
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { content.classList.remove('scale-90', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+        };
+
+        window.closeModal = function () {
+            const modal = document.getElementById('modal');
+            const content = modal.children[1];
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        };
+
+        window.submitForm = function () {
+            const id_siswa = document.getElementById('form_siswa').value;
+            const id_jenis_pelanggaran = document.getElementById('form_jenis').value;
+            const poin = parseInt(document.getElementById('form_poin').value);
+            const keterangan = document.getElementById('form_keterangan').value.trim();
+
+            if (!id_siswa || !id_jenis_pelanggaran || !poin) {
+                showToast('Validasi', 'Siswa dan jenis pelanggaran wajib diisi!', false);
+                return;
+            }
+
+            const payload = { id_siswa, id_jenis_pelanggaran, poin, keterangan };
+            openConfirm(modalMode === 'add' ? 'create' : 'edit', currentId, payload);
+        };
+
+        // ─── CONFIRM MULTI-ACTION ─────────────────────────────────
+        function openConfirm(action, id = null, payload = null) {
+            pendingAction = { type: action, id, payload };
+            const modal = document.getElementById('confirmModal');
+            const content = modal.children[1];
+            const titleEl = document.getElementById('confirmTitle');
+            const msgEl = document.getElementById('confirmMessage');
+            const iconWrapper = document.getElementById('confirmIconWrapper');
+            const iconEl = document.getElementById('confirmIcon');
+            const btn = document.getElementById('confirmActionBtn');
+
+            if (action === 'create') {
+                titleEl.textContent = 'Tambah Pelanggaran';
+                msgEl.textContent = 'Apakah Anda yakin ingin menambahkan pelanggaran baru ini?';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-emerald-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                iconEl.className = 'fas fa-plus text-emerald-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-emerald-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3';
+                btn.textContent = 'SIMPAN';
+            } else if (action === 'edit') {
+                titleEl.textContent = 'Simpan Perubahan';
+                msgEl.textContent = 'Apakah Anda yakin ingin menyimpan perubahan data pelanggaran ini?';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-blue-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                iconEl.className = 'fas fa-save text-blue-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-blue-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3';
+                btn.textContent = 'SIMPAN';
+            } else if (action === 'delete') {
+                titleEl.textContent = 'Hapus Pelanggaran?';
+                msgEl.textContent = 'Data pelanggaran yang dihapus tidak dapat dikembalikan.';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-red-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                iconEl.className = 'fas fa-trash-alt text-red-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-red-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3';
+                btn.textContent = 'HAPUS';
+            }
+            closeModal();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { content.classList.remove('scale-90', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+        }
+
+        window.executeConfirm = async function () {
+            if (!pendingAction) return;
+            const { type, id, payload } = pendingAction;
+            closeConfirm();
+            try {
+                if (type === 'create') {
+                    const res = await postAPI('/pelanggaran', payload, { skipErrorRedirect: true });
+                    if (res && (res.status === 200 || res.status === 201)) {
+                        showToast('Berhasil', 'Pelanggaran berhasil ditambahkan.', true);
+                        await loadData();
+                    } else { showToast('Gagal', res?.message || 'Terjadi kesalahan.', false); }
+                } else if (type === 'edit') {
+                    const res = await putAPI(`/pelanggaran/${id}`, payload, { skipErrorRedirect: true });
+                    if (res && (res.status === 200 || res.status === 201)) {
+                        showToast('Berhasil', 'Data berhasil diperbarui.', true);
+                        await loadData();
+                    } else { showToast('Gagal', res?.message || 'Terjadi kesalahan.', false); }
+                } else if (type === 'delete') {
+                    const res = await deleteAPI(`/pelanggaran/${id}`, { skipErrorRedirect: true });
+                    if (res && res.status === 200) {
+                        showToast('Dihapus', 'Pelanggaran berhasil dihapus.', true);
+                        await loadData();
+                    } else { showToast('Gagal', res?.message || 'Tidak dapat menghapus.', false); }
+                }
+            } catch (e) {
+                showToast('Error', 'Koneksi bermasalah.', false);
+            }
+            pendingAction = null;
+        };
+
+        // ─── DELETE ───────────────────────────────────────────────
+        window.deleteItem = function (id) {
+            openConfirm('delete', id, null);
+        };
+
+        window.closeConfirm = function () {
+            const modal = document.getElementById('confirmModal');
+            const content = modal.children[1];
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); pendingAction = null; }, 300);
+        };
+
+        // ─── FILTER DROPDOWNS ─────────────────────────────────────
+        function initFilterDropdowns() {
+            // Filter dropdowns (pill buttons)
+            document.querySelectorAll('.filter-dropdown .dropdown-toggle').forEach(toggle => {
+                toggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const parent = toggle.closest('.filter-dropdown');
+                    const menu = parent.querySelector('.dropdown-menu');
+                    const icon = toggle.querySelector('.dropdown-icon');
+                    // Close others
+                    document.querySelectorAll('.filter-dropdown').forEach(el => {
+                        if (el !== parent) {
+                            const m = el.querySelector('.dropdown-menu');
+                            if (m && !m.classList.contains('hidden')) {
+                                m.classList.add('opacity-0', '-translate-y-2');
+                                setTimeout(() => m.classList.add('hidden'), 200);
+                                el.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                            }
+                        }
+                    });
+                    if (menu.classList.contains('hidden')) {
+                        menu.classList.remove('hidden');
+                        setTimeout(() => menu.classList.remove('opacity-0', '-translate-y-2'), 10);
+                        icon?.classList.add('rotate-180');
+                    } else {
+                        menu.classList.add('opacity-0', '-translate-y-2');
+                        setTimeout(() => menu.classList.add('hidden'), 200);
+                        icon?.classList.remove('rotate-180');
+                    }
+                });
+            });
+
+            // Close filter dropdowns only when clicking OUTSIDE any filter-dropdown
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.filter-dropdown')) {
+                    document.querySelectorAll('.filter-dropdown').forEach(el => {
+                        const menu = el.querySelector('.dropdown-menu');
+                        if (menu && !menu.classList.contains('hidden')) {
+                            menu.classList.add('opacity-0', '-translate-y-2');
+                            setTimeout(() => menu.classList.add('hidden'), 200);
+                            el.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                        }
+                    });
+                }
+            });
+
+            // Custom form dropdowns (siswa, jenis)
+            initCustomFormDropdowns();
+        }
+
+        // ─── CUSTOM FORM DROPDOWNS ────────────────────────────────
+        function initCustomFormDropdowns() {
+            document.querySelectorAll('.custom-dropdown').forEach(wrapper => {
+                const selected = wrapper.querySelector('.dropdown-selected');
+                const items = wrapper.querySelector('.dropdown-options');
+                const text = wrapper.querySelector('.selected-text');
+                const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+                const icon = wrapper.querySelector('.dropdown-icon');
+
+                if (!selected || !items) return;
+
+                selected.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Close other custom dropdowns
+                    document.querySelectorAll('.custom-dropdown .dropdown-options').forEach(el => {
+                        if (el !== items) {
+                            el.classList.add('opacity-0', '-translate-y-2');
+                            setTimeout(() => { el.classList.add('hidden'); el.style.display = 'none'; if (el.closest('.custom-dropdown')) el.closest('.custom-dropdown').style.zIndex = '10'; }, 200);
+                            el.closest('.custom-dropdown')?.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                        }
+                    });
+                    const isOpen = items.style.display !== 'none' && !items.classList.contains('hidden');
+                    if (!isOpen) {
+                        wrapper.style.zIndex = '999';
+                        items.style.display = 'block';
+                        items.classList.remove('hidden');
+                        setTimeout(() => items.classList.remove('opacity-0', '-translate-y-2'), 10);
+                        icon?.classList.add('rotate-180');
+                        // Focus search input if exists
+                        const searchInput = wrapper.querySelector('input[type="text"]');
+                        if (searchInput) setTimeout(() => searchInput.focus(), 50);
+                    } else {
+                        items.classList.add('opacity-0', '-translate-y-2');
+                        setTimeout(() => { items.classList.add('hidden'); items.style.display = 'none'; wrapper.style.zIndex = '10'; }, 200);
+                        icon?.classList.remove('rotate-180');
+                    }
+                });
+
+                items.addEventListener('click', e => {
+                    const option = e.target.closest('.dropdown-item');
+                    if (!option) return;
+                    const val = option.getAttribute('data-value');
+                    const label = option.getAttribute('data-label') || option.textContent.trim();
+                    text.textContent = label;
+                    hiddenInput.value = val;
+                    items.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('bg-emerald-50', 'text-emerald-600'));
+                    option.classList.add('bg-emerald-50', 'text-emerald-600');
+                    if (val) { selected.classList.remove('text-gray-400'); selected.classList.add('text-gray-900'); }
+                    else { selected.classList.add('text-gray-400'); selected.classList.remove('text-gray-900'); }
+                    items.classList.add('opacity-0', '-translate-y-2');
+                    setTimeout(() => { items.classList.add('hidden'); items.style.display = 'none'; wrapper.style.zIndex = '10'; }, 200);
+                    icon?.classList.remove('rotate-180');
+                    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+
+                // Prevent closing when clicking inside dropdown panel
+                items.addEventListener('click', e => e.stopPropagation());
+            });
+
+            // Siswa search filter
+            const siswaSearch = document.getElementById('siswa_search_input');
+            if (siswaSearch) {
+                siswaSearch.addEventListener('input', () => {
+                    const q = siswaSearch.value.toLowerCase();
+                    document.querySelectorAll('#siswa_options_list .dropdown-item').forEach(item => {
+                        const txt = item.textContent.toLowerCase();
+                        item.style.display = txt.includes(q) ? '' : 'none';
+                    });
+                });
+            }
+
+            // Close custom dropdowns when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.custom-dropdown')) {
+                    document.querySelectorAll('.custom-dropdown .dropdown-options').forEach(el => {
+                        if (!el.classList.contains('hidden') || el.style.display !== 'none') {
+                            el.classList.add('opacity-0', '-translate-y-2');
+                            setTimeout(() => { el.classList.add('hidden'); el.style.display = 'none'; if (el.closest('.custom-dropdown')) el.closest('.custom-dropdown').style.zIndex = '10'; }, 200);
+                            el.closest('.custom-dropdown')?.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                        }
+                    });
+                }
+            });
+        }
+
+        // ─── INIT ─────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadComponents();
+            await Promise.all([loadKelas(), loadJenis(), loadSiswa()]);
+            await loadData();
+            initFilterDropdowns();
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+        });
+    </script>
+</body>
+
+</html>

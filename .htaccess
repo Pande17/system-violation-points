@@ -1,0 +1,11 @@
+# =====================================================
+# Root .htaccess - VioPoints (Laragon/Apache)
+# Aktif ketika diakses langsung via Apache Laragon
+# =====================================================
+
+Options -Indexes
+RewriteEngine On
+
+# ─── Frontend: Arahkan ke frontend/pages/404NotFound.html ────
+ErrorDocument 404 /html/sistem-poin-pelanggaran_html/frontend/pages/404NotFound.html
+ErrorDocument 403 /html/sistem-poin-pelanggaran_html/frontend/pages/404NotFound.html?type=unauthorized

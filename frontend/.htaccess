@@ -1,0 +1,35 @@
+# =====================================================
+# Apache .htaccess - VioPoints Frontend
+# Laragon / Apache Web Server Configuration
+# =====================================================
+
+Options -Indexes
+
+# ─── Custom Error Pages ───────────────────────────
+ErrorDocument 404 /frontend/pages/404NotFound.html
+ErrorDocument 403 /frontend/pages/404NotFound.html?type=unauthorized
+
+# ─── Rewrite Engine ───────────────────────────────
+RewriteEngine On
+
+# Force trailing slash removal
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+# Serve existing files/directories as-is
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ─── Security Headers ─────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ─── MIME Types ───────────────────────────────────
+<IfModule mod_mime.c>
+    AddType application/javascript .js .mjs
+    AddType text/css .css
+</IfModule>

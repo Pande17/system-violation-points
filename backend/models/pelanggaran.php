@@ -16,9 +16,8 @@ class PelanggaranModel
         try {
             // Menambahkan kolom keterangan jika belum ada
             $this->db->exec("ALTER TABLE pelanggaran ADD COLUMN keterangan TEXT DEFAULT NULL");
-        }
-        catch (PDOException $e) {
-        // Error dilewati (biasanya karena kolom sudah ada)
+        } catch (PDOException $e) {
+            // Error dilewati (biasanya karena kolom sudah ada)
         }
     }
 
@@ -38,6 +37,7 @@ class PelanggaranModel
                 p.deleted_at,
                 s.nama as nama_siswa,
                 s.kelas as kelas,
+                s.nis as nis_siswa,
                 jp.nama_pelanggaran as nama_pelanggaran
             FROM pelanggaran p
             LEFT JOIN siswa s ON p.id_siswa = s.id
@@ -65,6 +65,7 @@ class PelanggaranModel
                 p.deleted_at,
                 s.nama as nama_siswa,
                 s.kelas as kelas,
+                s.nis as nis_siswa,
                 jp.nama_pelanggaran as nama_pelanggaran
             FROM pelanggaran p
             LEFT JOIN siswa s ON p.id_siswa = s.id
