@@ -21,6 +21,11 @@ class PemanggilanOrtuController
                 return;
             }
 
+            // Auto-generate nomor_surat if empty or default template
+            if (empty($data['nomor_surat']) || strpos($data['nomor_surat'], '...') !== false) {
+                $data['nomor_surat'] = $this->model->getNextNomor('surat_pemanggilan_orang_tua', 'tanggal_pengiriman', $data['tanggal_pengiriman'] ?? date('Y-m-d'));
+            }
+
             $id = $this->model->addPemanggilanOrtu($data);
             if ($id) {
                 Success(['id' => $id, 'type' => 'Pemanggilan Orang Tua'], "Surat pemanggilan orang tua berhasil disimpan");

@@ -21,6 +21,11 @@ class PindahSekolahController
                 return;
             }
 
+            // Auto-generate nomor_surat if empty or default template
+            if (empty($data['nomor_surat']) || strpos($data['nomor_surat'], '...') !== false) {
+                $data['nomor_surat'] = $this->model->getNextNomor('surat_pindah_sekolah', 'tanggal', $data['tanggal'] ?? date('Y-m-d'));
+            }
+
             $id = $this->model->addPindahSekolah($data);
             if ($id) {
                 Success(['id' => $id, 'type' => 'Pindah Sekolah'], "Surat pindah sekolah berhasil disimpan");

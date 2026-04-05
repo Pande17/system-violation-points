@@ -159,6 +159,23 @@ $no_telp = $data['ortu_no_telp'] ?? $data['no_telp_ortu'] ?? '..................
                 <td class="val-col"><?= htmlspecialchars($data['kelas']) ?></td>
             </tr>
             <tr>
+                <td>Tempat/ tanggal Lahir</td>
+                <td>:</td>
+                <td class="val-col">
+                    <?php 
+                    $tempat = $data['siswa_tempat_lahir'] ?? '-';
+                    $tanggal = '';
+                    if (!empty($data['siswa_tanggal_lahir'])) {
+                        $tgl = $data['siswa_tanggal_lahir'];
+                        $enM = date('F', strtotime($tgl));
+                        $idM = $months[$enM] ?? $enM;
+                        $tanggal = date('d', strtotime($tgl)) . ' ' . $idM . ' ' . date('Y', strtotime($tgl));
+                    }
+                    echo htmlspecialchars($tempat) . ($tanggal ? " / " . $tanggal : "");
+                    ?>
+                </td>
+            </tr>
+            <tr>
                 <td>Masalah</td>
                 <td>:</td>
                 <td class="val-col"><?= htmlspecialchars($data['masalah']) ?></td>

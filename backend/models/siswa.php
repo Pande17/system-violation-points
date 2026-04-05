@@ -15,6 +15,7 @@ class SiswaModel
         $stmt = $this->db->prepare("
             SELECT s.*, 
                    o.nama as ortu_nama, o.hubungan as ortu_hubungan, o.no_telp as ortu_no_telp, o.pekerjaan as ortu_pekerjaan, o.alamat as ortu_alamat,
+                   o.tempat_lahir as ortu_tempat_lahir, o.tanggal_lahir as ortu_tanggal_lahir,
                    (SELECT IFNULL(SUM(poin), 0) FROM pelanggaran WHERE id_siswa = s.id AND deleted_at IS NULL) as total_poin 
             FROM siswa s 
             LEFT JOIN ortu_wali o ON s.id_ortuWali = o.id
@@ -29,6 +30,7 @@ class SiswaModel
         $stmt = $this->db->prepare("
             SELECT s.*, 
                    o.nama as ortu_nama, o.hubungan as ortu_hubungan, o.no_telp as ortu_no_telp, o.pekerjaan as ortu_pekerjaan, o.alamat as ortu_alamat,
+                   o.tempat_lahir as ortu_tempat_lahir, o.tanggal_lahir as ortu_tanggal_lahir,
                    k_full.wali_kelas_nama,
                    (SELECT IFNULL(SUM(poin), 0) FROM pelanggaran WHERE id_siswa = s.id AND deleted_at IS NULL) as total_poin 
             FROM siswa s 
@@ -51,6 +53,7 @@ class SiswaModel
         $stmt = $this->db->prepare("
             SELECT s.*, 
                    o.nama as ortu_nama, o.hubungan as ortu_hubungan, o.no_telp as ortu_no_telp, o.pekerjaan as ortu_pekerjaan, o.alamat as ortu_alamat,
+                   o.tempat_lahir as ortu_tempat_lahir, o.tanggal_lahir as ortu_tanggal_lahir,
                    k_full.wali_kelas_nama,
                    (SELECT IFNULL(SUM(poin), 0) FROM pelanggaran WHERE id_siswa = s.id AND deleted_at IS NULL) as total_poin 
             FROM siswa s 
@@ -74,13 +77,15 @@ class SiswaModel
             $this->db->beginTransaction();
             $idOrtuWali = null;
             if (!empty($ortuData['nama'])) {
-                $stmtOrtu = $this->db->prepare("INSERT INTO ortu_wali (nama, hubungan, no_telp, pekerjaan, alamat) VALUES (:nama, :hubungan, :no_telp, :pekerjaan, :alamat)");
+                $stmtOrtu = $this->db->prepare("INSERT INTO ortu_wali (nama, hubungan, no_telp, pekerjaan, alamat, tempat_lahir, tanggal_lahir) VALUES (:nama, :hubungan, :no_telp, :pekerjaan, :alamat, :tempat_lahir, :tanggal_lahir)");
                 $stmtOrtu->execute([
                     ':nama' => $ortuData['nama'],
                     ':hubungan' => $ortuData['hubungan'] ?? '',
                     ':no_telp' => $ortuData['no_telp'] ?? '',
                     ':pekerjaan' => $ortuData['pekerjaan'] ?? '',
-                    ':alamat' => $ortuData['alamat'] ?? ''
+                    ':alamat' => $ortuData['alamat'] ?? '',
+                    ':tempat_lahir' => $ortuData['tempat_lahir'] ?? '',
+                    ':tanggal_lahir' => $ortuData['tanggal_lahir'] ?? null
                 ]);
                 $idOrtuWali = $this->db->lastInsertId();
             }
@@ -116,23 +121,27 @@ class SiswaModel
             $this->db->beginTransaction();
 
             if (!empty($id_ortuWali)) {
-                $stmtOrtu = $this->db->prepare("UPDATE ortu_wali SET nama = :nama, hubungan = :hubungan, no_telp = :no_telp, pekerjaan = :pekerjaan, alamat = :alamat, updated_at = NOW() WHERE id = :id");
+                $stmtOrtu = $this->db->prepare("UPDATE ortu_wali SET nama = :nama, hubungan = :hubungan, no_telp = :no_telp, pekerjaan = :pekerjaan, alamat = :alamat, tempat_lahir = :tempat_lahir, tanggal_lahir = :tanggal_lahir, updated_at = NOW() WHERE id = :id");
                 $stmtOrtu->execute([
                     ':nama' => $ortuData['nama'] ?? '',
                     ':hubungan' => $ortuData['hubungan'] ?? '',
                     ':no_telp' => $ortuData['no_telp'] ?? '',
                     ':pekerjaan' => $ortuData['pekerjaan'] ?? '',
                     ':alamat' => $ortuData['alamat'] ?? '',
+                    ':tempat_lahir' => $ortuData['tempat_lahir'] ?? '',
+                    ':tanggal_lahir' => $ortuData['tanggal_lahir'] ?? null,
                     ':id' => $id_ortuWali
                 ]);
             } else if (!empty($ortuData['nama'])) {
-                $stmtOrtu = $this->db->prepare("INSERT INTO ortu_wali (nama, hubungan, no_telp, pekerjaan, alamat) VALUES (:nama, :hubungan, :no_telp, :pekerjaan, :alamat)");
+                $stmtOrtu = $this->db->prepare("INSERT INTO ortu_wali (nama, hubungan, no_telp, pekerjaan, alamat, tempat_lahir, tanggal_lahir) VALUES (:nama, :hubungan, :no_telp, :pekerjaan, :alamat, :tempat_lahir, :tanggal_lahir)");
                 $stmtOrtu->execute([
                     ':nama' => $ortuData['nama'],
                     ':hubungan' => $ortuData['hubungan'] ?? '',
                     ':no_telp' => $ortuData['no_telp'] ?? '',
                     ':pekerjaan' => $ortuData['pekerjaan'] ?? '',
-                    ':alamat' => $ortuData['alamat'] ?? ''
+                    ':alamat' => $ortuData['alamat'] ?? '',
+                    ':tempat_lahir' => $ortuData['tempat_lahir'] ?? '',
+                    ':tanggal_lahir' => $ortuData['tanggal_lahir'] ?? null
                 ]);
                 $id_ortuWali = $this->db->lastInsertId();
             }

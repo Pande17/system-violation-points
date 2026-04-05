@@ -134,8 +134,9 @@ class SuratModel
             SELECT s.*, 
                    sis.nama as nama_siswa, sis.nis, sis.kelas, sis.jurusan as siswa_jurusan, 
                    sis.jenis_kelamin as jk_siswa, sis.alamat as alamat_siswa,
+                   sis.tempat_lahir as siswa_tempat_lahir, sis.tanggal_lahir as siswa_tanggal_lahir,
                    o.nama as nama_ortu, o.alamat as alamat_ortu, o.no_telp as no_telp_ortu, 
-                   o.pekerjaan as pekerjaan_ortu,
+                   o.pekerjaan as pekerjaan_ortu, o.tempat_lahir as ortu_tempat_lahir, o.tanggal_lahir as ortu_tanggal_lahir,
                    k_full.wali_kelas_nama,
                    j.nama as program_keahlian
             FROM $table s
@@ -158,5 +159,21 @@ class SuratModel
     {
         $stmt = $this->db->prepare("DELETE FROM $table WHERE id_surat = :id");
         return $stmt->execute([':id' => $id]);
+    }
+
+    public function getNextNomor($table, $dateColumn, $date)
+    {
+        $month = date('m', strtotime($date));
+        $year = date('Y', strtotime($date));
+        
+        $sql = "SELECT COUNT(*) FROM $table WHERE MONTH($dateColumn) = :month AND YEAR($dateColumn) = :year";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':month' => $month, ':year' => $year]);
+        $count = $stmt->fetchColumn() + 1;
+        
+        $romans = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+        $romanMonth = $romans[(int)$month] ?? $month;
+        
+        return sprintf("%02d/SMK TI/BG/%s/%d", $count, $romanMonth, $year);
     }
 }

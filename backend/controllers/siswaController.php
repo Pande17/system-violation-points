@@ -66,6 +66,8 @@ class SiswaController
                 'no_telp' => isset($data['ortu_no_telp']) ? $data['ortu_no_telp'] : '',
                 'pekerjaan' => isset($data['ortu_pekerjaan']) ? $data['ortu_pekerjaan'] : '',
                 'alamat' => isset($data['ortu_alamat']) ? $data['ortu_alamat'] : '',
+                'tempat_lahir' => isset($data['ortu_tempat_lahir']) ? $data['ortu_tempat_lahir'] : '',
+                'tanggal_lahir' => isset($data['ortu_tanggal_lahir']) ? $data['ortu_tanggal_lahir'] : null,
             ];
 
             if (empty($nama) || empty($nis) || empty($username) || empty($password)) {
@@ -115,6 +117,8 @@ class SiswaController
                 'no_telp' => isset($data['ortu_no_telp']) ? $data['ortu_no_telp'] : '',
                 'pekerjaan' => isset($data['ortu_pekerjaan']) ? $data['ortu_pekerjaan'] : '',
                 'alamat' => isset($data['ortu_alamat']) ? $data['ortu_alamat'] : '',
+                'tempat_lahir' => isset($data['ortu_tempat_lahir']) ? $data['ortu_tempat_lahir'] : '',
+                'tanggal_lahir' => isset($data['ortu_tanggal_lahir']) ? $data['ortu_tanggal_lahir'] : null,
             ];
 
             if (!$id) {
