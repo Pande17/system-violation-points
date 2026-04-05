@@ -64,6 +64,72 @@
                 <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Input Pelanggaran</span>
             </a>
         </nav>
+
+        <p
+            class="sidebar-text whitespace-nowrap px-4 text-[11px] font-bold text-white/40 uppercase tracking-widest mt-8 mb-3 transition-opacity duration-300">
+            Administrasi Surat</p>
+        <nav class="space-y-1.5" id="sidebarNavSurat">
+            <div class="relative px-2">
+                <button id="suratDropdownBtn"
+                    class="nav-link flex items-center justify-between w-full px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all group overflow-hidden">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+                            <i class="fas fa-envelope-open-text text-[14px] text-emerald-400"></i>
+                        </div>
+                        <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Manajemen
+                            Surat</span>
+                    </div>
+                    <i class="fas fa-chevron-down text-[10px] transition-transform duration-300 sidebar-text opacity-50"
+                        id="suratChevron"></i>
+                </button>
+                <div id="suratDropdownMenu" class="hidden mt-1 space-y-1 overflow-hidden transition-all duration-300">
+                    <a href="cetak-surat.html" data-page="cetak-surat.html"
+                        class="nav-link flex items-center gap-3 pl-14 pr-4 py-2.5 text-[13px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all relative group/item">
+                        <div
+                            class="absolute left-[26px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/20 group-hover/item:bg-emerald-400 transition-colors">
+                        </div>
+                        Semua Jenis Surat
+                    </a>
+                    <a href="surat/pernyataan_siswa/form.html" data-page="form.html"
+                        class="nav-link flex items-center gap-3 pl-14 pr-4 py-2.5 text-[13px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all relative group/item">
+                        <div
+                            class="absolute left-[26px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/20 group-hover/item:bg-emerald-400 transition-colors">
+                        </div>
+                        Pernyataan Siswa
+                    </a>
+                    <a href="surat/pemanggilan_ortu/form.html" data-page="form.html"
+                        class="nav-link flex items-center gap-3 pl-14 pr-4 py-2.5 text-[13px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all relative group/item">
+                        <div
+                            class="absolute left-[26px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/20 group-hover/item:bg-emerald-400 transition-colors">
+                        </div>
+                        Pemanggilan Ortu
+                    </a>
+                    <a href="surat/pernyataan_ortu/form.html" data-page="form.html"
+                        class="nav-link flex items-center gap-3 pl-14 pr-4 py-2.5 text-[13px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all relative group/item">
+                        <div
+                            class="absolute left-[26px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/20 group-hover/item:bg-emerald-400 transition-colors">
+                        </div>
+                        Pernyataan Ortu
+                    </a>
+                    <a href="surat/pindah_sekolah/form.html" data-page="form.html"
+                        class="nav-link flex items-center gap-3 pl-14 pr-4 py-2.5 text-[13px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all relative group/item">
+                        <div
+                            class="absolute left-[26px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/20 group-hover/item:bg-emerald-400 transition-colors">
+                        </div>
+                        Pindah Sekolah
+                    </a>
+                    <hr class="mx-6 border-white/5 my-1">
+                    <a href="daftar-surat.html" data-page="daftar-surat.html"
+                        class="nav-link flex items-center gap-3 pl-14 pr-4 py-2.5 text-[13px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all relative group/item">
+                        <div
+                            class="absolute left-[26px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white/20 group-hover/item:bg-emerald-400 transition-colors">
+                        </div>
+                        Riwayat Surat
+                    </a>
+                </div>
+            </div>
+        </nav>
     </div>
 
     <!-- Sidebar Footer / Logout -->

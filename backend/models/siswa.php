@@ -29,9 +29,16 @@ class SiswaModel
         $stmt = $this->db->prepare("
             SELECT s.*, 
                    o.nama as ortu_nama, o.hubungan as ortu_hubungan, o.no_telp as ortu_no_telp, o.pekerjaan as ortu_pekerjaan, o.alamat as ortu_alamat,
+                   k_full.wali_kelas_nama,
                    (SELECT IFNULL(SUM(poin), 0) FROM pelanggaran WHERE id_siswa = s.id AND deleted_at IS NULL) as total_poin 
             FROM siswa s 
             LEFT JOIN ortu_wali o ON s.id_ortuWali = o.id
+            LEFT JOIN (
+                SELECT CONCAT(k.tingkat, ' ', k.jurusan, ' ', k.kelas) as full_name, g.nama as wali_kelas_nama
+                FROM kelas k
+                LEFT JOIN guru g ON k.wali_kelas = g.id
+                WHERE k.deleted_at IS NULL
+            ) k_full ON s.kelas = k_full.full_name
             WHERE s.id = :id AND s.deleted_at IS NULL
         ");
         $stmt->bindParam(':id', $id);
@@ -39,7 +46,29 @@ class SiswaModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addSiswa($nama, $nis, $kelas, $jurusan, $jenisKelamin, $alamat, $email, $username, $password, $no_telp, $status, $ortuData)
+    public function getSiswaByNIS($nis)
+    {
+        $stmt = $this->db->prepare("
+            SELECT s.*, 
+                   o.nama as ortu_nama, o.hubungan as ortu_hubungan, o.no_telp as ortu_no_telp, o.pekerjaan as ortu_pekerjaan, o.alamat as ortu_alamat,
+                   k_full.wali_kelas_nama,
+                   (SELECT IFNULL(SUM(poin), 0) FROM pelanggaran WHERE id_siswa = s.id AND deleted_at IS NULL) as total_poin 
+            FROM siswa s 
+            LEFT JOIN ortu_wali o ON s.id_ortuWali = o.id
+            LEFT JOIN (
+                SELECT CONCAT(k.tingkat, ' ', k.jurusan, ' ', k.kelas) as full_name, g.nama as wali_kelas_nama
+                FROM kelas k
+                LEFT JOIN guru g ON k.wali_kelas = g.id
+                WHERE k.deleted_at IS NULL
+            ) k_full ON s.kelas = k_full.full_name
+            WHERE s.nis = :nis AND s.deleted_at IS NULL
+        ");
+        $stmt->bindParam(':nis', $nis);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function addSiswa($nama, $nis, $kelas, $jurusan, $jenisKelamin, $tempat_lahir, $tanggal_lahir, $alamat, $email, $username, $password, $no_telp, $status, $ortuData)
     {
         try {
             $this->db->beginTransaction();
@@ -56,12 +85,14 @@ class SiswaModel
                 $idOrtuWali = $this->db->lastInsertId();
             }
 
-            $stmt = $this->db->prepare("INSERT INTO siswa (nama, nis, kelas, jurusan, jenis_kelamin, alamat, email, username, password, no_telp, status, id_ortuWali, poin) VALUES (:nama, :nis, :kelas, :jurusan, :jenis_kelamin, :alamat, :email, :username, :password, :no_telp, :status, :id_ortuWali, 0)");
+            $stmt = $this->db->prepare("INSERT INTO siswa (nama, nis, kelas, jurusan, jenis_kelamin, tempat_lahir, tanggal_lahir, alamat, email, username, password, no_telp, status, id_ortuWali, poin) VALUES (:nama, :nis, :kelas, :jurusan, :jenis_kelamin, :tempat_lahir, :tanggal_lahir, :alamat, :email, :username, :password, :no_telp, :status, :id_ortuWali, 0)");
             $stmt->bindParam(':nama', $nama);
             $stmt->bindParam(':nis', $nis);
             $stmt->bindParam(':kelas', $kelas);
             $stmt->bindParam(':jurusan', $jurusan);
             $stmt->bindParam(':jenis_kelamin', $jenisKelamin);
+            $stmt->bindParam(':tempat_lahir', $tempat_lahir);
+            $stmt->bindParam(':tanggal_lahir', $tanggal_lahir);
             $stmt->bindParam(':alamat', $alamat);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':username', $username);
@@ -73,14 +104,13 @@ class SiswaModel
 
             $this->db->commit();
             return true;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->db->rollBack();
             throw $e;
         }
     }
 
-    public function updateSiswa($id, $nama, $nis, $kelas, $jurusan, $jenisKelamin, $alamat, $email, $username, $password, $no_telp, $status, $ortuData, $id_ortuWali)
+    public function updateSiswa($id, $nama, $nis, $kelas, $jurusan, $jenisKelamin, $tempat_lahir, $tanggal_lahir, $alamat, $email, $username, $password, $no_telp, $status, $ortuData, $id_ortuWali)
     {
         try {
             $this->db->beginTransaction();
@@ -95,8 +125,7 @@ class SiswaModel
                     ':alamat' => $ortuData['alamat'] ?? '',
                     ':id' => $id_ortuWali
                 ]);
-            }
-            else if (!empty($ortuData['nama'])) {
+            } else if (!empty($ortuData['nama'])) {
                 $stmtOrtu = $this->db->prepare("INSERT INTO ortu_wali (nama, hubungan, no_telp, pekerjaan, alamat) VALUES (:nama, :hubungan, :no_telp, :pekerjaan, :alamat)");
                 $stmtOrtu->execute([
                     ':nama' => $ortuData['nama'],
@@ -110,11 +139,10 @@ class SiswaModel
 
             // Build query dynamically based on whether password is provided
             if (!empty($password)) {
-                $stmt = $this->db->prepare("UPDATE siswa SET nama = :nama, nis = :nis, kelas = :kelas, jurusan = :jurusan, jenis_kelamin = :jenis_kelamin, alamat = :alamat, email = :email, username = :username, password = :password, no_telp = :no_telp, status = :status, id_ortuWali = :id_ortuWali, updated_at = NOW() WHERE id = :id");
+                $stmt = $this->db->prepare("UPDATE siswa SET nama = :nama, nis = :nis, kelas = :kelas, jurusan = :jurusan, jenis_kelamin = :jenis_kelamin, tempat_lahir = :tempat_lahir, tanggal_lahir = :tanggal_lahir, alamat = :alamat, email = :email, username = :username, password = :password, no_telp = :no_telp, status = :status, id_ortuWali = :id_ortuWali, updated_at = NOW() WHERE id = :id");
                 $stmt->bindParam(':password', $password);
-            }
-            else {
-                $stmt = $this->db->prepare("UPDATE siswa SET nama = :nama, nis = :nis, kelas = :kelas, jurusan = :jurusan, jenis_kelamin = :jenis_kelamin, alamat = :alamat, email = :email, username = :username, no_telp = :no_telp, status = :status, id_ortuWali = :id_ortuWali, updated_at = NOW() WHERE id = :id");
+            } else {
+                $stmt = $this->db->prepare("UPDATE siswa SET nama = :nama, nis = :nis, kelas = :kelas, jurusan = :jurusan, jenis_kelamin = :jenis_kelamin, tempat_lahir = :tempat_lahir, tanggal_lahir = :tanggal_lahir, alamat = :alamat, email = :email, username = :username, no_telp = :no_telp, status = :status, id_ortuWali = :id_ortuWali, updated_at = NOW() WHERE id = :id");
             }
             $stmt->bindParam(':id', $id);
             $stmt->bindParam(':nama', $nama);
@@ -122,6 +150,8 @@ class SiswaModel
             $stmt->bindParam(':kelas', $kelas);
             $stmt->bindParam(':jurusan', $jurusan);
             $stmt->bindParam(':jenis_kelamin', $jenisKelamin);
+            $stmt->bindParam(':tempat_lahir', $tempat_lahir);
+            $stmt->bindParam(':tanggal_lahir', $tanggal_lahir);
             $stmt->bindParam(':alamat', $alamat);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':username', $username);
@@ -132,8 +162,7 @@ class SiswaModel
 
             $this->db->commit();
             return true;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->db->rollBack();
             throw $e;
         }

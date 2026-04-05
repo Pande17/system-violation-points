@@ -230,7 +230,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">No.
@@ -259,6 +259,28 @@
                                         data-value="Lulus">Lulus</div>
                                 </div>
                                 <input type="hidden" id="form_status" required value="Aktif">
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 ml-1">Jenis
+                                Kelamin</label>
+                            <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
+                                id="dropdown_jk">
+                                <div
+                                    class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-400">
+                                    <span class="selected-text">Pilih Gender</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
+                                </div>
+                                <div
+                                    class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
+                                        data-value="L">Laki-Laki</div>
+                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
+                                        data-value="P">Perempuan</div>
+                                </div>
+                                <input type="hidden" id="form_jk" required name="jenis_kelamin" value="">
                             </div>
                         </div>
                     </div>
@@ -300,34 +322,28 @@
                         </div>
                         <div>
                             <label
-                                class="block text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 ml-1">Jenis
-                                Kelamin</label>
-                            <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
-                                id="dropdown_jk">
-                                <div
-                                    class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-400">
-                                    <span class="selected-text">Pilih Gender</span>
-                                    <i
-                                        class="fas fa-chevron-down text-[10px] text-gray-400 pointer-events-none transition-transform duration-200 dropdown-icon"></i>
-                                </div>
-                                <div
-                                    class="dropdown-options hidden absolute z-50 left-0 right-0 top-full mt-2 py-2 bg-white border border-gray-100 shadow-xl rounded-xl opacity-0 -translate-y-2 transition-all duration-200">
-                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
-                                        data-value="L">Laki-Laki</div>
-                                    <div class="dropdown-item px-4 py-2.5 text-[13px] font-bold text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 cursor-pointer transition-colors"
-                                        data-value="P">Perempuan</div>
-                                </div>
-                                <input type="hidden" id="form_jk" required value="">
-                            </div>
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Tempat
+                                Lahir</label>
+                            <input type="text" id="form_tempat_lahir" placeholder="Contoh: Denpasar"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                         </div>
                     </div>
 
-                    <div>
-                        <label
-                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Email
-                            Utama (Opsional)</label>
-                        <input type="email" id="form_email" placeholder="email@sekolah.com"
-                            class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Tanggal
+                                Lahir</label>
+                            <input type="date" id="form_tanggal_lahir"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Email
+                                Utama (Opsional)</label>
+                            <input type="email" id="form_email" placeholder="email@sekolah.com"
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
                     </div>
 
                     <div>
@@ -679,6 +695,8 @@
                     nis: document.getElementById('form_nis').value,
                     kelas: document.getElementById('form_kelas').value,
                     jenis_kelamin: document.getElementById('form_jk').value,
+                    tempat_lahir: document.getElementById('form_tempat_lahir').value,
+                    tanggal_lahir: document.getElementById('form_tanggal_lahir').value || null,
                     poin: parseInt(document.getElementById('form_poin').value) || 0,
                     status: document.getElementById('form_status').value,
                     no_telp: document.getElementById('form_telepon').value,
@@ -933,6 +951,8 @@
                         document.getElementById('form_ortu_alamat').value = siswa.ortu_alamat || '';
                         document.getElementById('form_username').value = siswa.username || '';
                         document.getElementById('form_password').value = '';
+                        document.getElementById('form_tempat_lahir').value = siswa.tempat_lahir || '';
+                        document.getElementById('form_tanggal_lahir').value = siswa.tanggal_lahir || '';
 
                         let jk = (siswa.jenis_kelamin === 'Laki-laki' || siswa.jenis_kelamin === 'Laki-Laki' || siswa.jenis_kelamin === 'L') ? 'L' :
                             ((siswa.jenis_kelamin === 'Perempuan' || siswa.jenis_kelamin === 'P') ? 'P' : 'L');

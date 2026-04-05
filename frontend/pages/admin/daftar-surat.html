@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Surat - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f8fafc]">
+
+    <div id="sidebar-container"></div>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <div id="header-container"></div>
+
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10"></div>
+
+            <div class="max-w-7xl mx-auto space-y-8">
+                <!-- Header Section -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Daftar Surat</h2>
+                        <p class="text-[13px] text-gray-500 mt-1 font-medium">Rekapitulasi surat-surat yang telah dicetak</p>
+                    </div>
+                    <a href="cetak-surat.html" class="bg-[#054030] hover:bg-[#032e22] text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm">
+                        <i class="fas fa-plus"></i> Buat Surat Baru
+                    </a>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+                    <div class="flex flex-wrap gap-3 w-full xl:w-auto">
+                         <div class="relative group" id="filter_jenis_dropdown">
+                            <select id="filter_jenis" class="px-5 py-2.5 bg-white border border-gray-100 rounded-full text-[12px] font-bold text-gray-600 shadow-sm outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all appearance-none pr-10 cursor-pointer min-w-[200px]">
+                                <option value="">Semua Jenis Surat</option>
+                                <option value="Surat Pernyataan Siswa">Surat Pernyataan Siswa</option>
+                                <option value="Surat Pemanggilan Orang Tua">Surat Pemanggilan Orang Tua</option>
+                                <option value="Surat Pernyataan Orang Tua">Surat Pernyataan Orang Tua</option>
+                                <option value="Surat Pindah Sekolah">Surat Pindah Sekolah</option>
+                            </select>
+                            <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-[10px] text-gray-400 pointer-events-none"></i>
+                         </div>
+                    </div>
+                    <div class="relative w-full xl:w-80 flex-shrink-0">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="searchInput" autocomplete="off" placeholder="Cari nama siswa, nomor surat..." class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-full focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all text-[13px] font-bold shadow-sm">
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
+                            <thead>
+                                <tr class="bg-gray-50/50 text-gray-400 text-[10px] uppercase tracking-widest border-b border-gray-100">
+                                    <th class="py-5 px-6 font-black text-center w-16">No</th>
+                                    <th class="py-5 px-6 font-black">Tanggal</th>
+                                    <th class="py-5 px-6 font-black">Nomor Surat</th>
+                                    <th class="py-5 px-6 font-black">Jenis Surat</th>
+                                    <th class="py-5 px-6 font-black">Siswa Target</th>
+                                    <th class="py-5 px-6 font-black text-center w-[130px]">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="divide-y divide-gray-50 text-[13px] font-bold">
+                                <tr>
+                                    <td colspan="6" class="py-12 text-center text-gray-400">
+                                        <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
+                                        <p class="text-sm font-medium">Memuat data surat...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-8 right-8 z-[9999] hidden animate-in slide-in-from-right-full duration-300">
+        <div class="bg-white border-l-4 border-emerald-500 shadow-2xl rounded-xl p-5 flex items-center gap-4 min-w-[320px]">
+             <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-500">
+                 <i class="fas fa-check-circle text-xl"></i>
+             </div>
+             <div>
+                 <h4 class="text-sm font-bold text-gray-900" id="toastTitle">Berhasil</h4>
+                 <p class="text-xs font-medium text-gray-500 mt-0.5" id="toastMsg"></p>
+             </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { loadComponents } from '../../components/layout.js';
+        import { getAPI, deleteAPI } from '../../utils/fetchData.js';
+
+        let dataList = [];
+        let deleteId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadComponents();
+            fetchData();
+
+            // Unified filter function
+            const applyFilters = () => {
+                const keyword = document.getElementById('searchInput').value.toLowerCase();
+                const jenis = document.getElementById('filter_jenis').value;
+                
+                const filtered = dataList.filter(s => {
+                    const matchKeyword = s.nama_siswa?.toLowerCase().includes(keyword) || 
+                                        s.nomor_surat?.toLowerCase().includes(keyword);
+                    const matchJenis = !jenis || s.jenis_surat === jenis;
+                    return matchKeyword && matchJenis;
+                });
+                renderTable(filtered);
+            };
+
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+            document.getElementById('filter_jenis').addEventListener('change', applyFilters);
+        });
+
+        async function fetchData() {
+            try {
+                const res = await getAPI('/surat');
+                if (res && res.status === 200) {
+                    dataList = res.data || [];
+                    renderTable(dataList);
+                } else {
+                    renderTable([]);
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                renderTable([]);
+            }
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-16 text-center text-gray-400 font-bold">Tidak ada data surat</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map((s, i) => `
+                <tr class="hover:bg-gray-50 transition-colors group">
+                    <td class="py-5 px-6 text-center text-gray-400 font-bold">${i + 1}</td>
+                    <td class="py-5 px-6">
+                        <div class="flex flex-col">
+                            <span class="text-gray-900">${formatDate(s.tanggal_surat)}</span>
+                            <span class="text-[10px] text-gray-400 uppercase tracking-widest mt-0.5 font-black">Tersimpan</span>
+                        </div>
+                    </td>
+                    <td class="py-5 px-6">
+                        <span class="px-3 py-1 bg-gray-100 rounded-lg text-gray-600 text-[11px] font-black">${s.nomor_surat || '-'}</span>
+                    </td>
+                    <td class="py-5 px-6">
+                        <p class="text-gray-900">${s.jenis_surat}</p>
+                        <p class="text-[11px] text-emerald-600 italic font-medium">${s.keterangan || ''}</p>
+                    </td>
+                    <td class="py-5 px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-900">${s.nama_siswa}</p>
+                                <p class="text-[11px] text-gray-400 font-bold uppercase tracking-widest">NIS: ${s.nis}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-5 px-6">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="window.printSurat(${s.id})" title="Cetak Ulang / Download" class="w-full py-2.5 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors shadow-sm shadow-emerald-200/20">
+                                <i class="fas fa-print mr-2"></i> Cetak Ulang
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function formatDate(str) {
+            const d = new Date(str);
+            return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        window.printSurat = function(id) {
+            const surat = dataList.find(s => s.id == id);
+            if (!surat) return;
+
+            const endpointMap = {
+                'Pernyataan Siswa': 'surat-pernyataan-siswa',
+                'Pemanggilan Orang Tua': 'surat-pemanggilan-ortu',
+                'Pernyataan Orang Tua': 'surat-pernyataan-ortu',
+                'Pindah Sekolah': 'surat-pindah-sekolah'
+            };
+
+            const endpoint = endpointMap[surat.jenis_surat] || 'surat';
+            window.open(`http://localhost:8000/api/${endpoint}?id=${id}&print=1`, '_blank');
+        };
+
+        function showToast(title, msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

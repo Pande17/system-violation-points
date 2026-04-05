@@ -9,7 +9,11 @@ require_once 'controllers/pelanggaranController.php';
 require_once 'controllers/kelasController.php';
 require_once 'controllers/jurusanController.php';
 require_once 'controllers/dashboardController.php';
-// require_once 'controllers/suratController.php';
+require_once 'controllers/suratController.php';
+require_once 'controllers/PernyataanSiswaController.php';
+require_once 'controllers/PemanggilanOrtuController.php';
+require_once 'controllers/PernyataanOrtuController.php';
+require_once 'controllers/PindahSekolahController.php';
 
 Cors::handle();
 
@@ -21,7 +25,11 @@ $pelanggaranController = new PelanggaranController();
 $kelasController = new KelasController();
 $jurusanController = new JurusanController();
 $dashboardController = new DashboardController();
-// $suratController = new SuratController();
+$suratController = new SuratController();
+$pernyataanSiswaController = new PernyataanSiswaController();
+$pemanggilanOrtuController = new PemanggilanOrtuController();
+$pernyataanOrtuController = new PernyataanOrtuController();
+$pindahSekolahController = new PindahSekolahController();
 
 // Handle preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -60,6 +68,22 @@ elseif (is_numeric($endpoint) && isset($segments[count($segments) - 2]) && $segm
 elseif (is_numeric($endpoint) && isset($segments[count($segments) - 2]) && $segments[count($segments) - 2] === 'surat') {
     $_GET['id'] = $endpoint;
     $endpoint = 'surat';
+}
+elseif (is_numeric($endpoint) && isset($segments[count($segments) - 2]) && $segments[count($segments) - 2] === 'surat-pernyataan-siswa') {
+    $_GET['id'] = $endpoint;
+    $endpoint = 'surat-pernyataan-siswa';
+}
+elseif (is_numeric($endpoint) && isset($segments[count($segments) - 2]) && $segments[count($segments) - 2] === 'surat-pemanggilan-ortu') {
+    $_GET['id'] = $endpoint;
+    $endpoint = 'surat-pemanggilan-ortu';
+}
+elseif (is_numeric($endpoint) && isset($segments[count($segments) - 2]) && $segments[count($segments) - 2] === 'surat-pernyataan-ortu') {
+    $_GET['id'] = $endpoint;
+    $endpoint = 'surat-pernyataan-ortu';
+}
+elseif (is_numeric($endpoint) && isset($segments[count($segments) - 2]) && $segments[count($segments) - 2] === 'surat-pindah-sekolah') {
+    $_GET['id'] = $endpoint;
+    $endpoint = 'surat-pindah-sekolah';
 }
 elseif (is_numeric($endpoint) && isset($segments[count($segments) - 2]) && $segments[count($segments) - 2] === 'kelas') {
     $_GET['id'] = $endpoint;
@@ -163,21 +187,61 @@ switch ($endpoint) {
         break;
 
     case 'surat':
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $suratController->getSurat();
+        } else {
+            BadRequest(null, 'Method Not Allowed');
+        }
+        break;
+
+    case 'surat-pernyataan-siswa':
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
-                $suratController->getSurat();
+                $pernyataanSiswaController->print($_GET['id']);
                 break;
             case 'POST':
-                $suratController->createSurat();
-                break;
-            case 'PUT':
-                $suratController->updateSurat();
-                break;
-            case 'DELETE':
-                $suratController->deleteSurat();
+                $pernyataanSiswaController->create();
                 break;
             default:
-                // Method Not Allowed
+                BadRequest(null, 'Method Not Allowed');
+        }
+        break;
+
+    case 'surat-pemanggilan-ortu':
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'GET':
+                $pemanggilanOrtuController->print($_GET['id']);
+                break;
+            case 'POST':
+                $pemanggilanOrtuController->create();
+                break;
+            default:
+                BadRequest(null, 'Method Not Allowed');
+        }
+        break;
+
+    case 'surat-pernyataan-ortu':
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'GET':
+                $pernyataanOrtuController->print($_GET['id']);
+                break;
+            case 'POST':
+                $pernyataanOrtuController->create();
+                break;
+            default:
+                BadRequest(null, 'Method Not Allowed');
+        }
+        break;
+
+    case 'surat-pindah-sekolah':
+        switch ($_SERVER['REQUEST_METHOD']) {
+            case 'GET':
+                $pindahSekolahController->print($_GET['id']);
+                break;
+            case 'POST':
+                $pindahSekolahController->create();
+                break;
+            default:
                 BadRequest(null, 'Method Not Allowed');
         }
         break;

@@ -1,44 +1,92 @@
 import { putAPI, getAPI } from '../../utils/fetchData.js';
 
-export async function loadComponents() {
+export async function loadComponents(basePrefix = '../../') {
     try {
         const [sidebarRes, headerRes, footerRes] = await Promise.all([
-            fetch('../../components/sidebar.html'),
-            fetch('../../components/header.html'),
-            fetch('../../components/footer.html')
+            fetch(`${basePrefix}components/sidebar.html`),
+            fetch(`${basePrefix}components/header.html`),
+            fetch(`${basePrefix}components/footer.html`)
         ]);
-        
+
         const sidebarContainer = document.getElementById('sidebar-container');
         const headerContainer = document.getElementById('header-container');
         const footerContainer = document.getElementById('footer-container');
 
-        if (sidebarContainer) sidebarContainer.outerHTML = await sidebarRes.text();
-        if (headerContainer) headerContainer.outerHTML = await headerRes.text();
-        if (footerContainer) footerContainer.outerHTML = await footerRes.text();
+        if (sidebarContainer) {
+            let sidebarHtml = await sidebarRes.text();
+            
+            // Adjust prefix for nested routes
+            if (basePrefix !== '../../') {
+                const pageBase = `${basePrefix}pages/admin/`;
+                sidebarHtml = sidebarHtml.replaceAll('href="', `href="${pageBase}`);
+                sidebarHtml = sidebarHtml.replaceAll('src="../../', `src="${basePrefix}`);
+                
+                // Allow surat links to remain nested
+                sidebarHtml = sidebarHtml.replaceAll(`href="${pageBase}surat/`, `href="${basePrefix}pages/admin/surat/`);
+            }
+            
+            sidebarContainer.innerHTML = sidebarHtml;
+        }
+        
+        if (headerContainer) headerContainer.innerHTML = await headerRes.text();
+        if (footerContainer) footerContainer.innerHTML = await footerRes.text();
 
         // Highlight active link in sidebar
-        const path = window.location.pathname.split('/').pop() || 'dashboard.html';
+        const currentPath = window.location.pathname;
+        const filename = currentPath.split('/').pop() || 'dashboard.html';
         const pageTitles = {
             'dashboard.html': 'Dashboard',
             'siswa.html': 'Data Siswa',
             'guru.html': 'Data Guru',
-            'kelas.html': 'Data Kelas & Jurusan',
-            'jenis-pelanggaran.html': 'Jenis Pelanggaran',
-            'pelanggaran.html': 'Input Pelanggaran'
+            'kelas.html': 'Data Kelas',
+            'jurusan.html': 'Data Jurusan',
+            'jenis_pelanggaran.html': 'Jenis Pelanggaran',
+            'pelanggaran.html': 'Input Pelanggaran',
+            'cetak-surat.html': 'Cetak Surat Baru',
+            'daftar-surat.html': 'Arsip Surat',
+            'form.html': 'Cetak Surat'
         };
-        
+
         const pageTitleEl = document.getElementById('pageTitle');
-        if (pageTitleEl) pageTitleEl.textContent = pageTitles[path] || 'Overview';
+        if (pageTitleEl) pageTitleEl.textContent = pageTitles[filename] || 'Overview';
 
         document.querySelectorAll('.nav-link').forEach(a => {
-            if (a.getAttribute('data-page') === path) {
+            const href = a.getAttribute('href');
+            if (href && currentPath.includes(href.replace('../../', ''))) {
                 a.classList.add('bg-white/10', 'text-white');
                 a.classList.remove('text-white/70', 'hover:bg-white/5');
-            } else {
+            } else if (!a.id || a.id !== 'suratDropdownBtn') {
                 a.classList.remove('bg-white/10', 'text-white');
                 a.classList.add('text-white/70', 'hover:bg-white/5');
             }
         });
+
+        // Surat Dropdown Toggle
+        const suratDropdownBtn = document.getElementById('suratDropdownBtn');
+        const suratDropdownMenu = document.getElementById('suratDropdownMenu');
+        const suratChevron = document.getElementById('suratChevron');
+
+        if (suratDropdownBtn && suratDropdownMenu) {
+            suratDropdownBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                suratDropdownMenu.classList.toggle('hidden');
+                if (suratChevron) {
+                    suratChevron.classList.toggle('rotate-180');
+                }
+            });
+
+            // Auto open if active
+            const isSuratActive = currentPath.includes('cetak-surat.html') ||
+                currentPath.includes('daftar-surat.html') ||
+                currentPath.includes('/surat/');
+
+            if (isSuratActive) {
+                suratDropdownMenu.classList.remove('hidden');
+                if (suratChevron) suratChevron.classList.add('rotate-180');
+                suratDropdownBtn.classList.add('bg-white/10', 'text-white');
+                suratDropdownBtn.classList.remove('text-white/70');
+            }
+        }
 
         // Set user name
         const userStr = localStorage.getItem('user');
@@ -82,7 +130,7 @@ export async function loadComponents() {
         const modalOverlay = document.getElementById('modalOverlay');
         const profileModal = document.getElementById('profileModal');
         const confirmModal = document.getElementById('confirmModal');
-        
+
         if (modalOverlay) document.body.appendChild(modalOverlay);
         if (profileModal) document.body.appendChild(profileModal);
         if (confirmModal) document.body.appendChild(confirmModal);
@@ -92,7 +140,7 @@ export async function loadComponents() {
         const closeProfileBtn = document.getElementById('closeProfileBtn');
         const cancelProfileBtn = document.getElementById('cancelProfileBtn');
         const saveProfileBtn = document.getElementById('saveProfileBtn');
-        
+
         const confirmOverlay = document.getElementById('confirmOverlay');
         const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
         const proceedConfirmBtn = document.getElementById('proceedConfirmBtn');
@@ -102,11 +150,11 @@ export async function loadComponents() {
         const toggleProfilePassword = document.getElementById('toggleProfilePassword');
         const profileNama = document.getElementById('profileNama');
         const profileEmail = document.getElementById('profileEmail');
-        
+
         const guruOnlyFields = document.getElementById('guruOnlyFields');
         const profileKodeGuru = document.getElementById('profileKodeGuru');
         const profileRole = document.getElementById('profileRole');
-        
+
         const siswaOnlyFields = document.getElementById('siswaOnlyFields');
         const profileNIS = document.getElementById('profileNIS');
         const profileKelas = document.getElementById('profileKelas');
@@ -145,7 +193,7 @@ export async function loadComponents() {
         if (userProfileBtn && profileModal && confirmModal) {
             userProfileBtn.addEventListener('click', async () => {
                 openModal(profileModal, modalOverlay);
-                
+
                 if (userStr) {
                     const user = JSON.parse(userStr);
                     const endpoint = user.type === 'siswa' ? '/siswa' : '/guru';

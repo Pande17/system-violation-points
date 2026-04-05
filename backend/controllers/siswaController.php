@@ -15,6 +15,8 @@ class SiswaController
     {
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $id = isset($_GET['id']) ? $_GET['id'] : null;
+            $nis = isset($_GET['nis']) ? $_GET['nis'] : null;
+
             if ($id) {
                 $siswa = $this->model->getSiswaById($id);
                 if ($siswa) {
@@ -22,6 +24,15 @@ class SiswaController
                 }
                 else {
                     NotFound(null, "Siswa dengan ID $id tidak ditemukan");
+                }
+            }
+            elseif ($nis) {
+                $siswa = $this->model->getSiswaByNIS($nis);
+                if ($siswa) {
+                    Success($siswa, "Data siswa dengan NIS $nis berhasil diambil");
+                }
+                else {
+                    NotFound(null, "Siswa dengan NIS $nis tidak ditemukan");
                 }
             }
             else {
@@ -41,6 +52,8 @@ class SiswaController
             $kelas = isset($data['kelas']) ? $data['kelas'] : '';
             $jurusan = isset($data['jurusan']) ? $data['jurusan'] : '';
             $jenisKelamin = isset($data['jenis_kelamin']) ? $data['jenis_kelamin'] : '';
+            $tempat_lahir = isset($data['tempat_lahir']) ? $data['tempat_lahir'] : '';
+            $tanggal_lahir = isset($data['tanggal_lahir']) ? $data['tanggal_lahir'] : null;
             $alamat = isset($data['alamat']) ? $data['alamat'] : '';
             $email = isset($data['email']) ? $data['email'] : '';
             $username = isset($data['username']) ? $data['username'] : '';
@@ -61,7 +74,7 @@ class SiswaController
             }
 
             try {
-                $result = $this->model->addSiswa($nama, $nis, $kelas, $jurusan, $jenisKelamin, $alamat, $email, $username, $password, $no_telp, $status, $ortuData);
+                $result = $this->model->addSiswa($nama, $nis, $kelas, $jurusan, $jenisKelamin, $tempat_lahir, $tanggal_lahir, $alamat, $email, $username, $password, $no_telp, $status, $ortuData);
                 if ($result) {
                     Created($data, 'Data Siswa berhasil ditambahkan');
                 }
@@ -86,6 +99,8 @@ class SiswaController
             $kelas = isset($data['kelas']) ? $data['kelas'] : '';
             $jurusan = isset($data['jurusan']) ? $data['jurusan'] : '';
             $jenisKelamin = isset($data['jenis_kelamin']) ? $data['jenis_kelamin'] : '';
+            $tempat_lahir = isset($data['tempat_lahir']) ? $data['tempat_lahir'] : '';
+            $tanggal_lahir = isset($data['tanggal_lahir']) ? $data['tanggal_lahir'] : null;
             $alamat = isset($data['alamat']) ? $data['alamat'] : '';
             $email = isset($data['email']) ? $data['email'] : '';
             $username = isset($data['username']) ? $data['username'] : '';
@@ -108,7 +123,7 @@ class SiswaController
             }
 
             try {
-                $result = $this->model->updateSiswa($id, $nama, $nis, $kelas, $jurusan, $jenisKelamin, $alamat, $email, $username, $password, $no_telp, $status, $ortuData, $id_ortuWali);
+                $result = $this->model->updateSiswa($id, $nama, $nis, $kelas, $jurusan, $jenisKelamin, $tempat_lahir, $tanggal_lahir, $alamat, $email, $username, $password, $no_telp, $status, $ortuData, $id_ortuWali);
                 if ($result) {
                     Success($data, 'Data Siswa berhasil diupdate');
                 }
