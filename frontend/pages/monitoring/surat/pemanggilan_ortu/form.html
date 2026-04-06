@@ -119,13 +119,24 @@
         let selectedSiswa = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Cek Autentikasi
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (!userStr || !token) {
+                window.location.href = '../../../../login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const role = user.role ? user.role.toLowerCase() : '';
+            if (role !== 'kepala sekolah' && role !== 'wakasek' && role !== 'kepala_sekolah') {
+                window.location.href = '../../../../login.html';
+                return;
+            }
+
             await loadComponents('../../../../');
             await fetchSiswa();
             setupDropdown();
             document.getElementById('tanggal_pengiriman').valueAsDate = new Date();
-            
-            // Auto generate letter number (Request #1)
-            await generateNomorSurat();
         });
 
         async function fetchSiswa() {
@@ -136,39 +147,6 @@
                     renderSiswaList(dataSiswa);
                 }
             } catch (error) { console.error(error); }
-        }
-
-        async function generateNomorSurat() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth(); // 0-11
-            const roman = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-            const romanMonth = roman[month];
-
-            try {
-                // Fetch all letters to count current month's letters
-                const res = await getAPI('/surat-pemanggilan-ortu');
-                let count = 1;
-                if (res && res.status === 200 && Array.isArray(res.data)) {
-                    // Filter letters created in the current month and year
-                    const currentMonthLetters = res.data.filter(s => {
-                        const date = new Date(s.created_at || s.tanggal_pengiriman);
-                        return date.getMonth() === month && date.getFullYear() === year;
-                    });
-                    count = currentMonthLetters.length + 1;
-                }
-
-                // Format: xx/SMK TI/BG/bulan/tahun
-                const formattedCount = String(count).padStart(2, '0');
-                const nomor = `${formattedCount}/SMK TI/BG/${romanMonth}/${year}`;
-                const inputNomor = document.getElementById('nomor_surat');
-                if (inputNomor) {
-                    inputNomor.value = nomor;
-                    inputNomor.placeholder = nomor; // Set as default placeholder too
-                }
-            } catch (error) {
-                console.error("Gagal generate nomor surat:", error);
-            }
         }
 
         function renderSiswaList(list) {

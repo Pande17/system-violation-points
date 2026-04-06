@@ -44,7 +44,9 @@ export async function loadComponents(basePrefix = '../../') {
             'pelanggaran.html': 'Input Pelanggaran',
             'cetak-surat.html': 'Cetak Surat Baru',
             'daftar-surat.html': 'Arsip Surat',
-            'form.html': 'Cetak Surat'
+            'form.html': 'Cetak Surat',
+            'laporan.html': 'Rekapitulasi Pelanggaran',
+            'profile.html': 'Profil Saya'
         };
 
         const pageTitleEl = document.getElementById('pageTitle');
@@ -52,7 +54,14 @@ export async function loadComponents(basePrefix = '../../') {
 
         document.querySelectorAll('.nav-link').forEach(a => {
             const href = a.getAttribute('href');
-            if (href && currentPath.includes(href.replace('../../', ''))) {
+            if (!href) return;
+            const normalizedHref = href.replace('../../', '');
+            const targetFilename = normalizedHref.split('/').pop();
+            
+            // Stricter comparison using the extracted filename to avoid 'jenis_pelanggaran' matching 'pelanggaran'
+            const isActive = filename === targetFilename;
+
+            if (isActive) {
                 a.classList.add('bg-white/10', 'text-white');
                 a.classList.remove('text-white/70', 'hover:bg-white/5');
             } else if (!a.id || a.id !== 'suratDropdownBtn') {
@@ -109,8 +118,11 @@ export async function loadComponents(basePrefix = '../../') {
                         el.classList.add('opacity-0', 'pointer-events-none');
                         setTimeout(() => el.classList.add('hidden'), 200);
                     } else {
-                        el.classList.remove('hidden');
-                        setTimeout(() => el.classList.remove('opacity-0', 'pointer-events-none'), 10);
+                        // Only remove hidden and show if NOT role-restricted (Request #12 fix)
+                        if (!el.classList.contains('role-restricted')) {
+                            el.classList.remove('hidden');
+                            setTimeout(() => el.classList.remove('opacity-0', 'pointer-events-none'), 10);
+                        }
                     }
                 });
             });
@@ -124,6 +136,80 @@ export async function loadComponents(basePrefix = '../../') {
                 localStorage.removeItem('token');
                 window.location.href = '../Login.html';
             });
+        }
+
+        // --- Role-Based Sidebar Visibility (Request #10) ---
+        const userStrRaw = localStorage.getItem('user');
+        if (userStrRaw) {
+            const user = JSON.parse(userStrRaw);
+            const role = user.role ? user.role.toLowerCase() : (user.type || '');
+            
+            const sidebarNavMain = document.getElementById('sidebarNavMain');
+            const sidebarNavPelanggaran = document.getElementById('sidebarNavPelanggaran');
+            const sidebarNavSurat = document.getElementById('sidebarNavSurat');
+            const sidebarNavLaporan = document.getElementById('sidebarNavLaporan');
+
+            const textMenuUtama = sidebarNavMain?.previousElementSibling;
+            const textManajemenPelanggaran = sidebarNavPelanggaran?.previousElementSibling;
+            const textAdministrasiSurat = sidebarNavSurat?.previousElementSibling;
+            const textLaporanRekap = sidebarNavLaporan?.previousElementSibling;
+
+            if (role === 'guru mapel') {
+                // Cannot access Rekap Pelanggaran
+                if (sidebarNavLaporan) sidebarNavLaporan.classList.add('hidden', 'role-restricted');
+                if (textLaporanRekap) textLaporanRekap.classList.add('hidden', 'role-restricted');
+
+                // Cannot access Cetak Surat, only Riwayat Surat
+                if (sidebarNavSurat) {
+                    const cetakLinks = sidebarNavSurat.querySelectorAll('a[href*="cetak-surat.html"], a[href*="/form.html"]');
+                    cetakLinks.forEach(link => link.classList.add('hidden', 'role-restricted'));
+                    
+                    // Hide the HR separator
+                    const hr = sidebarNavSurat.querySelector('hr');
+                    if (hr) hr.classList.add('hidden', 'role-restricted');
+                }
+            } else if (role === 'siswa') {
+                // Students only see Dashboard and Profile
+                if (sidebarNavPelanggaran) sidebarNavPelanggaran.classList.add('hidden', 'role-restricted');
+                if (textManajemenPelanggaran) textManajemenPelanggaran.classList.add('hidden', 'role-restricted');
+                if (sidebarNavSurat) sidebarNavSurat.classList.add('hidden', 'role-restricted');
+                if (textAdministrasiSurat) textAdministrasiSurat.classList.add('hidden', 'role-restricted');
+                if (sidebarNavLaporan) sidebarNavLaporan.classList.add('hidden', 'role-restricted');
+                if (textLaporanRekap) textLaporanRekap.classList.add('hidden', 'role-restricted');
+
+                // Hide other main menu items except Dashboard
+                if (sidebarNavMain) {
+                    const mainLinks = sidebarNavMain.querySelectorAll('a:not([href*="dashboard.html"])');
+                    mainLinks.forEach(link => {
+                        if (link.id !== 'navProfileSiswa') {
+                            link.classList.add('hidden', 'role-restricted');
+                        }
+                    });
+
+                    // Add Profile Navigation for student (Requested in #10)
+                    const profileLinkExists = sidebarNavMain.querySelector('a[id="navProfileSiswa"]');
+                    if (!profileLinkExists) {
+                        const profileLink = document.createElement('a');
+                        profileLink.id = 'navProfileSiswa';
+                        profileLink.href = 'profile.html';
+                        profileLink.className = 'nav-link flex items-center gap-3 px-4 py-3 text-white/70 hover:text-white hover:bg-white/5 rounded-xl font-medium transition-all group overflow-hidden';
+                        profileLink.innerHTML = `
+                            <i class="fas fa-user-circle w-5 text-center shrink-0 transition-colors"></i>
+                            <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Profile</span>
+                        `;
+                        sidebarNavMain.appendChild(profileLink);
+                    }
+                }
+
+                // Disable header profile button for students (Request #11)
+                const userProfileBtn = document.getElementById('userProfileBtn');
+                if (userProfileBtn) {
+                    userProfileBtn.classList.remove('cursor-pointer', 'hover:bg-gray-50', 'hover:border-gray-100');
+                    userProfileBtn.classList.add('cursor-default', 'opacity-90', 'pointer-events-none');
+                    const chevron = userProfileBtn.querySelector('.fa-chevron-down');
+                    if (chevron) chevron.classList.add('hidden');
+                }
+            }
         }
 
         // --- Move Modals to Body to avoid stacking context issues ---

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sistem Poin Pelanggaran</title>
+    <link rel="icon" href="../assets/img/viopoints.png">
     <!-- Tailwind CSS Output -->
     <link href="../src/output.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -25,7 +26,7 @@
         <div class="flex justify-center mb-6">
             <div
                 class="h-16 w-16 bg-[#054030] rounded-2xl flex items-center justify-center shadow-lg shadow-[#054030]/20">
-                <img src="../assets/img/gradepoint2.png" alt="Logo">
+                <img src="../assets/img/viopoints.png" alt="Logo">
             </div>
         </div>
 
@@ -105,7 +106,7 @@
                     // Redirect sesuai role
                     if (role === 'admin') {
                         window.location.href = './admin/dashboard.html';
-                    } else if (role === 'guru') {
+                    } else if (role === 'guru mapel') {
                         window.location.href = './guru/dashboard.html';
                     } else if (role === 'kepala sekolah' || role === 'kepala_sekolah' || role === 'wakasek') {
                         window.location.href = './monitoring/dashboard.html';

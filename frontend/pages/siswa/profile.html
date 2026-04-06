@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <!-- Tailwind CSS Output -->
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f8fafc]">
+
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <!-- Top Header -->
+        <div id="header-container"></div>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10"></div>
+
+            <div class="max-w-4xl mx-auto space-y-8 pb-12">
+                
+                <!-- Page Title -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Profil Pengguna</h2>
+                        <p class="text-gray-500 text-sm mt-1">Kelola informasi data diri dan pengaturan akun Anda.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Left: Profile Info Sidebar -->
+                    <div class="md:col-span-1 space-y-6">
+                        <div class="bg-white rounded-[32px] p-8 border border-gray-100 shadow-[0_4px_25px_rgba(0,0,0,0.03)] flex flex-col items-center text-center">
+                            <div class="w-24 h-24 rounded-full bg-emerald-50 border-4 border-white shadow-md flex items-center justify-center mb-4 overflow-hidden relative group">
+                                <i class="fas fa-user text-4xl text-emerald-hard text-[#054030]"></i>
+                                <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
+                                    <i class="fas fa-camera text-white"></i>
+                                </div>
+                            </div>
+                            <h3 class="font-black text-xl text-gray-900 mb-1" id="display_nama">-</h3>
+                            <p class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full uppercase tracking-widest mb-6" id="display_nis">-</p>
+                            
+                            <div class="w-full pt-6 border-t border-gray-50 space-y-4">
+                                <div class="flex items-center justify-between text-left">
+                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Kelas</span>
+                                    <span class="text-[12px] font-bold text-gray-700" id="display_kelas">-</span>
+                                </div>
+                                <div class="flex items-center justify-between text-left">
+                                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Poin Saya</span>
+                                    <span class="text-[12px] font-black text-red-600" id="display_poin">0 pts</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#054030] rounded-[32px] p-6 text-white overflow-hidden relative">
+                            <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+                            <h4 class="text-sm font-bold mb-2">Tips Keamanan</h4>
+                            <p class="text-xs text-white/70 leading-relaxed">Gunakan kombinasi password yang kuat dan jangan pernah bagikan akun VioPoints Anda kepada siapapun.</p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Forms Content -->
+                    <div class="md:col-span-2 space-y-6">
+                        
+                        <!-- Biodata (Read Only) -->
+                        <div class="bg-white rounded-[32px] border border-gray-100 shadow-[0_4px_25px_rgba(0,0,0,0.03)] overflow-hidden">
+                            <div class="px-8 py-6 border-b border-gray-50 bg-gray-50/20">
+                                <h3 class="font-black text-gray-900 flex items-center gap-2">
+                                    <i class="fas fa-id-card text-[#054030]"></i>
+                                    Informasi Biodata
+                                </h3>
+                            </div>
+                            <div class="p-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Nama Lengkap</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_nama">-</p>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Username Login</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_username">-</p>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Tempat Lahir</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_tempat_lahir">-</p>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Tanggal Lahir</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_tanggal_lahir">-</p>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Alamat Lengkap</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_alamat">-</p>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Email Aktif</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_email">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Orang Tua Detail (Read Only) -->
+                        <div class="bg-white rounded-[32px] border border-gray-100 shadow-[0_4px_25px_rgba(0,0,0,0.03)] overflow-hidden">
+                            <div class="px-8 py-6 border-b border-gray-50 bg-gray-50/20">
+                                <h3 class="font-black text-gray-900 flex items-center gap-2">
+                                    <i class="fas fa-users text-[#054030]"></i>
+                                    Informasi Orang Tua / Wali
+                                </h3>
+                            </div>
+                            <div class="p-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Nama Orang Tua</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_ortu_nama">-</p>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Hubungan</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_ortu_hubungan">-</p>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">No. Telp</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_ortu_telp">-</p>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Pekerjaan</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_ortu_pekerjaan">-</p>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Alamat Orang Tua</label>
+                                    <p class="w-full px-4 py-3 bg-gray-50/50 border border-gray-100 rounded-xl text-[13px] font-bold text-gray-700" id="info_ortu_alamat">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Update Security (Editable) -->
+                        <div class="bg-white rounded-[32px] border border-gray-100 shadow-[0_4px_25px_rgba(0,0,0,0.03)] overflow-hidden">
+                            <div class="px-8 py-6 border-b border-gray-50 bg-gray-50/20">
+                                <h3 class="font-black text-gray-900 flex items-center gap-2">
+                                    <i class="fas fa-key text-[#054030]"></i>
+                                    Keamanan Akun
+                                </h3>
+                            </div>
+                            <div class="p-8 space-y-6">
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Ganti Password</label>
+                                    <div class="relative group">
+                                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#054030] transition-colors"></i>
+                                        <input type="password" id="input_password" placeholder="Masukkan password baru untuk mengganti" 
+                                            class="w-full pl-11 pr-4 py-3 bg-white border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-[#054030]/10 focus:border-[#054030] transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                                    </div>
+                                    <p class="text-[11px] text-gray-400 mt-2 ml-1 leading-relaxed italic">Kosongkan jika tidak ingin mengubah password.</p>
+                                </div>
+
+                                <div class="pt-4 flex justify-end">
+                                    <button id="saveBtn" class="bg-[#054030] hover:bg-[#032e22] text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all shadow-lg shadow-emerald-900/10 active:scale-95 flex items-center gap-2 group">
+                                        <span>Simpan Perubahan</span>
+                                        <i class="fas fa-check group-hover:translate-x-1 transition-transform"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div id="footer-container"></div>
+        </div>
+    </main>
+
+    <!-- Success Toast -->
+    <div id="toast" class="fixed bottom-8 right-8 bg-white border border-gray-100 shadow-2xl rounded-2xl px-6 py-4 flex items-center gap-4 translate-x-full opacity-0 transition-all duration-300 z-[1000]">
+        <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+            <i class="fas fa-check"></i>
+        </div>
+        <div>
+            <h4 class="text-sm font-black text-gray-900">Berhasil!</h4>
+            <p class="text-xs font-bold text-gray-500">Profil Anda telah diperbarui.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { getAPI, putAPI } from '../../utils/fetchData.js';
+        import { loadComponents } from '../../components/layout.js';
+
+        let currentUserData = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadComponents();
+
+            const userStr = localStorage.getItem('user');
+            if (!userStr) { window.location.href = '../Login.html'; return; }
+            const user = JSON.parse(userStr);
+
+            await fetchProfile(user.id);
+
+            document.getElementById('saveBtn').addEventListener('click', handleUpdate);
+        });
+
+        async function fetchProfile(id) {
+            try {
+                const res = await getAPI(`/siswa/${id}`);
+                if (res && res.status === 200) {
+                    const data = res.data;
+                    currentUserData = data;
+
+                    // Update UI
+                    document.getElementById('display_nama').textContent = data.nama || '-';
+                    document.getElementById('display_nis').textContent = `NIS: ${data.nis || '-'}`;
+                    document.getElementById('display_kelas').textContent = data.kelas || '-';
+                    const finalPoin = data.total_poin !== undefined ? data.total_poin : (data.poin || 0);
+                    document.getElementById('display_poin').textContent = `${finalPoin} pts`;
+
+                    document.getElementById('info_nama').textContent = data.nama || '-';
+                    document.getElementById('info_username').textContent = data.username || '-';
+                    document.getElementById('info_email').textContent = data.email || 'Belum diatur';
+                    document.getElementById('info_alamat').textContent = data.alamat || 'Belum diatur';
+                    
+                    document.getElementById('info_tempat_lahir').textContent = data.tempat_lahir || '-';
+                    document.getElementById('info_tanggal_lahir').textContent = data.tanggal_lahir ? formatDate(data.tanggal_lahir) : '-';
+
+                    // Update Ortu Info
+                    document.getElementById('info_ortu_nama').textContent = data.ortu_nama || '-';
+                    document.getElementById('info_ortu_hubungan').textContent = data.ortu_hubungan || '-';
+                    document.getElementById('info_ortu_telp').textContent = data.ortu_no_telp || '-';
+                    document.getElementById('info_ortu_pekerjaan').textContent = data.ortu_pekerjaan || '-';
+                    document.getElementById('info_ortu_alamat').textContent = data.ortu_alamat || '-';
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function handleUpdate() {
+            const pass = document.getElementById('input_password').value;
+            if (!pass) {
+                alert("Silahkan masukkan password baru jika ingin mengubah.");
+                return;
+            }
+
+            const payload = { ...currentUserData };
+            payload.password = pass;
+            
+            // Clean payload for API (optional depending on backend requirements)
+            delete payload.id; // Or if the API expects it in the URL
+            
+            try {
+                const res = await putAPI(`/siswa/${currentUserData.id}`, payload);
+                if (res && (res.status === 200 || res.status === true)) {
+                    showToast();
+                    document.getElementById('input_password').value = '';
+                } else {
+                    alert(res.message || "Gagal memperbarui profil.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Terjadi kesalahan saat menghubungi server.");
+            }
+        }
+
+        function formatDate(str) {
+            if (!str) return '-';
+            const d = new Date(str);
+            return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.classList.remove('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                t.classList.add('translate-x-full', 'opacity-0');
+            }, 4000);
+        }
+    </script>
+</body>
+
+</html>

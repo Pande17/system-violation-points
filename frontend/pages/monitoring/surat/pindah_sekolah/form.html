@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Surat Pemanggilan Orang Tua - VioPoints</title>
+    <title>Cetak Surat Pindah Sekolah - VioPoints</title>
     <link rel="icon" type="image/png" href="../../../../assets/img/viopoints.png">
     <link href="../../../../src/output.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,15 +24,17 @@
         <div class="flex-1 overflow-y-auto p-8 relative">
             <div class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10"></div>
             <div class="max-w-7xl mx-auto">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-black text-gray-900 tracking-tight">Surat Pemanggilan Orang Tua</h2>
-                    <p class="text-[13px] text-gray-500 mt-1 font-medium italic">Silakan lengkapi detail pertemuan di bawah ini.</p>
+                <div class="mb-8 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Keterangan Pindah Sekolah</h2>
+                        <p class="text-[13px] text-gray-500 mt-1 font-medium italic">Lengkapi data kepindahan siswa di bawah ini.</p>
+                    </div>
                 </div>
 
                 <div class="max-w-3xl mx-auto">
                     <div class="bg-white rounded-[24px] shadow-sm border border-gray-100 p-8 space-y-6">
                         <form id="cetakForm">
-                            <div class="space-y-5">
+                            <div class="space-y-6">
                                 <!-- Student Selection -->
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[2px] mb-2 ml-1">Pilih Siswa</label>
@@ -56,7 +58,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Letter Details -->
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 ml-1 flex items-center justify-between">
@@ -66,35 +67,40 @@
                                         <input type="text" id="nomor_surat" placeholder="Kosongkan untuk otomatis..." class="w-full px-5 py-4 bg-white border-2 border-emerald-50 rounded-2xl text-[14px] font-bold text-gray-700 outline-none focus:border-emerald-400 transition-all font-mono">
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 ml-1">Tanggal Pengiriman <span class="text-red-500">*</span></label>
-                                        <input type="date" id="tanggal_pengiriman" class="w-full px-5 py-4 bg-white border-2 border-emerald-50 rounded-2xl text-[14px] font-bold text-gray-700 outline-none focus:border-emerald-400 transition-all" required>
+                                        <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 ml-1">Tanggal Surat <span class="text-red-500">*</span></label>
+                                        <input type="date" id="tanggal" class="w-full px-5 py-4 bg-white border-2 border-emerald-50 rounded-2xl text-[14px] font-bold text-gray-700 outline-none focus:border-emerald-400 transition-all" required>
+                                    </div>
+                                </div>
+
+                                <div class="bg-gray-50/50 p-6 rounded-3xl border border-gray-100 space-y-4">
+                                    <h3 class="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1 flex items-center gap-2">
+                                        <i class="fas fa-user-friends mt-0.5"></i> Data Pemohon (Orang Tua)
+                                    </h3>
+                                    
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 ml-1">Nama Orang Tua</label>
+                                        <input type="text" id="nama_orang_tua" class="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl text-[14px] font-bold text-gray-800 outline-none focus:border-emerald-400 transition-all">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-gray-400 uppercase mb-2 ml-1">Alamat Orang Tua</label>
+                                        <textarea id="alamat_orang_tua" rows="2" class="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl text-[14px] font-bold text-gray-800 outline-none focus:border-emerald-400 transition-all resize-none"></textarea>
                                     </div>
                                 </div>
 
                                 <div class="bg-emerald-50/30 p-6 rounded-3xl border border-emerald-100/50 space-y-4">
-                                    <h3 class="text-[11px] font-black text-emerald-700 uppercase tracking-[2px] mb-2 flex items-center gap-2">
-                                        <i class="fas fa-calendar-check mt-0.5"></i> Detail Pertemuan
+                                    <h3 class="text-[11px] font-black text-emerald-700 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                        <i class="fas fa-school mt-0.5"></i> Detail Kepindahan
                                     </h3>
                                     
                                     <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Hari / Tanggal Pertemuan</label>
-                                        <input type="text" id="hari_tanggal" placeholder="Contoh: Senin / 23 Maret 2026" class="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl text-[14px] font-bold text-gray-700 outline-none" required>
-                                    </div>
-
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Pukul</label>
-                                            <input type="time" id="pukul" class="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl text-[14px] font-bold text-gray-700 outline-none" required>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Tempat</label>
-                                            <input type="text" id="tempat" value="SMK TI Bali Global Denpasar" class="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl text-[14px] font-bold text-gray-700 outline-none" required>
-                                        </div>
+                                        <label class="block text-[10px] font-bold text-emerald-800/60 uppercase tracking-widest mb-2 ml-1">Tujuan Sekolah Pindah</label>
+                                        <input type="text" id="tujuan_sekolah" placeholder="Contoh: SMK TI Bali Global Singaraja" class="w-full px-5 py-4 bg-white border border-emerald-100 rounded-2xl text-[14px] font-bold text-gray-700 outline-none focus:border-emerald-400" required>
                                     </div>
 
                                     <div>
-                                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 ml-1">Keperluan</label>
-                                        <input type="text" id="keperluan" placeholder="Contoh: Panggilan PENTING" class="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl text-[14px] font-bold text-gray-700 outline-none" required>
+                                        <label class="block text-[10px] font-bold text-emerald-800/60 uppercase tracking-widest mb-2 ml-1">Alasan Pindah</label>
+                                        <textarea id="alasan" rows="3" placeholder="Tuliskan alasan kepindahan siswa..." class="w-full px-5 py-4 bg-white border border-emerald-100 rounded-2xl text-[14px] font-bold text-gray-700 outline-none focus:border-emerald-400 resize-none" required></textarea>
                                     </div>
                                 </div>
 
@@ -119,13 +125,24 @@
         let selectedSiswa = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Cek Autentikasi
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (!userStr || !token) {
+                window.location.href = '../../../../login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const role = user.role ? user.role.toLowerCase() : '';
+            if (role !== 'kepala sekolah' && role !== 'wakasek' && role !== 'kepala_sekolah') {
+                window.location.href = '../../../../login.html';
+                return;
+            }
+
             await loadComponents('../../../../');
             await fetchSiswa();
             setupDropdown();
-            document.getElementById('tanggal_pengiriman').valueAsDate = new Date();
-            
-            // Auto generate letter number (Request #1)
-            await generateNomorSurat();
+            document.getElementById('tanggal').valueAsDate = new Date();
         });
 
         async function fetchSiswa() {
@@ -138,60 +155,35 @@
             } catch (error) { console.error(error); }
         }
 
-        async function generateNomorSurat() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth(); // 0-11
-            const roman = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
-            const romanMonth = roman[month];
-
-            try {
-                // Fetch all letters to count current month's letters
-                const res = await getAPI('/surat-pemanggilan-ortu');
-                let count = 1;
-                if (res && res.status === 200 && Array.isArray(res.data)) {
-                    // Filter letters created in the current month and year
-                    const currentMonthLetters = res.data.filter(s => {
-                        const date = new Date(s.created_at || s.tanggal_pengiriman);
-                        return date.getMonth() === month && date.getFullYear() === year;
-                    });
-                    count = currentMonthLetters.length + 1;
-                }
-
-                // Format: xx/SMK TI/BG/bulan/tahun
-                const formattedCount = String(count).padStart(2, '0');
-                const nomor = `${formattedCount}/SMK TI/BG/${romanMonth}/${year}`;
-                const inputNomor = document.getElementById('nomor_surat');
-                if (inputNomor) {
-                    inputNomor.value = nomor;
-                    inputNomor.placeholder = nomor; // Set as default placeholder too
-                }
-            } catch (error) {
-                console.error("Gagal generate nomor surat:", error);
-            }
-        }
-
         function renderSiswaList(list) {
             const container = document.getElementById('siswa_list');
             container.innerHTML = list.map(s => `
-                <div class="siswa-opt p-4 hover:bg-emerald-50/50 cursor-pointer flex items-center gap-4 group" data-id="${s.id}" data-nis="${s.nis}" data-nama="${s.nama}" data-kelas="${s.kelas}">
+                <div class="siswa-opt p-4 hover:bg-emerald-50/50 cursor-pointer flex items-center gap-4 group" data-nis="${s.nis}">
                     <div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
                         <i class="fas fa-user-graduate text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-[13px] font-extrabold text-gray-800 tracking-tight">${s.nama}</p>
+                        <p class="text-[13px] font-extrabold text-gray-800 tracking-tight group-hover:text-emerald-700">${s.nama}</p>
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">${s.nis} • ${s.kelas}</p>
                     </div>
                 </div>
             `).join('');
 
             document.querySelectorAll('.siswa-opt').forEach(opt => {
-                opt.addEventListener('click', () => {
-                    selectedSiswa = { id: opt.dataset.id, nama: opt.dataset.nama, nis: opt.dataset.nis, kelas: opt.dataset.kelas };
-                    document.querySelector('#dropdown_siswa .selected-text').innerHTML = `<span class="uppercase tracking-widest font-black text-gray-900">${selectedSiswa.nama}</span>`;
-                    toggleDropdown();
-                });
+                opt.addEventListener('click', () => fetchSiswaByNIS(opt.dataset.nis));
             });
+        }
+
+        async function fetchSiswaByNIS(nis) {
+            const res = await getAPI(`/siswa?nis=${nis}`);
+            if (res && res.status === 200) {
+                selectedSiswa = res.data;
+                document.getElementById('nama_orang_tua').value = selectedSiswa.ortu_nama || '';
+                document.getElementById('alamat_orang_tua').value = selectedSiswa.ortu_alamat || '';
+                
+                document.querySelector('#dropdown_siswa .selected-text').innerHTML = `<span class="uppercase tracking-widest font-black text-gray-900">${selectedSiswa.nama}</span>`;
+                toggleDropdown();
+            }
         }
 
         function setupDropdown() {
@@ -209,17 +201,17 @@
                 const payload = {
                     id_siswa: selectedSiswa.id,
                     nomor_surat: document.getElementById('nomor_surat').value,
-                    hari_tanggal: document.getElementById('hari_tanggal').value,
-                    pukul: document.getElementById('pukul').value,
-                    tempat: document.getElementById('tempat').value,
-                    keperluan: document.getElementById('keperluan').value,
-                    tanggal_pengiriman: document.getElementById('tanggal_pengiriman').value,
+                    nama_orang_tua: document.getElementById('nama_orang_tua').value,
+                    alamat_orang_tua: document.getElementById('alamat_orang_tua').value,
+                    tujuan_sekolah: document.getElementById('tujuan_sekolah').value,
+                    alasan: document.getElementById('alasan').value,
+                    tanggal: document.getElementById('tanggal').value,
                     created_by: JSON.parse(localStorage.getItem('user'))?.id || 1
                 };
 
-                const res = await postAPI('/surat-pemanggilan-ortu', payload);
+                const res = await postAPI('/surat-pindah-sekolah', payload);
                 if (res && res.status === 200) {
-                    window.open(`http://localhost:8000/api/surat-pemanggilan-ortu?id=${res.data.id}&print=1`, '_blank');
+                    window.open(`http://localhost:8000/api/surat-pindah-sekolah?id=${res.data.id}&print=1`, '_blank');
                 } else {
                     alert("Gagal menyimpan: " + (res.message || "Error"));
                 }

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenis Pelanggaran - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <div id="sidebar-container"></div>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <div id="header-container"></div>
+
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <div
+                class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10">
+            </div>
+
+            <div class="max-w-7xl mx-auto space-y-8">
+                <!-- Header Section -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Jenis Pelanggaran</h2>
+                        <p class="text-[13px] text-gray-500 mt-1 font-medium">Kelola kategori dan kode pelanggaran siswa
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Filter & Sort -->
+                <div class="relative z-[60] mb-4">
+                    <h3 class="text-[13px] font-bold text-gray-500 mb-3 ml-1">Filter &amp; Urutkan</h3>
+                    <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+                        <div class="flex flex-wrap gap-3 w-full xl:w-auto">
+                            <!-- Sort Poin -->
+                            <div class="relative filter-dropdown" data-type="single" id="sort_poin_dropdown">
+                                <div class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-amber-500 hover:text-amber-600 transition-all dropdown-toggle shadow-sm w-[210px]">
+                                    <span id="sort_poin_label"><i class="fas fa-arrow-up-short-wide mr-1.5 text-[11px]"></i>Poin Terkecil</span>
+                                    <i class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto"></i>
+                                </div>
+                                <div class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-52 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">URUT POIN</div>
+                                    <div id="sort_poin_asc" class="sort-poin-opt flex items-center gap-3 px-4 py-2 hover:bg-amber-50 hover:text-amber-600 cursor-pointer select-none transition-colors bg-amber-50 text-amber-600" onclick="setSortPoin('asc')">
+                                        <i class="fas fa-arrow-up-short-wide text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Poin Terkecil</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-poin-asc"></i>
+                                    </div>
+                                    <div id="sort_poin_desc" class="sort-poin-opt flex items-center gap-3 px-4 py-2 hover:bg-amber-50 hover:text-amber-600 cursor-pointer select-none transition-colors text-gray-700" onclick="setSortPoin('desc')">
+                                        <i class="fas fa-arrow-down-short-wide text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Poin Terbanyak</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-poin-desc" style="display:none"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Search -->
+                        <div class="relative w-full xl:w-80 flex-shrink-0">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="searchInput" autocomplete="off"
+                                placeholder="Cari kode atau nama pelanggaran..."
+                                class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-[13px] font-bold shadow-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Container (full width) -->
+            <div
+                class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden mt-4">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse whitespace-nowrap min-w-[700px]">
+                        <thead>
+                            <tr
+                                class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-100">
+                                <th class="py-5 px-6 font-bold text-center w-16">No</th>
+                                <th class="py-5 px-6 font-bold w-[180px]">Kode Pelanggaran</th>
+                                <th class="py-5 px-6 font-bold">Nama Pelanggaran</th>
+                                <th class="py-5 px-6 font-bold w-[140px] text-center">Poin</th>
+                                <th class="py-5 px-6 font-bold text-center w-[160px]">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="divide-y divide-gray-50">
+                            <tr>
+                                <td colspan="5" class="py-12 text-center text-gray-400">
+                                    <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
+                                    <p class="text-sm font-medium">Memuat data...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ===================== MODAL ===================== -->
+    <div id="modal" class="fixed inset-0 hidden items-center justify-center p-3 sm:p-4 transition-all duration-300"
+        style="z-index: 9991;">
+        <div class="fixed inset-0 bg-gray-900/60 transition-opacity duration-300"
+            style="backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"></div>
+        <div
+            class="bg-white rounded-[24px] shadow-2xl w-full max-w-lg overflow-hidden transform scale-90 opacity-0 transition-all duration-300 flex flex-col max-h-[90vh] relative z-10 border border-gray-100">
+            <!-- Modal Header -->
+            <div
+                class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                        <i class="fas fa-exclamation-triangle text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalTitle" class="font-extrabold text-lg text-gray-900 tracking-tight leading-tight">
+                            Tambah Jenis Pelanggaran</h3>
+                        <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-0.5">Manajemen Jenis
+                            Pelanggaran
+                        </p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeModal()"
+                    class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all focus:outline-none flex items-center justify-center">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 sm:p-8 overflow-y-auto flex-1 custom-scrollbar bg-white">
+                <div class="space-y-5">
+                    <!-- Kode Pelanggaran -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Kode
+                            Pelanggaran</label>
+                        <div class="relative group">
+                            <i
+                                class="fas fa-hashtag absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[13px] group-focus-within:text-emerald-600 transition-colors"></i>
+                            <input type="text" id="form_kode" placeholder="Contoh: SS" readonly
+                                class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
+                    </div>
+
+                    <!-- Nama Pelanggaran -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nama
+                            Pelanggaran</label>
+                        <div class="relative group">
+                            <i
+                                class="fas fa-file-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[13px] group-focus-within:text-emerald-600 transition-colors"></i>
+                            <input type="text" id="form_nama" placeholder="Nama jenis pelanggaran" readonly
+                                class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
+                    </div>
+
+                    <!-- Poin -->
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Poin
+                            Pelanggaran</label>
+                        <div class="relative group">
+                            <i
+                                class="fas fa-star absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[13px] group-focus-within:text-emerald-600 transition-colors"></i>
+                            <input type="number" id="form_poin" placeholder="Contoh: 5" min="1" max="100" readonly
+                                class="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        </div>
+                        <p class="text-[11px] text-gray-400 mt-1.5 ml-1">Rentang poin: 1 – 100</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div
+                class="px-6 py-5 bg-white border-t border-gray-50 flex items-center justify-end gap-2 sticky bottom-0 z-10 w-full shrink-0">
+                <button type="button" onclick="closeModal()"
+                    class="px-10 py-3 font-black text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 active:scale-95">Tutup Detail</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== CONFIRM MODAL ===================== -->
+    <div id="confirmModal" class="fixed inset-0 hidden items-center justify-center p-4 transition-all duration-300"
+        style="z-index: 9999;">
+        <div class="absolute inset-0 bg-gray-900/40 transition-opacity duration-300"
+            style="backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);"></div>
+        <div
+            class="bg-white rounded-2xl shadow-3xl p-8 max-w-[340px] w-full text-center transform scale-90 opacity-0 transition-all duration-300 relative z-10 flex flex-col items-center">
+            <div id="confirmIconWrapper"
+                class="w-20 h-20 rounded-[28px] border-[3px] border-red-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm">
+                <i id="confirmIcon" class="fas fa-trash-alt text-red-500 text-[32px]"></i>
+            </div>
+            <h3 id="confirmTitle" class="text-[19px] font-black text-gray-900 mb-2 tracking-tight">Hapus Data?</h3>
+            <p id="confirmMessage" class="text-[12px] font-medium text-gray-500 leading-relaxed mb-6 px-2">Data jenis pelanggaran yang
+                dihapus tidak dapat dikembalikan.</p>
+            <div class="w-full flex flex-col gap-0 mt-1 pb-1">
+                <button type="button" id="confirmActionBtn" onclick="executeConfirm()"
+                    class="w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-red-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3">HAPUS</button>
+                <button type="button" onclick="closeConfirm()"
+                    class="w-full py-3 font-extrabold text-gray-400 hover:text-gray-600 bg-transparent rounded-[16px] transition-all text-[11px] uppercase tracking-widest">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== TOAST ===================== -->
+    <div id="toastNotification"
+        class="fixed top-6 right-6 hidden items-center gap-4 p-4 bg-white border border-gray-100 rounded-2xl shadow-xl transform transition-all duration-300 translate-x-full opacity-0"
+        style="z-index: 10000; min-width: 300px;">
+        <div id="toastIconContainer" class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0">
+            <i id="toastIcon" class="fas fa-check text-lg"></i>
+        </div>
+        <div>
+            <h4 id="toastTitle" class="text-sm font-bold text-gray-900">Berhasil</h4>
+            <p id="toastMessage" class="text-xs font-medium text-gray-500 mt-0.5">Operasi berhasil</p>
+        </div>
+        <button onclick="closeToast()" class="ml-auto text-gray-400 hover:text-gray-600"><i
+                class="fas fa-times"></i></button>
+    </div>
+
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #e2e8f0;
+        }
+    </style>
+
+    <script type="module">
+        import { loadComponents } from '../../components/layout.js';
+        import { getAPI, postAPI, putAPI, deleteAPI } from '../../utils/fetchData.js';
+
+        let dataList = [];
+        let modalMode = 'add';
+        let currentId = null;
+        let pendingDeleteId = null;
+        let toastTimeout = null;
+        let sortPoin = 'asc'; // default: terkecil ke terbanyak
+        let pendingAction = null; // { type: 'create'|'edit'|'delete', payload?, id? }
+
+        // ─── TOAST ───────────────────────────────────────────────
+        function showToast(title, message, isSuccess) {
+            clearTimeout(toastTimeout);
+            const toast = document.getElementById('toastNotification');
+            const iconContainer = document.getElementById('toastIconContainer');
+            const icon = document.getElementById('toastIcon');
+            const titleEl = document.getElementById('toastTitle');
+            const msgEl = document.getElementById('toastMessage');
+
+            if (isSuccess) {
+                iconContainer.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-emerald-50';
+                icon.className = 'fas fa-check text-lg text-emerald-500';
+            } else {
+                iconContainer.className = 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-red-50';
+                icon.className = 'fas fa-times text-lg text-red-500';
+            }
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex');
+            setTimeout(() => { toast.classList.remove('translate-x-full', 'opacity-0'); }, 10);
+            toastTimeout = setTimeout(() => closeToast(), 4000);
+        }
+
+        window.closeToast = function () {
+            const toast = document.getElementById('toastNotification');
+            toast.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => { toast.classList.add('hidden'); toast.classList.remove('flex'); }, 300);
+        };
+
+        // ─── RENDER TABLE ─────────────────────────────────────────
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-12 text-center text-gray-400">
+                    <div class="flex flex-col items-center gap-2">
+                        <i class="fas fa-folder-open text-4xl text-gray-200"></i>
+                        <p class="text-sm font-bold text-gray-400">Belum ada data jenis pelanggaran</p>
+                    </div></td></tr>`;
+                return;
+            }
+
+            const poinBadge = (p) => {
+                let cls = p <= 5 ? 'bg-amber-50 text-amber-600' : p <= 15 ? 'bg-orange-50 text-orange-600' : 'bg-red-50 text-red-600';
+                return `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-black ${cls}">
+                    <i class="fas fa-star text-[10px]"></i>${p} poin</span>`;
+            };
+
+            tbody.innerHTML = data.map((item, i) => `
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                    <td class="py-4 px-6 text-center text-[13px] font-bold text-gray-400">${i + 1}</td>
+                    <td class="py-4 px-6">
+                        <span class="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-[#054030] rounded-lg text-[12px] font-black border border-emerald-100">
+                            ${item.kode_pelanggaran || '-'}
+                        </span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <p class="text-[13px] font-bold text-gray-800">${item.nama_pelanggaran || '-'}</p>
+                    </td>
+                    <td class="py-4 px-6 text-center">${poinBadge(item.poin || 0)}</td>
+                    <td class="py-4 px-6 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <button onclick="window.openModal('edit', ${item.id})"
+                                class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors" title="Lihat Detail">
+                                <i class="fas fa-eye text-[13px]"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`).join('');
+        }
+
+        // ─── SORT POIN ───────────────────────────────────────────
+        window.setSortPoin = function (order) {
+            sortPoin = order;
+            const label = document.getElementById('sort_poin_label');
+            const toggle = document.querySelector('#sort_poin_dropdown .dropdown-toggle');
+            const ascEl = document.getElementById('sort_poin_asc');
+            const descEl = document.getElementById('sort_poin_desc');
+            const chkAsc = document.querySelector('.check-poin-asc');
+            const chkDesc = document.querySelector('.check-poin-desc');
+
+            if (order === 'asc') {
+                label.innerHTML = '<i class="fas fa-arrow-up-short-wide mr-1.5 text-[11px]"></i>Poin Terkecil';
+                ascEl.classList.add('bg-amber-50', 'text-amber-600'); ascEl.classList.remove('text-gray-700');
+                descEl.classList.remove('bg-amber-50', 'text-amber-600'); descEl.classList.add('text-gray-700');
+                if (chkAsc) chkAsc.style.display = 'inline-block';
+                if (chkDesc) chkDesc.style.display = 'none';
+                toggle?.classList.remove('border-amber-500', 'text-amber-600');
+            } else {
+                label.innerHTML = '<i class="fas fa-arrow-down-short-wide mr-1.5 text-[11px]"></i>Poin Terbanyak';
+                descEl.classList.add('bg-amber-50', 'text-amber-600'); descEl.classList.remove('text-gray-700');
+                ascEl.classList.remove('bg-amber-50', 'text-amber-600'); ascEl.classList.add('text-gray-700');
+                if (chkDesc) chkDesc.style.display = 'inline-block';
+                if (chkAsc) chkAsc.style.display = 'none';
+                toggle?.classList.add('border-amber-500', 'text-amber-600');
+            }
+            // Close dropdown
+            const menu = document.querySelector('#sort_poin_dropdown .dropdown-menu');
+            if (menu) { menu.classList.add('opacity-0', '-translate-y-2'); setTimeout(() => menu.classList.add('hidden'), 200); }
+            document.querySelector('#sort_poin_dropdown .dropdown-icon')?.classList.remove('rotate-180');
+            applySearch();
+        };
+
+        // ─── LOAD DATA ────────────────────────────────────────────
+        async function loadData() {
+            try {
+                const res = await getAPI('/jenis-pelanggaran', { skipErrorRedirect: true });
+                if (res && res.status === 200) {
+                    dataList = res.data || [];
+                    applySearch();
+                } else {
+                    showToast('Gagal', res?.message || 'Tidak dapat memuat data.', false);
+                    renderTable([]);
+                }
+            } catch (e) {
+                console.error(e);
+                renderTable([]);
+            }
+        }
+
+        // ─── SEARCH & SORT ────────────────────────────────────────
+        function applySearch() {
+            const keyword = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            let filtered = [...dataList];
+            if (keyword) {
+                filtered = filtered.filter(d =>
+                    (d.kode_pelanggaran && d.kode_pelanggaran.toLowerCase().includes(keyword)) ||
+                    (d.nama_pelanggaran && d.nama_pelanggaran.toLowerCase().includes(keyword))
+                );
+            }
+            filtered.sort((a, b) => {
+                const pa = parseInt(a.poin) || 0;
+                const pb = parseInt(b.poin) || 0;
+                return sortPoin === 'asc' ? pa - pb : pb - pa;
+            });
+            renderTable(filtered);
+        }
+
+        // ─── MODAL ────────────────────────────────────────────────
+        window.openModal = function (mode, id = null) {
+            modalMode = mode;
+            currentId = id;
+            const modal = document.getElementById('modal');
+            const content = modal.children[1];
+            const title = document.getElementById('modalTitle');
+            document.getElementById('form_kode').value = '';
+            document.getElementById('form_nama').value = '';
+            document.getElementById('form_poin').value = '';
+
+            if (mode === 'edit' && id) {
+                const item = dataList.find(d => d.id === id);
+                if (item) {
+                    title.textContent = 'Detail Informasi Pelanggaran';
+                    document.getElementById('form_kode').value = item.kode_pelanggaran || '';
+                    document.getElementById('form_nama').value = item.nama_pelanggaran || '';
+                    document.getElementById('form_poin').value = item.poin || '';
+                }
+            } else {
+                title.textContent = 'Tambah Jenis Pelanggaran';
+            }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { content.classList.remove('scale-90', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+        };
+
+        window.closeModal = function () {
+            const modal = document.getElementById('modal');
+            const content = modal.children[1];
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        };
+
+        window.submitForm = function () {
+            const kode = document.getElementById('form_kode').value.trim();
+            const nama = document.getElementById('form_nama').value.trim();
+            const poin = parseInt(document.getElementById('form_poin').value);
+
+            if (!kode || !nama || !poin) {
+                showToast('Validasi', 'Semua field wajib diisi!', false);
+                return;
+            }
+            if (poin < 1 || poin > 100) {
+                showToast('Validasi', 'Poin harus antara 1 – 100.', false);
+                return;
+            }
+            const payload = { kode_pelanggaran: kode, nama_pelanggaran: nama, poin };
+            openConfirm(modalMode === 'add' ? 'create' : 'edit', currentId, payload);
+        };
+
+        // ─── CONFIRM MODAL ───────────────────────────────────────
+        function openConfirm(action, id = null, payload = null) {
+            pendingAction = { type: action, id, payload };
+            const modal = document.getElementById('confirmModal');
+            const content = modal.children[1];
+            const titleEl = document.getElementById('confirmTitle');
+            const msgEl = document.getElementById('confirmMessage');
+            const iconWrapper = document.getElementById('confirmIconWrapper');
+            const iconEl = document.getElementById('confirmIcon');
+            const btn = document.getElementById('confirmActionBtn');
+
+            if (action === 'create') {
+                titleEl.textContent = 'Tambah Jenis Pelanggaran';
+                msgEl.textContent = 'Apakah Anda yakin ingin menambahkan jenis pelanggaran baru ini?';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-emerald-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                iconEl.className = 'fas fa-plus text-emerald-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-emerald-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3';
+                btn.textContent = 'SIMPAN';
+            } else if (action === 'edit') {
+                titleEl.textContent = 'Simpan Perubahan';
+                msgEl.textContent = 'Apakah Anda yakin ingin menyimpan perubahan data jenis pelanggaran ini?';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-blue-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                iconEl.className = 'fas fa-save text-blue-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-blue-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3';
+                btn.textContent = 'SIMPAN';
+            } else if (action === 'delete') {
+                titleEl.textContent = 'Hapus Data?';
+                msgEl.textContent = 'Data jenis pelanggaran yang dihapus tidak dapat dikembalikan.';
+                iconWrapper.className = 'w-20 h-20 rounded-[28px] border-[3px] border-red-500 bg-white flex items-center justify-center mb-5 shrink-0 shadow-sm';
+                iconEl.className = 'fas fa-trash-alt text-red-500 text-[32px]';
+                btn.className = 'w-full py-3.5 bg-white border border-gray-100 hover:bg-gray-50 shadow-sm rounded-2xl font-extrabold text-red-600 text-[11px] uppercase tracking-widest transition-all focus:ring-4 focus:ring-gray-100 active:scale-95 mb-3';
+                btn.textContent = 'HAPUS';
+            }
+            closeModal();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => { content.classList.remove('scale-90', 'opacity-0'); content.classList.add('scale-100', 'opacity-100'); }, 10);
+        }
+
+        window.executeConfirm = async function () {
+            if (!pendingAction) return;
+            const { type, id, payload } = pendingAction;
+            closeConfirm();
+            try {
+                if (type === 'create') {
+                    const res = await postAPI('/jenis-pelanggaran', payload, { skipErrorRedirect: true });
+                    if (res && (res.status === 200 || res.status === 201)) {
+                        showToast('Berhasil', 'Jenis pelanggaran ditambahkan.', true);
+                        await loadData();
+                    } else { showToast('Gagal', res?.message || 'Terjadi kesalahan.', false); }
+                } else if (type === 'edit') {
+                    const res = await putAPI(`/jenis-pelanggaran/${id}`, payload, { skipErrorRedirect: true });
+                    if (res && (res.status === 200 || res.status === 201)) {
+                        showToast('Berhasil', 'Data berhasil diperbarui.', true);
+                        await loadData();
+                    } else { showToast('Gagal', res?.message || 'Terjadi kesalahan.', false); }
+                } else if (type === 'delete') {
+                    const res = await deleteAPI(`/jenis-pelanggaran/${id}`, { skipErrorRedirect: true });
+                    if (res && res.status === 200) {
+                        showToast('Dihapus', 'Jenis pelanggaran berhasil dihapus.', true);
+                        await loadData();
+                    } else { showToast('Gagal', res?.message || 'Tidak dapat menghapus.', false); }
+                }
+            } catch (e) {
+                showToast('Error', 'Koneksi bermasalah.', false);
+            }
+            pendingAction = null;
+        };
+
+        // ─── DELETE ───────────────────────────────────────────────
+        window.deleteItem = function (id) {
+            openConfirm('delete', id, null);
+        };
+
+        window.closeConfirm = function () {
+            const modal = document.getElementById('confirmModal');
+            const content = modal.children[1];
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); pendingAction = null; }, 300);
+        };
+
+        // ─── FILTER DROPDOWN ─────────────────────────────────────
+        function initFilterDropdowns() {
+            document.querySelectorAll('.filter-dropdown').forEach(wrapper => {
+                const toggle = wrapper.querySelector('.dropdown-toggle');
+                const menu = wrapper.querySelector('.dropdown-menu');
+                if (!toggle || !menu) return;
+
+                toggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = !menu.classList.contains('hidden');
+                    
+                    // Close others
+                    document.querySelectorAll('.filter-dropdown .dropdown-menu').forEach(m => {
+                        if (m === menu) return;
+                        if (!m.classList.contains('hidden')) {
+                            m.classList.add('opacity-0', '-translate-y-2');
+                            setTimeout(() => m.classList.add('hidden'), 200);
+                            m.closest('.filter-dropdown')?.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                        }
+                    });
+
+                    if (!isOpen) {
+                        menu.classList.remove('hidden');
+                        requestAnimationFrame(() => menu.classList.remove('opacity-0', '-translate-y-2'));
+                        toggle.querySelector('.dropdown-icon')?.classList.add('rotate-180');
+                    } else {
+                        menu.classList.add('opacity-0', '-translate-y-2');
+                        setTimeout(() => menu.classList.add('hidden'), 200);
+                        toggle.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                    }
+                });
+            });
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.filter-dropdown .dropdown-menu').forEach(m => {
+                    m.classList.add('opacity-0', '-translate-y-2');
+                    setTimeout(() => m.classList.add('hidden'), 200);
+                    m.closest('.filter-dropdown')?.querySelector('.dropdown-icon')?.classList.remove('rotate-180');
+                });
+            });
+        }
+
+        // ─── INIT ─────────────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Cek Autentikasi
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (!userStr || !token) {
+                window.location.href = '../login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const role = user.role ? user.role.toLowerCase() : '';
+            if (role !== 'kepala sekolah' && role !== 'wakasek' && role !== 'kepala_sekolah') {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            await loadComponents();
+            await loadData();
+            initFilterDropdowns();
+            document.getElementById('searchInput').addEventListener('input', applySearch);
+        });
+    </script>
+</body>
+
+</html>

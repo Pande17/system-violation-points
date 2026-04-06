@@ -30,12 +30,7 @@
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-3xl font-black text-gray-900 tracking-tight">Manajemen Data Siswa</h2>
-                        <!-- <p class="text-gray-500 mt-1">Kelola informasi siswa, kelas, dan jurusan secara mudah.</p> -->
                     </div>
-                    <button onclick="window.openModal('add')"
-                        class="bg-[#054030] hover:bg-[#032e22] text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm">
-                        <i class="fas fa-plus"></i> Tambah Siswa Baru
-                    </button>
                 </div>
 
                 <!-- Filters & Search -->
@@ -218,15 +213,15 @@
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">NIS</label>
-                            <input type="number" id="form_nis" placeholder="Nomor Induk Siswa" required
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            <input type="number" id="form_nis" placeholder="Nomor Induk Siswa" required readonly
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nama
                                 Lengkap</label>
-                            <input type="text" id="form_nama" placeholder="Masukkan nama siswa" required
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            <input type="text" id="form_nama" placeholder="Masukkan nama siswa" required readonly
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                         </div>
                     </div>
 
@@ -235,14 +230,14 @@
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">No.
                                 Telepon Siswa</label>
-                            <input type="text" id="form_telepon" placeholder="08xxxxxxxxxxx"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            <input type="text" id="form_telepon" placeholder="08xxxxxxxxxxx" readonly
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Status</label>
-                            <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
-                                id="dropdown_status">
+                            <div class="relative custom-dropdown group pointer-events-none opacity-80"
+                                style="z-index: 10;" tabindex="0" id="dropdown_status">
                                 <div
                                     class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-700">
                                     <span class="selected-text">Aktif</span>
@@ -265,8 +260,8 @@
                             <label
                                 class="block text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-2 ml-1">Jenis
                                 Kelamin</label>
-                            <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
-                                id="dropdown_jk">
+                            <div class="relative custom-dropdown group pointer-events-none opacity-80"
+                                style="z-index: 10;" tabindex="0" id="dropdown_jk">
                                 <div
                                     class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-400">
                                     <span class="selected-text">Pilih Gender</span>
@@ -289,8 +284,8 @@
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Jurusan</label>
-                            <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
-                                id="dropdown_jurusan">
+                            <div class="relative custom-dropdown group pointer-events-none opacity-80"
+                                style="z-index: 10;" tabindex="0" id="dropdown_jurusan">
                                 <div
                                     class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-400">
                                     <span class="selected-text">Pilih Jurusan</span>
@@ -324,8 +319,8 @@
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Tempat
                                 Lahir</label>
-                            <input type="text" id="form_tempat_lahir" placeholder="Contoh: Denpasar"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            <input type="text" id="form_tempat_lahir" placeholder="Contoh: Denpasar" readonly
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                         </div>
                     </div>
 
@@ -334,23 +329,23 @@
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Tanggal
                                 Lahir</label>
-                            <input type="date" id="form_tanggal_lahir"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            <input type="date" id="form_tanggal_lahir" readonly
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                         </div>
                         <div>
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Email
                                 Utama (Opsional)</label>
-                            <input type="email" id="form_email" placeholder="email@sekolah.com"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                            <input type="email" id="form_email" placeholder="email@sekolah.com" readonly
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                         </div>
                     </div>
 
                     <div>
                         <label
                             class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Alamat</label>
-                        <input type="text" id="form_alamat" placeholder="Alamat lengkap tempat tinggal"
-                            class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                        <input type="text" id="form_alamat" placeholder="Alamat lengkap tempat tinggal" readonly
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                     </div>
 
                     <!-- Section: Data Orang Tua / Wali -->
@@ -363,14 +358,14 @@
                                 <label
                                     class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nama
                                     Ortu/Wali</label>
-                                <input type="text" id="form_ortu_nama" placeholder="Nama Orang Tua atau Wali"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                                <input type="text" id="form_ortu_nama" placeholder="Nama Orang Tua atau Wali" readonly
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                             </div>
                             <div>
                                 <label
                                     class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Hubungan</label>
-                                <div class="relative custom-dropdown group" style="z-index: 10;" tabindex="0"
-                                    id="dropdown_ortu_hubungan">
+                                <div class="relative custom-dropdown group pointer-events-none opacity-80"
+                                    style="z-index: 10;" tabindex="0" id="dropdown_ortu_hubungan">
                                     <div
                                         class="dropdown-selected cursor-pointer w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl flex justify-between items-center transition-all focus:ring-2 focus:ring-emerald-500/20 group-focus:ring-2 text-[13px] font-bold text-gray-700">
                                         <span class="selected-text">Pilih Hubungan</span>
@@ -394,15 +389,17 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                             <div>
                                 <label
-                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Tempat Lahir Ortu</label>
-                                <input type="text" id="form_ortu_tempat_lahir" placeholder="Contoh: Denpasar"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Tempat
+                                    Lahir Ortu</label>
+                                <input type="text" id="form_ortu_tempat_lahir" placeholder="Contoh: Denpasar" readonly
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                             </div>
                             <div>
                                 <label
-                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Tanggal Lahir Ortu</label>
-                                <input type="date" id="form_ortu_tanggal_lahir"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700">
+                                    class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Tanggal
+                                    Lahir Ortu</label>
+                                <input type="date" id="form_ortu_tanggal_lahir" readonly
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl transition-all text-[13px] font-bold text-gray-700">
                             </div>
                         </div>
 
@@ -411,14 +408,14 @@
                                 <label
                                     class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">No.
                                     Telepon</label>
-                                <input type="text" id="form_ortu_telepon" placeholder="08xxxxxxxxxxx"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                                <input type="text" id="form_ortu_telepon" placeholder="08xxxxxxxxxxx" readonly
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                             </div>
                             <div>
                                 <label
                                     class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Pekerjaan</label>
-                                <input type="text" id="form_ortu_pekerjaan" placeholder="Pekerjaan"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                                <input type="text" id="form_ortu_pekerjaan" placeholder="Pekerjaan" readonly
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                             </div>
                         </div>
 
@@ -426,9 +423,9 @@
                             <label
                                 class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Alamat
                                 Ortu/Wali</label>
-                            <input type="text" id="form_ortu_alamat"
+                            <input type="text" id="form_ortu_alamat" readonly
                                 placeholder="Alamat lengkap tempat tinggal orang tua/wali"
-                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                                class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                         </div>
                     </div>
 
@@ -441,14 +438,15 @@
                                 <label
                                     class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Username
                                     Login</label>
-                                <input type="text" id="form_username" placeholder="Username"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                                <input type="text" id="form_username" placeholder="Username" readonly
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                             </div>
-                            <div>
+                            <div class="hidden">
                                 <label
                                     class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Password</label>
                                 <input type="password" id="form_password" placeholder="Kosongkan jika tidak diubah"
-                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
+                                    readonly
+                                    class="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl outline-none transition-all text-[13px] font-bold text-gray-700 placeholder-gray-300">
                             </div>
                         </div>
                     </div>
@@ -461,10 +459,8 @@
             <div
                 class="px-6 py-5 bg-white border-t border-gray-50 flex items-center justify-end gap-2 sticky bottom-0 z-10 w-full shrink-0">
                 <button type="button" onclick="closeModal()"
-                    class="px-6 py-2.5 font-black text-gray-400 hover:text-gray-600 rounded-xl transition-all text-xs">Batal</button>
-                <button type="submit" form="siswaForm"
-                    class="w-full sm:w-auto px-8 py-3.5 font-black text-white bg-[#054030] hover:bg-[#0a6148] rounded-2xl transition-all text-xs uppercase tracking-widest shadow-xl shadow-emerald-900/20 active:scale-95">Simpan
-                    Data</button>
+                    class="px-10 py-3 font-black text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-all text-xs uppercase tracking-widest shadow-lg shadow-blue-500/20 active:scale-95">Tutup
+                    Detail</button>
             </div>
         </div>
     </div>
@@ -634,6 +630,20 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Cek Autentikasi
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (!userStr || !token) {
+                window.location.href = '../login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const role = user.role ? user.role.toLowerCase() : '';
+            if (role !== 'guru mapel') {
+                window.location.href = '../login.html';
+                return;
+            }
+
             await loadComponents();
             await loadJurusan();
             await loadKelas();
@@ -952,7 +962,7 @@
                 currentOrtuId = null;
                 document.getElementById('form_poin').value = 0;
             } else if (mode === 'edit') {
-                title.textContent = 'Edit Data Siswa';
+                title.textContent = 'Detail Informasi Siswa';
                 currentSiswaId = id;
                 // ... fetch logic ...
 
@@ -973,18 +983,10 @@
                         document.getElementById('form_ortu_alamat').value = siswa.ortu_alamat || '';
                         document.getElementById('form_username').value = siswa.username || '';
                         document.getElementById('form_password').value = '';
-                        // Date Formatting Helper
-                        const formatDate = (dateStr) => {
-                            if (!dateStr) return '';
-                            const d = new Date(dateStr);
-                            if (isNaN(d.getTime())) return '';
-                            return d.toISOString().split('T')[0];
-                        };
-
                         document.getElementById('form_tempat_lahir').value = siswa.tempat_lahir || '';
-                        document.getElementById('form_tanggal_lahir').value = formatDate(siswa.tanggal_lahir);
+                        document.getElementById('form_tanggal_lahir').value = siswa.tanggal_lahir || '';
                         document.getElementById('form_ortu_tempat_lahir').value = siswa.ortu_tempat_lahir || '';
-                        document.getElementById('form_ortu_tanggal_lahir').value = formatDate(siswa.ortu_tanggal_lahir);
+                        document.getElementById('form_ortu_tanggal_lahir').value = siswa.ortu_tanggal_lahir || '';
 
                         let jk = (siswa.jenis_kelamin === 'Laki-laki' || siswa.jenis_kelamin === 'Laki-Laki' || siswa.jenis_kelamin === 'L') ? 'L' :
                             ((siswa.jenis_kelamin === 'Perempuan' || siswa.jenis_kelamin === 'P') ? 'P' : 'L');
@@ -1218,7 +1220,7 @@
                             ${displayGender}
                         </td>
                         <td class="py-4 px-6 text-center">
-                            <span class="font-bold border border-gray-200 px-3 py-1 rounded-md text-sm ${(item.total_poin !== undefined ? item.total_poin : item.poin) > 0 ? 'text-red-600 bg-red-50 border-red-100' : 'text-gray-600'}">${item.total_poin !== undefined ? item.total_poin : (item.poin || 0)}</span>
+                            <span class="font-bold border border-gray-200 px-3 py-1 rounded-md text-sm ${item.poin > 0 ? 'text-red-600 bg-red-50 border-red-100' : 'text-gray-600'}">${item.poin || 0}</span>
                         </td>
                         <td class="py-4 px-6 text-center">
                             <span class="inline-flex px-3 py-1 rounded-full text-[11px] font-bold ${isAktif ? 'bg-emerald-100 text-emerald-700' : isLulus ? 'bg-blue-200 text-blue-600' : 'bg-red-100 text-red-700'}">
@@ -1229,11 +1231,8 @@
                         </td>
                         <td class="py-4 px-6 text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <button onclick="window.openModal('edit', ${item.id})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Edit">
-                                    <i class="fas fa-pen text-xs"></i>
-                                </button>
-                                <button onclick="window.openConfirm('delete', ${item.id})" class="w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Hapus">
-                                    <i class="fas fa-trash text-xs"></i>
+                                <button onclick="window.openModal('edit', ${item.id})" class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-colors flex items-center justify-center shadow-sm" title="Lihat Detail">
+                                    <i class="fas fa-eye text-xs"></i>
                                 </button>
                             </div>
                         </td>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Monitoring - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <!-- Tailwind CSS Output -->
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <!-- Top Header -->
+        <div id="header-container"></div>
+
+        <!-- Dashboard Content -->
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <!-- Background Decoration -->
+            <div
+                class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10">
+            </div>
+
+            <div class="max-w-7xl mx-auto space-y-8">
+
+                <!-- Welcome Banner -->
+                <div
+                    class="bg-white rounded-[24px] p-8 border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex justify-between items-center relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-50/50 to-white pointer-events-none">
+                    </div>
+                    <div class="relative z-10 w-full md:w-2/3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span
+                                class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider">Dashboard
+                                Aktif</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-2">Selamat Datang, <span
+                                id="welcomeName" class="text-[#054030]">Monitor</span>! 👋</h2>
+                        <p class="text-gray-500 text-sm md:text-base leading-relaxed">Kelola dan pantau seluruh data
+                            kedisiplinan dan pelanggaran siswa secara real-time dari satu tempat. Pastikan ketertiban
+                            lingkungan sekolah tetap terjaga.</p>
+                    </div>
+                    <!-- Decorative element right side -->
+                    <div
+                        class="hidden md:flex relative z-10 w-32 h-32 bg-emerald-50 rounded-full items-center justify-center border-8 border-white shadow-sm transition-transform group-hover:scale-105 duration-500">
+                        <i class="fas fa-chart-pie text-5xl text-emerald-300"></i>
+                    </div>
+                </div>
+
+                <!-- 1. Top Cards Row (Siswa, Guru, Kelas) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Card 1: Jumlah Siswa -->
+                    <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-5 hover:border-blue-200 transition-all group cursor-default relative overflow-hidden cursor-pointer"
+                        onclick=" window.location.href='siswa.html'">
+                        <div
+                            class="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-50/50 rounded-full group-hover:scale-150 transition-transform duration-500 rounded-tl-full pointer-events-none">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm relative z-10">
+                            <i class="fas fa-user-graduate text-2xl"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-sm font-semibold text-gray-500 mb-1">Total Siswa Aktif</p>
+                            <h3 class="text-4xl font-extrabold text-gray-900 tracking-tight" id="countSiswa">0</h3>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Jumlah Guru -->
+                    <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-5 hover:border-emerald-200 transition-all group cursor-default relative overflow-hidden cursor-pointer"
+                        onclick=" window.location.href='guru.html'">
+                        <div
+                            class="absolute -right-4 -bottom-4 w-24 h-24 bg-emerald-50/50 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500 shadow-sm relative z-10">
+                            <i class="fas fa-chalkboard-teacher text-2xl"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <p class="text-sm font-semibold text-gray-500 mb-1">Total Guru</p>
+                            <h3 class="text-4xl font-extrabold text-gray-900 tracking-tight" id="countGuru">0</h3>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Jumlah Kelas -->
+                    <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-5 hover:border-purple-200 transition-all group cursor-default relative overflow-hidden cursor-pointer"
+                        onclick=" window.location.href='kelas.html'">
+                        <div
+                            class="absolute -right-4 -bottom-4 w-24 h-24 bg-purple-50/50 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-500 shadow-sm relative z-10">
+                            <i class="fas fa-door-open text-2xl"></i>
+                        </div>
+                        <div class="relative z-10 ">
+                            <p class="text-sm font-semibold text-gray-500 mb-1">Total Kelas</p>
+                            <h3 class="text-4xl font-extrabold text-gray-900 tracking-tight" id="countKelas">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Full Row Card (Total Pelanggaran + Filter) -->
+                <div class="bg-white rounded-[24px] p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
+                    <div
+                        class="flex flex-col xl:flex-row justify-between xl:items-center mb-8 gap-6 border-b border-gray-100 pb-6">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-gray-900">Statistik Pelanggaran <span
+                                    class="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider ml-2 align-middle">Live</span>
+                            </h3>
+                            <p class="text-sm text-gray-500 mt-1">Pantau tren pelanggaran siswa berdasarkan rentang
+                                waktu tertentu</p>
+                        </div>
+
+                        <!-- Filter Tabs -->
+                        <div
+                            class="flex flex-wrap gap-1 bg-gray-50 p-1.5 rounded-xl border border-gray-200/50 self-start">
+                            <button
+                                class="filter-btn px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-900 transition-colors focus:outline-none"
+                                data-filter="hari_ini">Hari Ini</button>
+                            <button
+                                class="filter-btn px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-900 transition-colors focus:outline-none"
+                                data-filter="minggu_ini">Minggu Ini</button>
+                            <button
+                                class="filter-btn px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-900 transition-colors focus:outline-none"
+                                data-filter="bulan_ini">Bulan Ini</button>
+                            <button
+                                class="filter-btn px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-900 transition-colors focus:outline-none"
+                                data-filter="tahun_ini">Tahun Ini</button>
+                            <button
+                                class="filter-btn active px-4 py-2 text-sm font-medium rounded-lg text-gray-500 hover:text-gray-900 transition-colors focus:outline-none"
+                                data-filter="semua">Semua Data</button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-center gap-8 px-4">
+                        <div class="relative">
+                            <svg class="w-32 h-32 transform -rotate-90">
+                                <circle class="text-red-100" stroke-width="8" stroke="currentColor" fill="transparent"
+                                    r="58" cx="64" cy="64" />
+                                <circle class="text-red-500" stroke-width="8" stroke-linecap="round"
+                                    stroke="currentColor" fill="transparent" r="58" cx="64" cy="64" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center flex-col">
+                                <i class="fas fa-exclamation-triangle text-2xl text-red-500 mb-1"></i>
+                            </div>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <h2 class="text-6xl font-black text-gray-900 tracking-tighter" id="countPelanggaran">0</h2>
+                            <p class="text-gray-500 font-medium mt-2 text-lg">
+                                Total Kasus <span id="activeFilterLabel" class="text-red-500 font-bold">Semua
+                                    Data</span>
+                            </p>
+                            <button onclick="window.location.href='pelanggaran.html'"
+                                class="mt-4 text-sm font-bold text-[#054030] hover:text-[#0a6c52] transition-colors flex items-center gap-1 mx-auto md:mx-0 cursor-pointer">
+                                Lihat Rekapitulasi Detail <i class="fas fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Bottom Card (Top 5 Siswa dengan Pelanggaran Tertinggi) -->
+                <div
+                    class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+                    <div
+                        class="p-6 md:p-8 border-b border-gray-100 flex flex-col md:flex-row justify-between md:items-center gap-4 bg-gray-50/30">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-3">
+                                5 Siswa dengan Poin Tertinggi
+                                <span
+                                    class="bg-red-100 text-red-600 w-6 h-6 rounded-md flex items-center justify-center text-xs shadow-sm"><i
+                                        class="fas fa-fire"></i></span>
+                            </h3>
+                            <p class="text-sm text-gray-500 mt-1">Daftar siswa yang memerlukan perhatian dan tindak
+                                lanjut segera dari BK.</p>
+                        </div>
+                        <a href="siswa.html"
+                            class="text-white bg-[#054030] hover:bg-[#032e22] text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors text-center shadow-sm">
+                            Kelola Siswa
+                        </a>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[700px]">
+                            <thead>
+                                <tr
+                                    class="bg-white text-gray-400 text-xs uppercase tracking-widest border-b border-gray-100">
+                                    <th class="py-5 px-8 font-bold w-20">Rank</th>
+                                    <th class="py-5 px-6 font-bold">Profil Siswa</th>
+                                    <th class="py-5 px-6 font-bold">Kelas</th>
+                                    <th class="py-5 px-8 font-bold text-right">Akumulasi Poin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topSiswaTable" class="divide-y divide-gray-50">
+                                <!-- Data will be loaded here via JS -->
+                                <tr>
+                                    <td colspan="4" class="py-12 text-center text-gray-400">
+                                        <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
+                                        <p class="text-sm font-medium">Memuat data peringkat siswa...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div id="footer-container"></div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { getAPI } from '../../utils/fetchData.js';
+        import { loadComponents } from '../../components/layout.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Muat komponen Layout terlebih dahulu
+            await loadComponents();
+
+            // Cek Autentikasi
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+
+            if (!userStr || !token) {
+                window.location.href = '../Login.html';
+                return;
+            }
+
+            const user = JSON.parse(userStr);
+            const role = user.role ? user.role.toLowerCase() : '';
+            if (role !== 'kepala sekolah' && role !== 'wakasek' && role !== 'kepala_sekolah') {
+                alert('Akses Ditolak! Halaman ini khusus Kepala Sekolah dan Wakasek.');
+                window.location.href = '../login.html';
+                return;
+            }
+
+            // Set Data Profile
+            document.getElementById('welcomeName').textContent = user.username;
+
+            // Logika Tabs Filter Pelanggaran
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+
+                    document.getElementById('activeFilterLabel').textContent = e.target.textContent;
+
+                    const filterValue = e.target.getAttribute('data-filter');
+                    loadDataPelanggaran(filterValue);
+                });
+            });
+
+            // Eksekusi Muat Data
+            await loadDashboardData();
+        });
+
+        // ------------------ Logika Data MOCK / API ------------------
+
+        async function loadDashboardData() {
+            try {
+                // Ambil Data Stats Utama
+                const res = await getAPI('/dashboard?filter=semua');
+                if (res.status === 200) {
+                    const data = res.data;
+                    animateValue("countSiswa", 0, data.countSiswa, 1200);
+                    animateValue("countGuru", 0, data.countGuru, 1000);
+                    animateValue("countKelas", 0, data.countKelas, 800);
+
+                    const countEl = document.getElementById('countPelanggaran');
+                    animateValue("countPelanggaran", 0, data.countPelanggaran, 800);
+
+                    renderTopSiswa(data.topSiswa);
+                }
+            } catch (error) {
+                console.error("Gagal memuat data dashboard:", error);
+            }
+        }
+
+        async function loadDataPelanggaran(filter) {
+            try {
+                // Panggil API khusus pelanggaran berdasarkan filter
+                const res = await getAPI(`/dashboard?filter=${filter}`);
+                if (res.status === 200) {
+                    const countEl = document.getElementById('countPelanggaran');
+                    const currentCount = parseInt(countEl.textContent.replace(/,/g, ''), 10) || 0;
+                    animateValue("countPelanggaran", currentCount, res.data.countPelanggaran, 800);
+                    // Kita juga bisa me-refresh top siswa jika filter mempengaruhinya,
+                    // Tapi di sini sesuai API, topSiswa ikut ter-update
+                    renderTopSiswa(res.data.topSiswa);
+                }
+            } catch (error) {
+                console.error("Error memuat filter pelanggaran:", error);
+            }
+        }
+
+        function renderTopSiswa(topSiswaArray) {
+            const tbody = document.getElementById('topSiswaTable');
+            try {
+                if (!topSiswaArray || topSiswaArray.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-gray-500 font-medium">Belum ada data pelanggaran.</td></tr>`;
+                    return;
+                }
+
+                // Beri sedikit jeda loading agar transisi terlihat elegan
+                tbody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-gray-400"><i class="fas fa-spinner fa-spin text-xl mb-2 text-emerald-600"></i><p class="text-sm">Memuat...</p></td></tr>`;
+
+                setTimeout(() => {
+                    let html = '';
+                    topSiswaArray.forEach((siswa, index) => {
+                        const rankColors = [
+                            'bg-red-100 text-red-600 border-red-200',      // Rank 1
+                            'bg-orange-100 text-orange-600 border-orange-200', // Rank 2
+                            'bg-amber-100 text-amber-600 border-amber-200',   // Rank 3
+                            'bg-gray-100 text-gray-500 border-gray-200',        // Rank 4
+                            'bg-gray-100 text-gray-500 border-gray-200'         // Rank 5
+                        ];
+
+                        html += `
+                            <tr class="hover:bg-gray-50/80 transition-colors group">
+                                <td class="py-5 px-8">
+                                    <div class="w-9 h-9 rounded-xl ${rankColors[index]} border flex items-center justify-center font-black text-sm shadow-sm group-hover:scale-110 transition-transform">
+                                        #${index + 1}
+                                    </div>
+                                </td>
+                                <td class="py-5 px-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-11 h-11 rounded-full bg-slate-100 flex-shrink-0 flex items-center justify-center text-slate-400 font-black border border-slate-200 shadow-sm text-lg">
+                                            ${siswa.nama.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-gray-900 group-hover:text-[#054030] transition-colors">${siswa.nama}</p>
+                                            <p class="text-xs text-gray-500 font-medium">NIS: ${siswa.nis}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-5 px-6">
+                                    <span class="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-xs font-bold border border-gray-200/60 shadow-sm">${siswa.kelas}</span>
+                                </td>
+                                <td class="py-5 px-8 text-right">
+                                    <div class="inline-flex items-baseline gap-1 bg-red-50 px-4 py-1.5 rounded-xl border border-red-100">
+                                        <span class="font-black text-red-600 text-xl">${siswa.poin}</span>
+                                        <span class="text-[10px] uppercase font-bold text-red-400">Pts</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    tbody.innerHTML = html;
+                }, 500);
+            } catch (error) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-red-500 font-medium"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal memuat data</td></tr>`;
+            }
+        }
+
+        // Fungsi pembantu animasi transisi angka
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const easeOutCurve = 1 - Math.pow(1 - progress, 3); // Cubic ease out
+                const currentVal = Math.floor(easeOutCurve * (end - start) + start);
+
+                // Format ribuan
+                obj.innerHTML = currentVal.toLocaleString('id-ID');
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.innerHTML = end.toLocaleString('id-ID');
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+
+</html>

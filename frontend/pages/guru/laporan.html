@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekapitulasi Pelanggaran - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Date input custom styling */
+        input[type="date"] {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            color: #4b5563;
+            appearance: none;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+
+        /* Active filter badge */
+        .filter-active-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: white;
+            }
+            main {
+                overflow: visible !important;
+                height: auto !important;
+            }
+            .flex-1 {
+                overflow: visible !important;
+            }
+            #sidebar-container, #header-container, #sidebar, header {
+                display: none !important;
+            }
+            .max-w-7xl {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            th, td {
+                border: 1px solid #e2e8f0 !important;
+                white-space: normal !important;
+            }
+            .bg-emerald-50, .bg-blue-50, .bg-amber-50, .bg-orange-50, .bg-red-50 {
+                background-color: transparent !important;
+                border: none !important;
+            }
+            .text-emerald-700, .text-blue-700, .text-amber-600, .text-orange-600, .text-red-600 {
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f8fafc]">
+
+    <div id="sidebar-container" class="no-print"></div>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <div id="header-container" class="no-print"></div>
+
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <div
+                class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10 no-print">
+            </div>
+
+            <div class="max-w-7xl mx-auto space-y-8">
+                <!-- Header Section -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Rekapitulasi Pelanggaran</h2>
+                        <p class="text-[13px] text-gray-500 mt-1 font-medium">Laporan data pelanggaran siswa dan statistik poin</p>
+                    </div>
+                    <div class="flex gap-2 no-print">
+                        <button onclick="window.print()"
+                            class="bg-[#054030] hover:bg-[#032e22] text-white px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-colors shadow-sm">
+                            <i class="fas fa-print"></i> Cetak Laporan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="relative z-[60] mb-4 no-print">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-[13px] font-bold text-gray-500 ml-1">Filter Data Rekapitulasi</h3>
+                        <button onclick="resetAllFilters()"
+                            class="text-[12px] font-bold text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1.5"
+                            id="resetBtn" style="display:none">
+                            <i class="fas fa-rotate-left text-[10px]"></i> Reset Filter
+                        </button>
+                    </div>
+                    <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4">
+                        <div class="flex flex-wrap gap-3 w-full xl:w-auto">
+
+                            <!-- 1. Sort Tanggal -->
+                            <div class="relative filter-dropdown group" data-type="single" id="sort_date_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-purple-500 hover:text-purple-600 transition-all dropdown-toggle shadow-sm w-[190px]">
+                                    <span id="sort_date_label"><i
+                                            class="fas fa-arrow-down-wide-short mr-1.5 text-[11px]"></i>Terbaru</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-52 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        URUT TANGGAL</div>
+                                    <div id="sort_date_newest"
+                                        class="sort-date-opt flex items-center gap-3 px-4 py-2 hover:bg-purple-50 hover:text-purple-600 cursor-pointer select-none transition-colors bg-purple-50 text-purple-600"
+                                        onclick="setSortDate('newest')">
+                                        <i class="fas fa-arrow-down-wide-short text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Terbaru ke Terlama</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-date-newest"></i>
+                                    </div>
+                                    <div id="sort_date_oldest"
+                                        class="sort-date-opt flex items-center gap-3 px-4 py-2 hover:bg-purple-50 hover:text-purple-600 cursor-pointer select-none transition-colors text-gray-700"
+                                        onclick="setSortDate('oldest')">
+                                        <i class="fas fa-arrow-up-wide-short text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Terlama ke Terbaru</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-date-oldest"
+                                            style="display:none"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Sort Poin -->
+                            <div class="relative filter-dropdown group" data-type="single" id="sort_poin_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-amber-500 hover:text-amber-600 transition-all dropdown-toggle shadow-sm w-[180px]">
+                                    <span id="sort_poin_label"><i class="fas fa-star mr-1.5 text-[11px]"></i>Semua
+                                        Poin</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-52 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        URUT POIN</div>
+                                    <div id="sort_poin_none"
+                                        class="sort-poin-opt flex items-center gap-3 px-4 py-2 hover:bg-amber-50 hover:text-amber-600 cursor-pointer select-none transition-colors bg-amber-50 text-amber-600"
+                                        onclick="setSortPoin('none')">
+                                        <i class="fas fa-minus text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Default</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-poin-none"></i>
+                                    </div>
+                                    <div id="sort_poin_asc"
+                                        class="sort-poin-opt flex items-center gap-3 px-4 py-2 hover:bg-amber-50 hover:text-amber-600 cursor-pointer select-none transition-colors text-gray-700"
+                                        onclick="setSortPoin('asc')">
+                                        <i class="fas fa-arrow-up-short-wide text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Poin Terendah</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-poin-asc"
+                                            style="display:none"></i>
+                                    </div>
+                                    <div id="sort_poin_desc"
+                                        class="sort-poin-opt flex items-center gap-3 px-4 py-2 hover:bg-amber-50 hover:text-amber-600 cursor-pointer select-none transition-colors text-gray-700"
+                                        onclick="setSortPoin('desc')">
+                                        <i class="fas fa-arrow-down-short-wide text-[11px]"></i>
+                                        <span class="text-[13px] font-bold">Poin Tertinggi</span>
+                                        <i class="fas fa-check ml-auto text-[10px] check-poin-desc"
+                                            style="display:none"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Filter Kelas -->
+                            <div class="relative filter-dropdown" data-type="multi" id="filter_kelas_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all dropdown-toggle shadow-sm w-[190px]">
+                                    <span id="filter_kelas_label"><i class="fas fa-school mr-1.5 text-[11px]"></i>Semua
+                                        Kelas</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto"></i>
+                                </div>
+                                <div class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-64 bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 py-2 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200 max-h-72 overflow-y-auto"
+                                    id="filter_kelas_options">
+                                    <div
+                                        class="px-4 py-2 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        FILTER ANGKATAN &amp; KELAS</div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Range Tanggal -->
+                            <div class="relative filter-dropdown group" data-type="single" id="date_range_dropdown">
+                                <div
+                                    class="cursor-pointer px-4 py-2.5 bg-white border border-gray-200 rounded-full flex gap-3 items-center text-[13px] font-bold text-gray-600 hover:border-emerald-500 hover:text-emerald-600 transition-all dropdown-toggle shadow-sm w-[160px] overflow-hidden">
+                                    <i class="fas fa-calendar-days text-[11px] shrink-0"></i>
+                                    <span id="date_range_label" class="truncate flex-1 min-w-0">Rentang Tgl</span>
+                                    <i
+                                        class="fas fa-chevron-down text-[10px] transition-transform duration-200 dropdown-icon ml-auto shrink-0"></i>
+                                </div>
+                                <div
+                                    class="dropdown-menu hidden absolute left-0 top-[calc(100%+8px)] w-[280px] bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 p-4 z-[100] transform opacity-0 -translate-y-2 transition-all duration-200">
+                                    <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">
+                                        RENTANG TANGGAL</div>
+                                    <div class="space-y-3">
+                                        <div>
+                                            <label class="text-[11px] font-bold text-gray-500 mb-1 block">Dari
+                                                Tanggal</label>
+                                            <input type="date" id="date_start"
+                                                class="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all bg-gray-50"
+                                                onchange="onDateRangeChange()">
+                                        </div>
+                                        <div>
+                                            <label class="text-[11px] font-bold text-gray-500 mb-1 block">Sampai
+                                                Tanggal</label>
+                                            <input type="date" id="date_end"
+                                                class="w-full px-3 py-2 border border-gray-200 rounded-lg text-[13px] focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all bg-gray-50"
+                                                onchange="onDateRangeChange()">
+                                        </div>
+                                        <button onclick="clearDateRange()"
+                                            class="w-full py-2 rounded-lg border border-gray-200 text-[12px] font-bold text-gray-500 hover:bg-gray-50 transition-colors">
+                                            <i class="fas fa-xmark mr-1"></i> Hapus Rentang
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="relative w-full xl:w-80 flex-shrink-0 no-print">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="searchInput" autocomplete="off"
+                                placeholder="Cari nama siswa, kelas, pelanggaran..."
+                                class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-full focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-[13px] font-bold shadow-sm">
+                        </div>
+                    </div>
+
+                    <!-- Active Filter Tags -->
+                    <div class="flex flex-wrap gap-2 mt-2" id="activeFilterTags"></div>
+                </div>
+
+                <!-- Summary Stats (For Report) -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 no-print" id="summaryStats">
+                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Kasus</span>
+                        <h4 class="text-2xl font-black text-gray-900" id="stat_total_kasus">0</h4>
+                    </div>
+                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Poin</span>
+                        <h4 class="text-2xl font-black text-amber-600" id="stat_total_poin">0</h4>
+                    </div>
+                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Siswa Terlibat</span>
+                        <h4 class="text-2xl font-black text-blue-600" id="stat_total_siswa">0</h4>
+                    </div>
+                    <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center text-center">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Kategori Unik</span>
+                        <h4 class="text-2xl font-black text-purple-600" id="stat_total_jenis">0</h4>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div
+                    class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden mt-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
+                            <thead>
+                                <tr
+                                    class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-widest border-b border-gray-100">
+                                    <th class="py-5 px-6 font-bold text-center w-16">No</th>
+                                    <th class="py-5 px-6 font-bold">Tanggal</th>
+                                    <th class="py-5 px-6 font-bold min-w-[200px]">Siswa</th>
+                                    <th class="py-5 px-6 font-bold">Kelas</th>
+                                    <th class="py-5 px-6 font-bold min-w-[200px]">Jenis Pelanggaran</th>
+                                    <th class="py-5 px-6 font-bold w-[120px] text-center">Poin</th>
+                                    <th class="py-5 px-6 font-bold">Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="divide-y divide-gray-50">
+                                <tr>
+                                    <td colspan="7" class="py-12 text-center text-gray-400">
+                                        <i class="fas fa-spinner fa-spin text-3xl mb-3 text-emerald-600"></i>
+                                        <p class="text-sm font-medium">Memuat data rekapitulasi...</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { loadComponents } from '../../components/layout.js';
+        import { getAPI } from '../../utils/fetchData.js';
+
+        let dataList = [];
+        let dataKelas = [];
+        let sortDate = 'newest';
+        let sortPoin = 'none';
+
+        function formatDate(str) {
+            if (!str) return '-';
+            const d = new Date(str);
+            if (isNaN(d)) return str;
+            return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        async function init() {
+            // Cek Autentikasi
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (!userStr || !token) {
+                window.location.href = '../login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const role = user.role ? user.role.toLowerCase() : '';
+            if (role !== 'kepala sekolah' && role !== 'wakasek' && role !== 'kepala_sekolah') {
+                window.location.href = '../login.html';
+                return;
+            }
+
+            await loadComponents();
+            loadKelas();
+            fetchData();
+            setupDropdownHandlers();
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+        }
+
+        async function fetchData() {
+            try {
+                const res = await getAPI('/pelanggaran');
+                if (res && res.status === 200) {
+                    dataList = res.data || [];
+                    applyFilters();
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('tableBody');
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-16 text-center text-gray-400">Tidak ada data ditemukan</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map((item, i) => `
+                <tr class="hover:bg-gray-50/50 transition-colors group">
+                    <td class="py-4 px-6 text-center text-[13px] font-bold text-gray-400">${i + 1}</td>
+                    <td class="py-4 px-6">
+                        <span class="text-[12px] font-black text-gray-800">${formatDate(item.created_at)}</span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <div>
+                            <p class="text-[13px] font-bold text-gray-800">${item.nama_siswa || '-'}</p>
+                            <p class="text-[11px] text-gray-400 font-medium">NIS: ${item.nis_siswa || '-'}</p>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6">
+                        <span class="text-[12px] font-black text-blue-700">${item.kelas_nama || item.kelas || '-'}</span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <p class="text-[13px] font-bold text-gray-800">${item.nama_pelanggaran || '-'}</p>
+                    </td>
+                    <td class="py-4 px-6 text-center font-black text-[12px]">${item.poin}</td>
+                    <td class="py-4 px-6">
+                        <p class="text-[12px] text-gray-500 font-medium max-w-[200px] truncate">${item.keterangan || '—'}</p>
+                    </td>
+                </tr>`).join('');
+
+            updateStats(data);
+        }
+
+        function updateStats(data) {
+            document.getElementById('stat_total_kasus').textContent = data.length;
+            document.getElementById('stat_total_poin').textContent = data.reduce((acc, curr) => acc + (parseInt(curr.poin) || 0), 0);
+            document.getElementById('stat_total_siswa').textContent = new Set(data.map(d => d.id_siswa)).size;
+            document.getElementById('stat_total_jenis').textContent = new Set(data.map(d => d.id_jenis_pelanggaran)).size;
+        }
+
+        window.applyFilters = function () {
+            const keyword = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            const dateStart = document.getElementById('date_start')?.value;
+            const dateEnd = document.getElementById('date_end')?.value;
+
+            let filtered = [...dataList];
+
+            if (keyword) {
+                filtered = filtered.filter(d =>
+                    (d.nama_siswa && d.nama_siswa.toLowerCase().includes(keyword)) ||
+                    (d.kelas_nama && d.kelas_nama.toLowerCase().includes(keyword)) ||
+                    (d.nama_pelanggaran && d.nama_pelanggaran.toLowerCase().includes(keyword))
+                );
+            }
+
+            const selKelas = Array.from(document.querySelectorAll('.filter-kelas-cb:checked')).map(c => c.value);
+            const selTingkat = Array.from(document.querySelectorAll('.filter-angkatan-cb:checked')).map(c => c.value);
+
+            if (selKelas.length > 0 || selTingkat.length > 0) {
+                filtered = filtered.filter(d => {
+                    if (selKelas.includes(String(d.id_kelas))) return true;
+                    const className = d.kelas_nama || d.kelas || '';
+                    return selTingkat.some(t => className.startsWith(t + ' '));
+                });
+            }
+
+            if (dateStart) filtered = filtered.filter(d => d.created_at && new Date(d.created_at) >= new Date(dateStart));
+            if (dateEnd) filtered = filtered.filter(d => d.created_at && new Date(d.created_at) <= new Date(dateEnd));
+
+            filtered.sort((a, b) => {
+                const da = new Date(a.created_at || 0), db = new Date(b.created_at || 0);
+                return sortDate === 'newest' ? db - da : da - db;
+            });
+
+            if (sortPoin !== 'none') {
+                filtered.sort((a, b) => {
+                    const pa = parseInt(a.poin) || 0, pb = parseInt(b.poin) || 0;
+                    return sortPoin === 'asc' ? pa - pb : pb - pa;
+                });
+            }
+
+            renderTable(filtered);
+            updateFilterTags(selKelas, dateStart, dateEnd);
+        };
+
+        function updateFilterTags(selKelas, dateStart, dateEnd) {
+            const container = document.getElementById('activeFilterTags');
+            const resetBtn = document.getElementById('resetBtn');
+            const tags = [];
+            
+            const selTingkat = Array.from(document.querySelectorAll('.filter-angkatan-cb:checked')).map(c => c.value);
+
+            selKelas.forEach(v => tags.push({ label: `Kelas: ${v}`, clear: () => { document.querySelector(`.filter-kelas-cb[value="${v}"]`).checked = false; applyFilters(); } }));
+            selTingkat.forEach(t => tags.push({ label: `Angkatan ${t}`, clear: () => { toggleAngkatan(t, false); } }));
+            if (dateStart) tags.push({ label: `Mulai: ${formatDate(dateStart)}`, clear: () => { document.getElementById('date_start').value = ''; applyFilters(); } });
+            if (dateEnd) tags.push({ label: `Sampai: ${formatDate(dateEnd)}`, clear: () => { document.getElementById('date_end').value = ''; applyFilters(); } });
+
+            resetBtn.style.display = tags.length > 0 ? '' : 'none';
+            container.innerHTML = tags.map((t, i) => `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-[12px] font-bold border border-blue-100">
+                    ${t.label} <button onclick="clearTag(${i})" class="hover:bg-blue-200 rounded-full w-4 h-4 text-[9px] flex items-center justify-center transition-colors"><i class="fas fa-xmark"></i></button>
+                </span>`).join('');
+            window._tagClearers = tags.map(t => t.clear);
+        }
+
+        window.clearTag = (i) => window._tagClearers[i]();
+
+        window.resetAllFilters = () => {
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+            document.getElementById('date_start').value = '';
+            document.getElementById('date_end').value = '';
+            document.getElementById('searchInput').value = '';
+            setSortDate('newest');
+            setSortPoin('none');
+        };
+
+        window.setSortDate = (order) => {
+            sortDate = order;
+            document.getElementById('sort_date_label').innerHTML = order === 'newest' ? '<i class="fas fa-arrow-down-wide-short mr-1.5"></i>Terbaru' : '<i class="fas fa-arrow-up-wide-short mr-1.5"></i>Terlama';
+            applyFilters();
+        };
+
+        window.setSortPoin = (order) => {
+            sortPoin = order;
+            applyFilters();
+        };
+
+        window.onDateRangeChange = applyFilters;
+
+        async function loadKelas() {
+            try {
+                const res = await getAPI('/kelas');
+                if (res && res.status === 200) {
+                    dataKelas = res.data || [];
+                    const container = document.getElementById('filter_kelas_options');
+                    const tingkats = [...new Set(dataKelas.map(k => k.tingkat || 'Lainnya'))].sort();
+                    
+                    container.innerHTML = tingkats.map(t => `
+                        <div class="px-4 py-2 bg-gray-50/50 border-y border-gray-100 flex items-center gap-2">
+                            <input type="checkbox" class="filter-angkatan-cb w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" value="${t}" onchange="toggleAngkatan('${t}', this.checked)">
+                            <span class="text-[11px] font-black text-gray-400 uppercase tracking-widest">${t}</span>
+                        </div>
+                        <div class="py-1">
+                            ${dataKelas.filter(k => k.tingkat === t).map(k => `
+                                <label class="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 cursor-pointer">
+                                    <input type="checkbox" class="filter-kelas-cb w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" value="${k.id}" data-tingkat="${t}" onchange="onKelasChange()">
+                                    <span class="text-[13px] font-bold text-gray-600">${k.tingkat} ${k.jurusan} ${k.kelas}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `).join('');
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        window.toggleAngkatan = (tingkat, checked) => {
+            document.querySelectorAll(`.filter-kelas-cb[data-tingkat="${tingkat}"]`).forEach(cb => cb.checked = checked);
+            applyFilters();
+        };
+
+        window.onKelasChange = applyFilters;
+
+        function setupDropdownHandlers() {
+            document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+                const btn = dropdown.querySelector('.dropdown-toggle');
+                const menu = dropdown.querySelector('.dropdown-menu');
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isHidden = menu.classList.contains('hidden');
+                    document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden', 'opacity-0', '-translate-y-2'));
+                    if (isHidden) {
+                        menu.classList.remove('hidden');
+                        setTimeout(() => menu.classList.remove('opacity-0', '-translate-y-2'), 10);
+                    }
+                });
+            });
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden', 'opacity-0', '-translate-y-2'));
+            });
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Siswa - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <!-- Tailwind CSS Output -->
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <!-- Sidebar Container -->
+    <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <!-- Top Header -->
+        <div id="header-container"></div>
+
+        <!-- Dashboard Content -->
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <!-- Background Decoration -->
+            <div
+                class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10">
+            </div>
+
+            <div class="max-w-7xl mx-auto space-y-8">
+
+                <!-- Welcome Banner -->
+                <div
+                    class="bg-white rounded-[24px] p-8 border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] flex justify-between items-center relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-50/50 to-white pointer-events-none">
+                    </div>
+                    <div class="relative z-10 w-full md:w-2/3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span
+                                class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider">Portal
+                                Siswa</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-black text-gray-900 mb-2">Halo, <span id="welcomeName"
+                                class="text-[#054030]">Siswa</span>! 👋</h2>
+                        <p class="text-gray-500 text-sm md:text-base leading-relaxed">Pantau perkembangan kedisiplinan
+                            Anda. Tetaplah berprestasi dan patuhi peraturan sekolah untuk masa depan yang lebih baik.
+                        </p>
+                    </div>
+                    <div
+                        class="hidden md:flex relative z-10 w-32 h-32 bg-emerald-50 rounded-full items-center justify-center border-8 border-white shadow-sm">
+                        <i class="fas fa-graduation-cap text-5xl text-emerald-300"></i>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Card 1: Total Pelanggaran -->
+                    <div
+                        class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-5 group hover:border-red-200 transition-all cursor-default relative overflow-hidden">
+                        <div
+                            class="absolute -right-4 -bottom-4 w-24 h-24 bg-red-50/50 rounded-full group-hover:scale-150 transition-transform duration-500 rounded-tl-full pointer-events-none">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center text-red-500 shadow-sm relative z-10">
+                            <i class="fas fa-exclamation-circle text-2xl"></i>
+                        </div>
+                        <div class="relative z-10 text-left">
+                            <p class="text-sm font-semibold text-gray-500 mb-1">Total Pelanggaran</p>
+                            <h3 class="text-4xl font-extrabold text-gray-900 tracking-tight" id="countPelanggaran">0
+                            </h3>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Akumulasi Poin -->
+                    <div
+                        class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-5 group hover:border-amber-200 transition-all cursor-default relative overflow-hidden">
+                        <div
+                            class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-50/50 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500 shadow-sm relative z-10">
+                            <i class="fas fa-star text-2xl"></i>
+                        </div>
+                        <div class="relative z-10 text-left">
+                            <p class="text-sm font-semibold text-gray-500 mb-1">Akumulasi Poin</p>
+                            <h3 class="text-4xl font-extrabold text-gray-900 tracking-tight" id="countPoin">0</h3>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Riwayat Surat -->
+                    <div
+                        class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-5 group hover:border-blue-200 transition-all cursor-default relative overflow-hidden">
+                        <div
+                            class="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-50/50 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm relative z-10">
+                            <i class="fas fa-envelope-open-text text-2xl"></i>
+                        </div>
+                        <div class="relative z-10 text-left">
+                            <p class="text-sm font-semibold text-gray-500 mb-1">Riwayat Surat</p>
+                            <h3 class="text-4xl font-extrabold text-gray-900 tracking-tight" id="countSurat">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Sections -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    <!-- Left: Riwayat Pelanggaran -->
+                    <div
+                        class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden flex flex-col">
+                        <div class="p-6 border-b border-gray-100 bg-gray-50/30 flex justify-between items-center">
+                            <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-3">
+                                Riwayat Pelanggaran
+                                <span
+                                    class="bg-red-100 text-red-600 px-2 py-0.5 rounded text-[10px] font-black uppercase">Terbaru</span>
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr
+                                        class="bg-white text-gray-400 text-[10px] uppercase tracking-widest border-b border-gray-100">
+                                        <th class="py-4 px-6 font-bold">Tanggal</th>
+                                        <th class="py-4 px-6 font-bold">Jenis Pelanggaran</th>
+                                        <th class="py-4 px-6 font-bold text-center">Poin</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pelanggaranTable" class="divide-y divide-gray-50">
+                                    <tr>
+                                        <td colspan="3" class="py-12 text-center text-gray-400">
+                                            <i class="fas fa-spinner fa-spin text-2xl mb-2 text-emerald-600"></i>
+                                            <p class="text-xs font-medium">Memuat data...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Riwayat Surat -->
+                    <div
+                        class="bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden flex flex-col">
+                        <div class="p-6 border-b border-gray-100 bg-gray-50/30 flex justify-between items-center">
+                            <h3 class="text-lg font-extrabold text-gray-900 flex items-center gap-3">
+                                Riwayat Surat Terbit
+                                <span
+                                    class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded text-[10px] font-black uppercase">Administrasi</span>
+                            </h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr
+                                        class="bg-white text-gray-400 text-[10px] uppercase tracking-widest border-b border-gray-100">
+                                        <th class="py-4 px-6 font-bold">Tanggal Terbit</th>
+                                        <th class="py-4 px-6 font-bold">Perihal</th>
+                                        <th class="py-4 px-6 font-bold">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="suratTable" class="divide-y divide-gray-50">
+                                    <tr>
+                                        <td colspan="3" class="py-12 text-center text-gray-400">
+                                            <i class="fas fa-spinner fa-spin text-2xl mb-2 text-emerald-600"></i>
+                                            <p class="text-xs font-medium">Memuat data...</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- Footer -->
+            <div id="footer-container"></div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { getAPI } from '../../utils/fetchData.js';
+        import { loadComponents } from '../../components/layout.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadComponents();
+
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (!userStr || !token) {
+                window.location.href = '../Login.html';
+                return;
+            }
+
+            const user = JSON.parse(userStr);
+            if (user.role.toLowerCase() !== 'siswa') {
+                window.location.href = '../Login.html';
+                return;
+            }
+
+            document.getElementById('welcomeName').textContent = user.username;
+
+            await loadStats(user.id);
+            await loadPelanggaran(user.id);
+            await loadSurat(user.id);
+        });
+
+        async function loadStats(siswaId) {
+            try {
+                // Get student detail for points
+                const res = await getAPI(`/siswa/${siswaId}`);
+                if (res && res.status === 200) {
+                    // Use total_poin which is correctly calculated by backend subquery
+                    const finalPoin = res.data.total_poin !== undefined ? res.data.total_poin : (res.data.poin || 0);
+                    animateValue("countPoin", 0, finalPoin, 1000);
+                }
+
+                // Get violations count
+                const resPel = await getAPI(`/pelanggaran?id_siswa=${siswaId}`);
+                if (resPel && resPel.status === 200) {
+                    animateValue("countPelanggaran", 0, resPel.data.length || 0, 1000);
+                }
+
+                // Get surat count
+                const resSurat = await getAPI(`/surat?id_siswa=${siswaId}`);
+                if (resSurat && resSurat.status === 200) {
+                    animateValue("countSurat", 0, resSurat.data.length || 0, 1000);
+                }
+            } catch (err) {
+                console.error("Error loading stats:", err);
+            }
+        }
+
+        async function loadPelanggaran(siswaId) {
+            const tbody = document.getElementById('pelanggaranTable');
+            try {
+                const res = await getAPI(`/pelanggaran?id_siswa=${siswaId}`);
+                if (res && res.status === 200) {
+                    const data = res.data;
+                    if (data.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-gray-400 text-sm font-medium">Belum ada catatan pelanggaran.</td></tr>`;
+                        return;
+                    }
+
+                    // Sort by date newest
+                    data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                    const latest = data.slice(0, 7);
+
+                    tbody.innerHTML = latest.map(item => `
+                        <tr class="hover:bg-gray-50/80 transition-colors group">
+                            <td class="py-4 px-6 text-[12px] font-semibold text-gray-500">${formatDate(item.created_at)}</td>
+                            <td class="py-4 px-6">
+                                <p class="text-[13px] font-bold text-gray-800">${item.nama_pelanggaran || 'Pelanggaran'}</p>
+                            </td>
+                            <td class="py-4 px-6 text-center">
+                                <span class="bg-red-50 text-red-600 px-3 py-1 rounded-lg text-xs font-black border border-red-100">${item.poin || 0}</span>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-red-500 font-medium italic">Gagal memuat data histori.</td></tr>`;
+            }
+        }
+
+        async function loadSurat(siswaId) {
+            const tbody = document.getElementById('suratTable');
+            try {
+                const res = await getAPI(`/surat?id_siswa=${siswaId}`);
+                if (res && res.status === 200) {
+                    const data = res.data;
+                    if (data.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-gray-400 text-sm font-medium">Belum ada surat diterbitkan.</td></tr>`;
+                        return;
+                    }
+
+                    tbody.innerHTML = data.map(item => `
+                        <tr class="hover:bg-gray-50/80 transition-colors group">
+                            <td class="py-4 px-6 text-[12px] font-bold text-gray-500 group-hover:text-blue-600 transition-colors">${formatDate(item.created_at)}</td>
+                            <td class="py-4 px-6 text-[12px] text-gray-500 font-medium">${(item.jenis_surat || '').replace('Surat ', '') || 'Laporan Pelanggaran'}</td>
+                            <td class="py-4 px-6">
+                                <span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border border-blue-100">Diterbitkan</span>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-red-500 font-medium italic">Gagal memuat administrasi.</td></tr>`;
+            }
+        }
+
+        function formatDate(str) {
+            if (!str) return '-';
+            const d = new Date(str);
+            if (isNaN(d.getTime())) return str;
+            return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            if (start === end) { obj.textContent = end; return; }
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = Math.floor(progress * (end - start) + start);
+                obj.textContent = val.toLocaleString('id-ID');
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+    </script>
+</body>
+
+</html>

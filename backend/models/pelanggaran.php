@@ -21,6 +21,17 @@ class PelanggaranModel
         }
     }
 
+    private function syncSiswaPoin($id_siswa)
+    {
+        $stmt = $this->db->prepare("
+            UPDATE siswa 
+            SET poin = (SELECT IFNULL(SUM(poin), 0) FROM pelanggaran WHERE id_siswa = :id_siswa AND deleted_at IS NULL)
+            WHERE id = :id_siswa
+        ");
+        $stmt->bindParam(':id_siswa', $id_siswa);
+        $stmt->execute();
+    }
+
     public function getAllPelanggaran()
     {
         // Query dengan JOIN untuk mendapatkan nama_siswa, kelas, dan nama_pelanggaran
@@ -86,7 +97,12 @@ class PelanggaranModel
         $stmt->bindParam(':poin', $poin);
         $stmt->bindParam(':keterangan', $keterangan);
         $stmt->bindParam(':created_by', $created_by);
-        return $stmt->execute();
+
+        $success = $stmt->execute();
+        if ($success) {
+            $this->syncSiswaPoin($id_siswa);
+        }
+        return $success;
     }
 
     public function updatePelanggaran($id, $id_jenis_pelanggaran, $id_siswa, $poin, $keterangan)
@@ -97,13 +113,29 @@ class PelanggaranModel
         $stmt->bindParam(':id_siswa', $id_siswa);
         $stmt->bindParam(':poin', $poin);
         $stmt->bindParam(':keterangan', $keterangan);
-        return $stmt->execute();
+
+        $success = $stmt->execute();
+        if ($success) {
+            $this->syncSiswaPoin($id_siswa);
+        }
+        return $success;
     }
 
     public function deletePelanggaran($id)
     {
+        // Ambil id_siswa sebelum dihapus
+        $p = $this->getPelanggaranById($id);
+        if (!$p)
+            return false;
+        $id_siswa = $p['id_siswa'];
+
         $stmt = $this->db->prepare("UPDATE pelanggaran SET deleted_at = NOW() WHERE id = :id");
         $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+
+        $success = $stmt->execute();
+        if ($success) {
+            $this->syncSiswaPoin($id_siswa);
+        }
+        return $success;
     }
 }

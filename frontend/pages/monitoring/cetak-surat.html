@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Surat Baru - VioPoints</title>
+    <link rel="icon" type="image/png" href="../../assets/img/viopoints.png">
+    <link href="../../src/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .letter-preview {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.5;
+            color: #1a202c;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .dropdown-options {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+
+<body class="flex h-screen overflow-hidden text-gray-800 bg-[#f8fafc]">
+
+    <div id="sidebar-container"></div>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <div id="header-container"></div>
+
+        <div class="flex-1 overflow-y-auto p-8 relative">
+            <div
+                class="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-[#054030]/5 to-transparent pointer-events-none -z-10">
+            </div>
+
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-8 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-900 tracking-tight">Buat Surat Baru</h2>
+                        <p class="text-[13px] text-gray-500 mt-1 font-medium italic">Pilih jenis surat untuk mulai
+                            melayani.</p>
+                    </div>
+                </div>
+
+                <!-- STEP 1: PILIH JENIS SURAT -->
+                <div id="step1" class="step-transition">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <span
+                            class="w-7 h-7 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-xs">1</span>
+                        Pilih Jenis Surat
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Surat Pernyataan Siswa -->
+                        <div onclick="selectLetterType('Surat Pernyataan Siswa')"
+                            class="group bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-900/5 transition-all cursor-pointer flex flex-col items-center text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user-edit text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Surat Pernyataan Siswa</h4>
+                            <p class="text-[11px] text-gray-500 font-medium">Pernyataan pembinaan dan perubahan perilaku
+                                siswa.</p>
+                        </div>
+
+                        <!-- Surat Pemanggilan Orang Tua -->
+                        <div onclick="selectLetterType('Surat Pemanggilan Orang Tua')"
+                            class="group bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-900/5 transition-all cursor-pointer flex flex-col items-center text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-bullhorn text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Pemanggilan Orang Tua</h4>
+                            <p class="text-[11px] text-gray-500 font-medium">Undangan kepada orang tua/wali untuk hadir
+                                ke sekolah.</p>
+                        </div>
+
+                        <!-- Surat Pernyataan Orang Tua -->
+                        <div onclick="selectLetterType('Surat Pernyataan Orang Tua')"
+                            class="group bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-900/5 transition-all cursor-pointer flex flex-col items-center text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-file-signature text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Surat Pernyataan Ortu</h4>
+                            <p class="text-[11px] text-gray-500 font-medium">Pernyataan kesanggupan membina anak di
+                                rumah.</p>
+                        </div>
+
+                        <!-- Surat Keterangan Pindah Sekolah -->
+                        <div onclick="selectLetterType('Surat Pindah Sekolah')"
+                            class="group bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-900/5 transition-all cursor-pointer flex flex-col items-center text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 mb-4 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-exchange-alt text-2xl"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900 mb-2">Surat Pindah Sekolah</h4>
+                            <p class="text-[11px] text-gray-500 font-medium">Keterangan pengunduran diri atau pindah
+                                sekolah.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2 IS REMOVED: Managed in folder/form.php -->
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Component -->
+    <div id="toast" class="fixed bottom-8 right-8 z-[9999] hidden animate-in slide-in-from-right-full duration-300">
+        <div
+            class="bg-white border-l-4 border-emerald-500 shadow-2xl rounded-xl p-5 flex items-center gap-4 min-w-[320px]">
+            <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-500">
+                <i class="fas fa-check-circle text-xl"></i>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold text-gray-900" id="toastTitle">Berhasil</h4>
+                <p class="text-xs font-medium text-gray-500 mt-0.5" id="toastMsg"></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { loadComponents } from '../../components/layout.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Cek Autentikasi
+            const userStr = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (!userStr || !token) {
+                window.location.href = '../login.html';
+                return;
+            }
+            const user = JSON.parse(userStr);
+            const role = user.role ? user.role.toLowerCase() : '';
+            if (role !== 'kepala sekolah' && role !== 'wakasek' && role !== 'kepala_sekolah') {
+                window.location.href = '../login.html';
+                return;
+            }
+            await loadComponents();
+        });
+
+        // ─── WORKFLOW LOGIC ───────────────────────────────────────
+        window.selectLetterType = function (type) {
+            const map = {
+                'Surat Pernyataan Siswa': 'surat/pernyataan_siswa/form.html',
+                'Surat Pemanggilan Orang Tua': 'surat/pemanggilan_ortu/form.html',
+                'Surat Pernyataan Orang Tua': 'surat/pernyataan_ortu/form.html',
+                'Surat Pindah Sekolah': 'surat/pindah_sekolah/form.html'
+            };
+
+            if (map[type]) {
+                const step1 = document.getElementById('step1');
+                // Animasi transisi sebelum redirect
+                step1.classList.add('opacity-0', '-translate-y-4');
+                setTimeout(() => {
+                    window.location.href = map[type];
+                }, 300);
+            }
+        };
+
+        function showToast(title, msg) {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                document.getElementById('toastTitle').textContent = title;
+                document.getElementById('toastMsg').textContent = msg;
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 4000);
+            }
+        }
+    </script>
+</body>
+
+</html>

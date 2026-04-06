@@ -58,8 +58,8 @@
                     </div>
                 </div>
 
-                <!-- 1. Top Cards Row (Siswa, Guru, Kelas) -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 1. Top Cards Row (Siswa, Guru, Kelas, Jurusan) -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <!-- Card 1: Jumlah Siswa -->
                     <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-5 hover:border-blue-200 transition-all group cursor-default relative overflow-hidden cursor-pointer"
                         onclick=" window.location.href='siswa.html'">
@@ -105,6 +105,22 @@
                         <div class="relative z-10 ">
                             <p class="text-sm font-semibold text-gray-500 mb-1">Total Kelas</p>
                             <h3 class="text-4xl font-extrabold text-gray-900 tracking-tight" id="countKelas">0</h3>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Jumlah Jurusan (New Added for Request #6) -->
+                    <div class="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 flex items-center gap-5 hover:border-amber-200 transition-all group cursor-default relative overflow-hidden cursor-pointer"
+                        onclick=" window.location.href='jurusan.html'">
+                        <div
+                            class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-50/50 rounded-full group-hover:scale-150 transition-transform duration-500 pointer-events-none">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-500 shadow-sm relative z-10">
+                            <i class="fas fa-layer-group text-2xl"></i>
+                        </div>
+                        <div class="relative z-10 ">
+                            <p class="text-sm font-semibold text-gray-500 mb-1">Total Jurusan</p>
+                            <h3 class="text-4xl font-extrabold text-gray-900 tracking-tight" id="countJurusan">0</h3>
                         </div>
                     </div>
                 </div>
@@ -277,6 +293,7 @@
                     animateValue("countSiswa", 0, data.countSiswa, 1200);
                     animateValue("countGuru", 0, data.countGuru, 1000);
                     animateValue("countKelas", 0, data.countKelas, 800);
+                    animateValue("countJurusan", 0, data.countJurusan || 0, 700);
 
                     const countEl = document.getElementById('countPelanggaran');
                     animateValue("countPelanggaran", 0, data.countPelanggaran, 800);
